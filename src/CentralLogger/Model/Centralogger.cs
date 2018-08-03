@@ -14,11 +14,11 @@ namespace CentralLogger {
         public string Ip { set; get; }
     }
     public enum LogLevel {
-        Info, Wramming, Error
+        Info, Warning, Error
     }
 
     public class CentralLoggerContext : DbContext {
-        public DbSet<LogInfo> LogInfo { get; set; }
+        public DbSet<LogInfo> LogInfos { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
     }
 }
