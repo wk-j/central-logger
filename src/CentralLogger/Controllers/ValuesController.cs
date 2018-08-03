@@ -10,6 +10,15 @@ namespace CentralLogger.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+
+            private readonly CentralLoggerContext db;
+        public ValuesController(CentralLoggerContext _db)
+        {
+            db = _db;
+        }
+
+
+        
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
