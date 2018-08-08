@@ -30,9 +30,11 @@ namespace CentralLogger {
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+
+
+
             });
 
         }
@@ -57,6 +59,7 @@ namespace CentralLogger {
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
 
 
         }
