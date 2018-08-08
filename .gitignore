@@ -3,6 +3,7 @@
 node_modules
 dist
 .cache
+.sonarqube
 
 bin
 obj
@@ -18,3 +19,4 @@ publish
 wwwroot
 target
 BenchmarkDotNet.Artifacts
+coverage.opencover.xml
