@@ -14,10 +14,12 @@ namespace CentralLogProvider {
 
         private readonly CentralLogProvider provider;
         private readonly string categoryName;
+        private readonly CentralLogOptions options;
 
-        public CentralLogger(CentralLogProvider provider, string categoryName) {
+        public CentralLogger(CentralLogProvider provider, string categoryName, CentralLogOptions options) {
             this.provider = provider;
             this.categoryName = categoryName;
+            this.options = options;
         }
         public IDisposable BeginScope<TState>(TState state) {
             return null;
@@ -32,6 +34,8 @@ namespace CentralLogProvider {
             if (!IsEnabled(logLevel)) {
                 return;
             }
+
+            var url = options.ServiceUrl;
 
             var builder = new StringBuilder();
             builder.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"));
