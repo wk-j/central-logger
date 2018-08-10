@@ -14,7 +14,7 @@ namespace CentralLogger {
         public string Ip { set; get; }
     }
     public enum LogLevel {
-        Info, Warning, Error
+        Trace, Debug, Information, Warning, Error, Critical
     }
 
     public class CentralLoggerContext : DbContext {

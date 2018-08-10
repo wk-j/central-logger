@@ -17,9 +17,10 @@ namespace MyWeb {
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://*:6000")
                 .ConfigureLogging(builder => {
                     builder.ClearProviders();
-                    builder.addLog(new CentralLogOptions { ServiceUrl = "http://localhost:5000/api/logger/addLog" });
+                    builder.AddLog(new CentralLogOptions { ServiceUrl = "http://localhost:5000/api/logger/addLog" });
                 })
                 .UseStartup<Startup>();
     }

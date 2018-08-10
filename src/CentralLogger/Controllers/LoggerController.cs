@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -18,18 +20,6 @@ namespace CentralLogger.Controllers {
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get() {
-
-            /* db.LogInfos.Add(new LogInfo() {
-                 Id = 001,
-                 LogLevel = 0,
-                 Message = "Hellow",
-                 DateTime = DateTime.Now,
-                 Application = "Hi guy !!!!!",
-                 Ip = "192.168.1.1",
-             });
-             db.SaveChanges();*/
-
-
 
             try {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
@@ -48,13 +38,14 @@ namespace CentralLogger.Controllers {
 
         // POST api/values
         [HttpPost]
-        public ActionResult writeLog([FromBody]GetLogInfos x) {
+        public ActionResult WriteLog([FromBody]GetLogInfos x) {
+            var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             db.LogInfos.Add(new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
                 Application = x.Application,
-                Ip = x.Ip,
+                Ip = requestIp
             });
             db.SaveChanges();
             return Ok();

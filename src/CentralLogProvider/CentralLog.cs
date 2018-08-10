@@ -1,16 +1,14 @@
 using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace CentralLogProvider {
 
     public class CentralLogger : ILogger {
-
-        /*
-        public LogLevel LogLevel { get; set; } = LogLevel.Warning;
-        public int EventId { get; set; } = 0;
-        public ConsoleColor Color { get; set; } = ConsoleColor.Yellow;
-        */
 
         private readonly CentralLogProvider provider;
         private readonly string categoryName;
@@ -34,9 +32,8 @@ namespace CentralLogProvider {
             if (!IsEnabled(logLevel)) {
                 return;
             }
-
             var url = options.ServiceUrl;
-
+            var states = formatter(state, exception);
             var builder = new StringBuilder();
             builder.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"));
             builder.Append(" [");
@@ -46,6 +43,27 @@ namespace CentralLogProvider {
             builder.Append(": ");
             builder.AppendLine(formatter(state, exception));
             Console.WriteLine(builder.ToString());
+            GetLog(logLevel, categoryName, states);
+        }
+
+        public async void GetLog(LogLevel logLevel, string categoryName, string states) {
+            var thisGetLog = new GetLog() {
+                DateTime = DateTime.Now,
+                LogLevel = logLevel.ToString(),
+                Message = states,
+                Application = categoryName
+            };
+            var serializer = new DataContractJsonSerializer(typeof(GetLog));
+            using (var stream = new MemoryStream()) {
+                serializer.WriteObject(stream, thisGetLog);
+                var data = Encoding.UTF8.GetString(stream.ToArray());
+
+
+                var url = "http://localhost:5000/api/Logger/writeLog";
+                using (var client = new HttpClient()) {
+                    var response = await client.PostAsync(url, new StringContent(data, Encoding.UTF8, "application/json"));
+                }
+            }
         }
     }
 }
