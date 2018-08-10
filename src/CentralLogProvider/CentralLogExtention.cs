@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace CentralLogProvider {
     public static class CentralLogExtensions {
-        public static ILoggingBuilder addLog(this ILoggingBuilder builder, CentralLogOptions options) {
+        public static ILoggingBuilder AddLog(this ILoggingBuilder builder, CentralLogOptions options) {
             builder.Services.AddSingleton<CentralLogOptions>(options);
             builder.Services.AddSingleton<ILoggerProvider, CentralLogProvider>();
             return builder;

@@ -40,6 +40,7 @@ namespace CentralLogger {
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db) {
+
             db.Database.EnsureCreated();
             if (env.IsDevelopment()) {
 
@@ -57,7 +58,7 @@ namespace CentralLogger {
             });
 
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseMvc();
 
 

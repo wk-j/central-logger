@@ -27,7 +27,8 @@ namespace MyWeb {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, ILogger<Startup> logger, IHostingEnvironment env) {
 
-            logger.LogError("AAAAA");
+            logger.LogError("ERRRRRRRRRRRR");
+            logger.LogInformation("INfo zzbfng");
 
 
             if (env.IsDevelopment()) {
