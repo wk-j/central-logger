@@ -1,0 +1,34 @@
+body {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-image: url(https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/itCjTBE/blue-tech-circuit-board-technology-animated-background-video-graphic-design-hd-1920x1080_ewva7rwie__F0000.png);
+}
+
+.inputdate {
+  border-radius: 5px;
+  padding: 5px 5px;
+  border-color: darkblue;
+  background-color: skyblue;
+  color: black;
+}
+
+.react-datepicker__time-list {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.logbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  height: 70%;
+  overflow: auto;
+}
+
+.nologbox {
+  width: 100%;
+  height: 70%;
+}

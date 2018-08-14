@@ -5,42 +5,65 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
-
-namespace CentralLogger.Controllers {
+using CentralLogger.Model;
+namespace CentralLogger.Controllers
+{
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoggerController : ControllerBase {
+    public class LoggerController : ControllerBase
+    {
 
         private readonly CentralLoggerContext db;
-        public LoggerController(CentralLoggerContext _db) {
+        public LoggerController(CentralLoggerContext _db)
+        {
             db = _db;
         }
 
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get() {
+        public ActionResult<IEnumerable<string>> ShowAll()
+        {
 
-            try {
+            try
+            {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
                 return Ok(Logger);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, ex);
             }
-            //return new string[] { "value1", "value2" };
-        }
 
+        }
+        [HttpPost]
+        public List<LogInfo> FilterDate(SearchDate searchDate)
+        {
+            searchDate.StartDate = searchDate.StartDate.ToLocalTime();
+            searchDate.EndDate = searchDate.EndDate.ToLocalTime();
+            //var LogDate = db.LogInfos.Select(c => c.DateTime).ToList();
+
+            // Get data from LogInfos
+            var SelectDate = (from c in db.LogInfos
+                              where c.DateTime >= searchDate.StartDate && c.DateTime <= searchDate.EndDate
+                              select c).ToList();
+
+            return SelectDate;
+        }
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id) {
+        public ActionResult<string> Get(int id)
+        {
             return "value";
         }
 
         // POST api/values
         [HttpPost]
-        public ActionResult WriteLog([FromBody]GetLogInfos x) {
+        public ActionResult WriteLog([FromBody]GetLogInfos x)
+        {
             var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
-            db.LogInfos.Add(new LogInfo() {
+            db.LogInfos.Add(new LogInfo()
+            {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -53,12 +76,14 @@ namespace CentralLogger.Controllers {
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) {
+        public void Put(int id, [FromBody] string value)
+        {
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public async void Delete(int id) {
+        public async void Delete(int id)
+        {
             await db.Database.EnsureDeletedAsync();
         }
     }
