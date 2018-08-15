@@ -42,7 +42,7 @@ namespace CentralLogProvider {
             builder.Append(categoryName);
             builder.Append(": ");
             builder.AppendLine(formatter(state, exception));
-            Console.WriteLine(builder.ToString());
+            Console.Write(builder.ToString());
             GetLog(logLevel, categoryName, states);
         }
 

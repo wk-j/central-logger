@@ -11,7 +11,7 @@ var currentDir = new DirectoryInfo(".").FullName;
 var info = Parser.Parse($"src/{name}/{name}.csproj");
 
 Task("Build-Web").Does(() => {
-    PS.StartProcess("npm run build", "../CentralLogger");
+    PS.StartProcess("npm run build", "client");
 });
 
 Task("Pack").Does(() => {
