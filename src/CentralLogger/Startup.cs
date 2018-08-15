@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
@@ -43,6 +45,19 @@ namespace CentralLogger {
 
             db.Database.EnsureCreated();
             if (env.IsDevelopment()) {
+                var asm = Assembly.GetEntryAssembly();
+                var asmName = asm.GetName().Name;
+                var defaultOptions = new DefaultFilesOptions();
+                defaultOptions.DefaultFileNames.Clear();
+                defaultOptions.DefaultFileNames.Add("index.html");
+                defaultOptions.FileProvider =
+                  new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
+                app
+                  .UseDefaultFiles(defaultOptions)
+                  .UseStaticFiles(new StaticFileOptions {
+                      FileProvider =
+                     new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
+                  });
 
                 app.UseDeveloperExceptionPage();
             } else {

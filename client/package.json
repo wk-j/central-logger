@@ -1,6 +1,11 @@
 {
+  "name": "central-logger",
+  "version": "1.0.0",
+  "description": "```bash npm install ```",
+  "main": "index.js",
   "dependencies": {
     "css": "^2.2.3",
+    "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-date-picker": "^6.11.3",
     "react-dom": "^16.4.2",
@@ -17,5 +22,19 @@
     "axios": "^0.18.0",
     "react-datepicker": "^1.6.0",
     "typescript": "^3.0.1"
-  }
+  },
+  "scripts": {
+    "start": "parcel watch index.html -d ../src/CentralLogger/wwwroot --public-url /",
+    "build": "parcel build index.html -d ../src/CentralLogger/wwwroot --public-url /"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcircle-intern/central-logger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcircle-intern/central-logger/issues"
+  },
+  "homepage": "https://github.com/bcircle-intern/central-logger#readme"
 }
