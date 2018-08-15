@@ -2,17 +2,27 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>bcircle-central-logger</ToolCommandName>
+        <PackageId>BCircle.CentralLogger</PackageId>
+        <Version>0.1.2</Version>
+        <IsPackable>true</IsPackable>
         <ProjectGuid>{fa5892ec-6a88-4895-ab6e-7e0b4ffb20c2}</ProjectGuid>
     </PropertyGroup>
 
+
+
     <ItemGroup>
-        <Folder Include="wwwroot\" />
+        <EmbeddedResource Include="wwwroot/*" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Moment.js" Version="2.22.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.1.1" />
+        <PackageReference Include="react-datepicker.TypeScript.DefinitelyTyped" Version="0.0.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
     </ItemGroup>
 
 </Project>
+
