@@ -8,8 +8,8 @@
         "**/.DS_Store": true,
         "**/bin": true,
         "**/obj": true,
-        "node_modules": true,
-        ".cache": true,
+        "**/node_modules": true,
+        "**/.cache": true,
         "tools": true
     },
     "search.exclude": {
