@@ -1,6 +1,6 @@
 import React from "react"
 import { Log, LogLevel } from "../share/LoggerApi";
-import { Table, Loader, Dimmer, Icon, SemanticCOLORS, Popup } from "semantic-ui-react"
+import { Table, Icon, SemanticCOLORS, Popup } from "semantic-ui-react"
 import moment from "moment"
 import "moment/locale/th"
 
@@ -40,9 +40,9 @@ export class Logs extends React.Component<LogProps, State> {
         }
         return (
             <Table.Row>
-                <Table.Cell>{moment(this.props.logsNow.dateTime).format("lll")}</Table.Cell>
-                <Table.Cell textAlign="center"><Popup trigger={<Icon name="dot circle" color={color} />} content={LogLevel[this.props.logsNow.logLevel]} /></Table.Cell>
-                <Table.Cell>{this.props.logsNow.message}</Table.Cell>
+                <Table.Cell width={1}>{moment(this.props.logsNow.dateTime).format("lll")}</Table.Cell>
+                <Table.Cell width={1} textAlign="center"><Popup trigger={<Icon name="dot circle" color={color} />} content={LogLevel[this.props.logsNow.logLevel]} /></Table.Cell>
+                <Table.Cell width={10}>{this.props.logsNow.message}</Table.Cell>
             </Table.Row>
         )
     }
