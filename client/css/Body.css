@@ -1,4 +1,5 @@
 body {
+  font-family: 'Kanit', sans-serif;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -6,12 +7,25 @@ body {
   background-image: url(https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/itCjTBE/blue-tech-circuit-board-technology-animated-background-video-graphic-design-hd-1920x1080_ewva7rwie__F0000.png);
 }
 
+.dropdown {
+  height: 5px !important;
+  padding: 5px 5px;
+  max-width: auto;
+}
+
+.segment_2 {
+  height: 100%;
+  max-height: 10%;
+  min-height: 10%
+}
+
 .inputdate {
   border-radius: 5px;
   padding: 5px 5px;
-  border-color: darkblue;
-  background-color: skyblue;
+  border-color: white;
+  background-color: white;
   color: black;
+  height: 35px;
 }
 
 .react-datepicker__time-list {
