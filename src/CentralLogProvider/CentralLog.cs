@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -51,7 +53,8 @@ namespace CentralLogProvider {
                 DateTime = DateTime.Now,
                 LogLevel = logLevel.ToString(),
                 Message = states,
-                Application = categoryName
+                Application = Path.GetFileName(Assembly.GetEntryAssembly().Location)
+
             };
             var serializer = new DataContractJsonSerializer(typeof(GetLog));
             using (var stream = new MemoryStream()) {
