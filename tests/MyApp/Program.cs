@@ -17,6 +17,10 @@ namespace MyApp {
             // Tests
             myService.FunA();
             myService.FunB();
+
+            while (Console.ReadLine() != "Q") {
+
+            }
         }
         private static void ConfigureServices(IServiceCollection services) {
             services.AddLogging(configure => {
