@@ -14,5 +14,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\CentralLogger\CentralLogger.csproj" />
         <ProjectReference Include="..\..\src\CentralLogProvider\CentralLogProvider.csproj" />
+        <ProjectReference Include="..\MyWeb\MyWeb.csproj" />
+        <ProjectReference Include="..\MyApp\MyApp.csproj" />
     </ItemGroup>
 </Project>
