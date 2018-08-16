@@ -49,8 +49,6 @@ namespace CentralLogProvider {
         }
 
         public async void GetLog(LogLevel logLevel, string categoryName, string states) {
-            var program = Process.GetCurrentProcess().MainModule.FileName;
-            Type types = Type.GetType(program);
             var thisGetLog = new GetLog() {
                 DateTime = DateTime.Now,
                 LogLevel = logLevel.ToString(),
