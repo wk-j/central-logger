@@ -40,7 +40,7 @@ export class Logs extends React.Component<LogProps, State> {
         }
         return (
             <Table.Row>
-                <Table.Cell width={1}>{moment(this.props.logsNow.dateTime).format("lll")}</Table.Cell>
+                <Table.Cell width={1}>{moment(this.props.logsNow.dateTime).format("Do MMMM YYYY, h:mm:ss")}</Table.Cell>
                 <Table.Cell width={1} textAlign="center"><Popup trigger={<Icon name="dot circle" color={color} />} content={LogLevel[this.props.logsNow.logLevel]} /></Table.Cell>
                 <Table.Cell width={10}>{this.props.logsNow.message}</Table.Cell>
             </Table.Row>
