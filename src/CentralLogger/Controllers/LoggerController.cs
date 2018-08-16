@@ -76,7 +76,7 @@ namespace CentralLogger.Controllers
         {
             //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             var requestIp = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (requestIp == "::1")
+            if (requestIp.Equals("::1"))
             {
                 requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             }
