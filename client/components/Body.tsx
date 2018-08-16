@@ -1,5 +1,5 @@
 import React from "react"
-import { Segment, Table, Icon, Header, Dropdown, Input } from "semantic-ui-react"
+import { Segment, Table, Icon, Header, Dropdown, Input, Dimmer, Loader } from "semantic-ui-react"
 import styled from "styled-components"
 import DatePicker from "react-datepicker"
 import moment, { Moment } from "moment"
@@ -28,6 +28,7 @@ type State = {
     allApp: any[]
     selectIp: string
     selectApp: string
+    loading: boolean
 }
 
 export class Body extends React.Component<any, State> {
@@ -43,7 +44,8 @@ export class Body extends React.Component<any, State> {
             allIp: [],
             allApp: [],
             selectIp: "",
-            selectApp: ""
+            selectApp: "",
+            loading: true
         }
     }
 
@@ -56,111 +58,49 @@ export class Body extends React.Component<any, State> {
         } else {
             this.setState({ startDay: date })
         }
-        if (this.state.selectApp === "" && this.state.selectIp === "") {
-            this.initSearchByDate(date.toDate(), this.state.endDay.toDate())
-        } else if (this.state.selectApp !== "" && this.state.selectIp === "") {
-            this.initSearchByApp(date.toDate(), this.state.endDay.toDate(), this.state.selectApp)
-        } else if (this.state.selectApp === "" && this.state.selectIp !== "") {
-            this.initSearchByIp(date.toDate(), this.state.endDay.toDate(), this.state.selectIp)
-        } else {
-            this.initSearchByAll(date.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
-        }
+        this.initSearchByAll(date.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
     }
 
     public handleEndDateChange = (date) => {
         this.setState({ endDay: date });
-        if (this.state.selectApp === "" && this.state.selectIp === "") {
-            this.initSearchByDate(this.state.startDay.toDate(), date.toDate())
-        } else if (this.state.selectApp !== "" && this.state.selectIp === "") {
-            this.initSearchByApp(this.state.startDay.toDate(), date.toDate(), this.state.selectApp)
-        } else if (this.state.selectApp === "" && this.state.selectIp !== "") {
-            this.initSearchByIp(this.state.startDay.toDate(), date.toDate(), this.state.selectIp)
-        } else {
-            this.initSearchByAll(this.state.startDay.toDate(), date.toDate(), this.state.selectApp, this.state.selectIp)
-        }
+        this.initSearchByAll(this.state.startDay.toDate(), date.toDate(), this.state.selectApp, this.state.selectIp)
+
     }
     private setIP = (_, { value }) => {
         this.setState({ selectIp: value })
-        if (value === "All" && this.state.selectApp === "") {
-            this.setState({ selectIp: "" })
-            this.initSearchByDate(this.state.startDay.toDate(), this.state.endDay.toDate())
-        } else if (value === "All" && this.state.selectApp !== "") {
-            this.setState({ selectIp: "" })
-            this.initSearchByApp(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp)
-        } else {
-            if (this.state.selectApp === "") {
-                this.initSearchByIp(this.state.startDay.toDate(), this.state.endDay.toDate(), value)
-            } else {
-                this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate()
-                    , this.state.selectApp, value)
-            }
-        }
+        this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value)
     }
 
     public setApp = (_, { value }) => {
         this.setState({ selectApp: value })
-        if (value === "All" && this.state.selectIp === "") {
-            this.setState({ selectApp: "" })
-            this.initSearchByDate(this.state.startDay.toDate(), this.state.endDay.toDate())
-        } else if (value === "All" && this.state.selectIp !== "") {
-            this.setState({ selectApp: "" })
-            this.initSearchByIp(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectIp)
-        } else {
-            if (this.state.selectIp === "") {
-                this.initSearchByApp(this.state.startDay.toDate(), this.state.endDay.toDate(), value)
-            } else {
-                this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate()
-                    , value, this.state.selectIp)
-            }
-        }
+        this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), value, this.state.selectIp)
     }
     public componentDidMount() {
         this.initGetApp()
         this.initGetIp()
         let starts = this.state.startDay
         let end = this.state.endDay
-        this.initSearchByDate(starts.toDate(), end.toDate())
+        this.initSearchByAll(starts.toDate(), end.toDate(), this.state.selectApp, this.state.selectIp)
         // this.state.logNow.map((log) => console.log("this" + log))
     }
-    public initSearchByDate = (StartDate: Date, EndDate: Date) => {
-        this.setState({ logNow: [] })
-        this.LoggerApi.SearchByDate(StartDate, EndDate).then(response => {
-            let LogDate = response.data
-            this.setState({ logNow: LogDate })
-        })
-    }
-    public initSearchByIp = (StartDate: Date, EndDate: Date, Ip: string) => {
-        this.setState({ logNow: [] })
-        this.LoggerApi.SearchByIp(StartDate, EndDate, Ip).then(response => {
-            let LogDate = response.data
-            this.setState({ logNow: LogDate })
-        })
-    }
-    public initSearchByApp = (StartDate: Date, EndDate: Date, App: string) => {
-        this.setState({ logNow: [] })
-        this.LoggerApi.SearchByApp(StartDate, EndDate, App).then(response => {
-            let LogDate = response.data
-            this.setState({ logNow: LogDate })
-        })
-    }
     public initSearchByAll = (StartDate: Date, EndDate: Date, App: string, Ip: string) => {
-        this.setState({ logNow: [] })
-        this.LoggerApi.SearchByAll(StartDate, EndDate, App, Ip).then(response => {
+        this.setState({ logNow: [], loading: true })
+        this.LoggerApi.SearchLog(StartDate, EndDate, App, Ip).then(response => {
             let LogDate = response.data
-            this.setState({ logNow: LogDate })
-        })
+            this.setState({ logNow: LogDate, loading: false })
+        }).catch(() => this.setState({ loading: false }))
     }
     public initGetIp = () => {
         this.LoggerApi.getIp().then(response => {
             let options = response.data.map(x => ({ value: x, text: x }))
-            options.unshift({ value: "All", text: "All IP" });
+            options.unshift({ value: "", text: "All IP" });
             this.setState({ allIp: options })
         })
     }
     public initGetApp = () => {
         this.LoggerApi.getApp().then(response => {
             let options = response.data.map(x => ({ value: x, text: x }))
-            options.unshift({ value: "All", text: "All Application" });
+            options.unshift({ value: "", text: "All Application" });
             this.setState({ allApp: options })
         })
     }
@@ -170,6 +110,7 @@ export class Body extends React.Component<any, State> {
 
         return (
             <BodyDiv>
+                <Loader content="Loading" active={this.state.loading} />
                 <Segment.Group>
                     <Segment textAlign="right" inverted color="blue" >
                         <Header as="h2" floated="left">
@@ -217,7 +158,7 @@ export class Body extends React.Component<any, State> {
                     </Segment>
                     <Segment>
                         <div className="logbox">
-                            {this.state.logNow.length === 0 ?
+                            {this.state.logNow.length === 0 && !this.state.loading ?
                                 <Header as="h1" icon>
                                     <br />
                                     <Icon size="huge" name="frown outline" />
