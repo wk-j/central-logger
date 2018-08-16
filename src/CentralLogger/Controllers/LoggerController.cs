@@ -35,6 +35,7 @@ namespace CentralLogger.Controllers {
             var SelectAll = (from c in db.LogInfos
                              where c.DateTime >= all.StartDate && c.DateTime <= all.EndDate
                              && c.Ip == all.IpNow && c.Application == all.Appnow
+                             orderby c.DateTime
                              select c).ToList();
 
             return SelectAll;
@@ -46,6 +47,7 @@ namespace CentralLogger.Controllers {
             var SelectIp = (from c in db.LogInfos
                             where c.DateTime >= ip.StartDate && c.DateTime <= ip.EndDate
                             && c.Ip == ip.IpNow
+                            orderby c.DateTime
                             select c).ToList();
 
             return SelectIp;
@@ -57,6 +59,7 @@ namespace CentralLogger.Controllers {
             var SelectApp = (from c in db.LogInfos
                              where c.DateTime >= searchApp.StartDate && c.DateTime <= searchApp.EndDate
                              && c.Application == searchApp.Appnow
+                             orderby c.DateTime
                              select c).ToList();
 
             return SelectApp;
@@ -70,6 +73,7 @@ namespace CentralLogger.Controllers {
             // Get data from LogInfos
             var SelectDate = (from c in db.LogInfos
                               where c.DateTime >= searchDate.StartDate && c.DateTime <= searchDate.EndDate
+                              orderby c.DateTime
                               select c).ToList();
 
             return SelectDate;
