@@ -9,26 +9,11 @@ using Microsoft.Extensions.Options;
 namespace CentralLogProvider {
 
     public class CentralLogOptions {
-
-        private string serviceUrl;
-        public CentralLogOptions(string servicUrl) {
-            this.serviceUrl = servicUrl;
+        public string serviceUrl;
+        public CentralLogOptions(string serviceUrl) {
+            this.serviceUrl = serviceUrl;
         }
-
-        public async Task<bool> WriteLogAsync(String data) {
-            //var url = "http://localhost:5000/api/Logger/writeLog";
-            using (var client = new HttpClient()) {
-                var response = await client.PostAsync($"{serviceUrl}/api/Logger/writeLog", new StringContent(data, Encoding.UTF8, "application/json"));
-
-                if (response.IsSuccessStatusCode) {
-                    return true;
-                }
-                return false;
-            }
-        }
-
     }
-
 
     public class CentralLogProvider : ILoggerProvider {
         private readonly ConcurrentDictionary<string, CentralLogger> loggers = new ConcurrentDictionary<string, CentralLogger>();
