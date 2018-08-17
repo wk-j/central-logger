@@ -60,7 +60,7 @@ namespace CentralLogger.Controllers {
             return App.ToList();
         }
         [HttpPost]
-        public ActionResult WriteLog([FromBody]GetLogInfos x) {
+        public ActionResult AddLog([FromBody]GetLogInfos x) {
             //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             var requestIp = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.ToString();
             if (requestIp.Equals("::1")) {
