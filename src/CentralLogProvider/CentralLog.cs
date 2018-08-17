@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace CentralLogProvider {
 
@@ -48,7 +49,11 @@ namespace CentralLogProvider {
             builder.Append(": ");
             builder.AppendLine(formatter(state, exception));
             Console.Write(builder.ToString());
+
+
             GetLog(logLevel, categoryName, states);
+
+
         }
 
         public async void GetLog(LogLevel logLevel, string categoryName, string states) {
@@ -57,16 +62,12 @@ namespace CentralLogProvider {
                 LogLevel = logLevel.ToString(),
                 Message = states,
                 Application = Path.GetFileName(Assembly.GetEntryAssembly().Location)
-
             };
-            var serializer = new DataContractJsonSerializer(typeof(GetLog));
-            using (var stream = new MemoryStream()) {
-                serializer.WriteObject(stream, thisGetLog);
-                var data = Encoding.UTF8.GetString(stream.ToArray());
-
-
-                CentralLogOptions centralLogOptions = new CentralLogOptions("http://localhost:5000");
-                var success = await centralLogOptions.WriteLogAsync(data);
+            using (var client = new HttpClient()) {
+                string data = JsonConvert.SerializeObject(thisGetLog);
+                try {
+                    var response = await client.PostAsync(options.serviceUrl, new StringContent(data, Encoding.UTF8, "application/json"));
+                } catch (HttpRequestException) { }
             }
         }
     }
