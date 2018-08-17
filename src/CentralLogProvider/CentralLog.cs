@@ -49,7 +49,11 @@ namespace CentralLogProvider {
             builder.Append(": ");
             builder.AppendLine(formatter(state, exception));
             Console.Write(builder.ToString());
+
+
             GetLog(logLevel, categoryName, states);
+
+
         }
 
         public async void GetLog(LogLevel logLevel, string categoryName, string states) {
@@ -61,7 +65,9 @@ namespace CentralLogProvider {
             };
             using (var client = new HttpClient()) {
                 string data = JsonConvert.SerializeObject(thisGetLog);
-                var response = await client.PostAsync(options.serviceUrl, new StringContent(data, Encoding.UTF8, "application/json"));
+                try {
+                    var response = await client.PostAsync(options.serviceUrl, new StringContent(data, Encoding.UTF8, "application/json"));
+                } catch (HttpRequestException) { }
             }
         }
     }
