@@ -11,11 +11,13 @@ using Microsoft.Extensions.Logging;
 
 namespace CentralLogProvider {
 
+
     public class CentralLogger : ILogger {
 
         private readonly CentralLogProvider provider;
         private readonly string categoryName;
         private readonly CentralLogOptions options;
+
 
         public CentralLogger(CentralLogProvider provider, string categoryName, CentralLogOptions options) {
             this.provider = provider;
@@ -35,7 +37,7 @@ namespace CentralLogProvider {
             if (!IsEnabled(logLevel)) {
                 return;
             }
-            var url = options.ServiceUrl;
+
             var states = formatter(state, exception);
             var builder = new StringBuilder();
             builder.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"));
@@ -63,10 +65,8 @@ namespace CentralLogProvider {
                 var data = Encoding.UTF8.GetString(stream.ToArray());
 
 
-                var url = "http://localhost:5000/api/Logger/writeLog";
-                using (var client = new HttpClient()) {
-                    var response = await client.PostAsync(url, new StringContent(data, Encoding.UTF8, "application/json"));
-                }
+                CentralLogOptions centralLogOptions = new CentralLogOptions("http://localhost:5000");
+                var success = await centralLogOptions.WriteLogAsync(data);
             }
         }
     }
