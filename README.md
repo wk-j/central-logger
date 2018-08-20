@@ -10,5 +10,9 @@
 [![](https://sonarcloud.io/api/project_badges/measure?project=central-logger&metric=ncloc)](https://sonarcloud.io/dashboard?id=central-logger)
 [![](https://sonarcloud.io/api/project_badges/measure?project=central-logger&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=central-logger)
 
+[![](https://sourcerer.io/fame/wk-j/bcircle-intern/central-logger/images/0)](https://sourcerer.io/fame/wk-j/bcircle-intern/central-logger/links/0)
+[![](https://sourcerer.io/fame/wk-j/bcircle-intern/central-logger/images/1)](https://sourcerer.io/fame/wk-j/bcircle-intern/central-logger/links/1)
+[![](https://sourcerer.io/fame/wk-j/bcircle-intern/central-logger/images/2)](https://sourcerer.io/fame/wk-j/bcircle-intern/central-logger/links/2)
+
 - [Client](client)
 - [Server](src/CentralLogger)
