@@ -41,7 +41,7 @@ namespace CentralLogProvider {
 
             var states = formatter(state, exception);
             var builder = new StringBuilder();
-            builder.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff zzz"));
+            builder.Append(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss.fff zzz"));
             builder.Append(" [");
             builder.Append(logLevel.ToString());
             builder.Append("] ");
@@ -49,11 +49,7 @@ namespace CentralLogProvider {
             builder.Append(": ");
             builder.AppendLine(formatter(state, exception));
             Console.Write(builder.ToString());
-
-
             GetLog(logLevel, categoryName, states);
-
-
         }
 
         public async void GetLog(LogLevel logLevel, string categoryName, string states) {

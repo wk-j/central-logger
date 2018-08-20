@@ -1,14 +1,13 @@
 import React from "react"
-import { Segment, Table, Icon, Header, Dropdown, Input, Dimmer, Loader } from "semantic-ui-react"
+import { Loader } from "semantic-ui-react"
 import styled from "styled-components"
-import DatePicker from "react-datepicker"
 import moment, { Moment } from "moment"
 import "react-datepicker/dist/react-datepicker.css"
 import "semantic-ui-css/semantic.min.css";
 import "/css/Body.css"
 import { getApiUrl } from "../share/Configuration"
 import { LoggerApi, Log } from "../share/LoggerApi"
-import { Logs } from "./Log"
+import { LogList } from "./LogList"
 
 const BodyDiv = styled.div`
   flex-direction: column;
@@ -33,7 +32,6 @@ type State = {
 
 export class Body extends React.Component<any, State> {
     private LoggerApi = new LoggerApi(getApiUrl());
-
     constructor(props) {
         super(props)
         this.state = {
@@ -66,12 +64,12 @@ export class Body extends React.Component<any, State> {
         this.initSearchByAll(this.state.startDay.toDate(), date.toDate(), this.state.selectApp, this.state.selectIp)
 
     }
-    private setIP = (_, { value }) => {
+    private setIP = (value) => {
         this.setState({ selectIp: value })
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value)
     }
 
-    public setApp = (_, { value }) => {
+    public setApp = (value) => {
         this.setState({ selectApp: value })
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), value, this.state.selectIp)
     }
@@ -107,76 +105,13 @@ export class Body extends React.Component<any, State> {
 
     public render() {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
-
+        let { startDay, endDay, logNow, loading, allApp, allIp, selectApp, selectIp } = this.state
         return (
             <BodyDiv>
                 <Loader content="Loading" active={this.state.loading} />
-                <Segment.Group>
-                    <Segment textAlign="right" inverted color="blue" >
-                        <Header as="h2" floated="left">
-                            <Icon name="eye" />
-                            <Header.Content>Central Logger</Header.Content>
-                        </Header>
-                        <Icon size="large" name="box" />
-                        Application : <Dropdown className="dropdown" placeholder="All Application" closeOnChange selection options={this.state.allApp} onChange={this.setApp} value={this.state.selectApp} />
-                        &nbsp;
-                        <Icon size="large" name="address book outline" />
-                        IP : <Dropdown placeholder="All IP" closeOnChange selection options={this.state.allIp} onChange={this.setIP} value={this.state.selectIp} />
-                    </Segment>
-                    <Segment textAlign="right" inverted color="blue" >
-                        <Icon size="large" name="calendar alternate outline" />
-                        <div className="ui input datepicker">
-                            <DatePicker
-                                withPortal
-                                dateFormat="DD/MM/YY HH:mm"
-                                selected={this.state.startDay}
-                                onChange={this.handleStartDateChange}
-                                isClearable={false}
-                                placeholderText="Select Date"
-                                className="inputdate"
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                timeCaption="time"
-                            />
-                            <Icon size="big" name="caret right" inverted />
-                            <DatePicker
-                                withPortal
-                                dateFormat="DD/MM/YY HH:mm"
-                                selected={this.state.endDay}
-                                onChange={this.handleEndDateChange}
-                                isClearable={false}
-                                placeholderText="Select Date"
-                                className="inputdate"
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                timeCaption="time"
-                                minDate={this.state.startDay}
-                            />
-                        </div>
-                    </Segment>
-                    <Segment>
-                        <div className="logbox">
-                            {this.state.logNow.length === 0 && !this.state.loading ?
-                                <Header as="h1" icon>
-                                    <br />
-                                    <Icon size="huge" name="frown outline" />
-                                    <br />ไม่มีบันทึก Log ในช่วงเวลา
-                          <Header.Subheader><br />{allday}</Header.Subheader>
-                                </Header>
-                                :
-                                <Table singleLine>
-
-                                    <Table.Body>
-                                        {this.state.logNow.map(x => <Logs logsNow={x} />)}
-                                    </Table.Body>
-                                </Table>
-
-                            }
-                        </div>
-                    </Segment>
-                </Segment.Group>
+                <LogList startDay={startDay} endDay={endDay} logNow={logNow} loading={loading} all={allday}
+                    onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
+                    allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp} />
             </BodyDiv >
         )
     }
