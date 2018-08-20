@@ -8,13 +8,6 @@ using Microsoft.Extensions.Options;
 
 namespace CentralLogProvider {
 
-    public class CentralLogOptions {
-        public string serviceUrl;
-        public CentralLogOptions(string serviceUrl) {
-            this.serviceUrl = serviceUrl;
-        }
-    }
-
     public class CentralLogProvider : ILoggerProvider {
         private readonly ConcurrentDictionary<string, CentralLogger> loggers = new ConcurrentDictionary<string, CentralLogger>();
 
