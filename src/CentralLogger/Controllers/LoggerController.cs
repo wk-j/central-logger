@@ -49,18 +49,18 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpGet]
-        public IEnumerable<string> getIP() {
+        public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet]
-        public IEnumerable<string> getApp() {
+        public IEnumerable<string> GetApp() {
             var App = db.LogInfos.Select(m => m.Application).Distinct();
             return App.ToList();
         }
         [HttpPost]
-        public ActionResult addLog([FromBody]GetLogInfos x) {
+        public ActionResult AddLog([FromBody]GetLogInfos x) {
             //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             var requestIp = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.ToString();
             if (requestIp.Equals("::1")) {
