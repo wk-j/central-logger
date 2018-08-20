@@ -7,6 +7,7 @@ namespace CentralLogProvider {
         public static ILoggingBuilder AddLog(this ILoggingBuilder builder, CentralLogOptions options) {
             builder.Services.AddSingleton<CentralLogOptions>(options);
             builder.Services.AddSingleton<ILoggerProvider, CentralLogProvider>();
+            builder.Services.AddSingleton<CentralLog>();
             return builder;
         }
     }

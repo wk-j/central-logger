@@ -49,13 +49,13 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpGet]
-        public IEnumerable<string> getIP() {
+        public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet]
-        public IEnumerable<string> getApp() {
+        public IEnumerable<string> GetApp() {
             var App = db.LogInfos.Select(m => m.Application).Distinct();
             return App.ToList();
         }
