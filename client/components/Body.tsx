@@ -1,5 +1,5 @@
 import React from "react"
-import { Segment, Table, Icon, Header, Dropdown, Input, Dimmer, Loader } from "semantic-ui-react"
+import { Loader } from "semantic-ui-react"
 import styled from "styled-components"
 import moment, { Moment } from "moment"
 import "react-datepicker/dist/react-datepicker.css"

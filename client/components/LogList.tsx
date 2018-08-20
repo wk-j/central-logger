@@ -1,10 +1,9 @@
-import React, { CSSProperties } from "react"
-import styled from "styled-components"
-import { Segment, Table, Icon, Header, Dropdown, Input, Dimmer, Loader } from "semantic-ui-react"
+import React from "react"
+import { Segment, Table, Icon, Header, Dropdown } from "semantic-ui-react"
 import { Logs } from "./Log"
 import DatePicker from "react-datepicker"
-import moment, { Moment } from "moment"
-import { LoggerApi, Log } from "../share/LoggerApi"
+import { Moment } from "moment"
+import { Log } from "../share/LoggerApi"
 
 type Props = {
     endDay: Moment
