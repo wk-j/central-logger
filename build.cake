@@ -11,6 +11,7 @@ var currentDir = new DirectoryInfo(".").FullName;
 var info = Parser.Parse($"src/{name}/{name}.csproj");
 
 Task("Build-Web").Does(() => {
+    PS.StartProcess("npm install", "client");
     PS.StartProcess("npm run build", "client");
 });
 
