@@ -26,7 +26,7 @@ namespace MyApp {
             services.AddLogging(configure => {
                 configure.ClearProviders();
 
-                configure.AddLog(new CentralLogOptions("http://localhost:5000/api/Logger/AddLog"));
+                configure.AddLog(new CentralLogOptions("http://localhost:5000"));
             });
             services.AddTransient<MyService>();
         }
