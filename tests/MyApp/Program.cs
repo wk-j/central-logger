@@ -6,23 +6,20 @@ using System.Threading.Tasks;
 
 namespace MyApp {
     class Program {
-        static async Task Main(string[] args) {
-            // Setup
+        static void Main(string[] args) {
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            // Get instance
             var myService = serviceProvider.GetService(typeof(MyService)) as MyService;
 
-            // Tests
-            await myService.FunA();
-            await myService.FunB();
+            myService.FunA();
+            myService.FunA();
 
             Console.ReadLine();
         }
         private static void ConfigureServices(IServiceCollection services) {
-            var centralLogOptions = new CentralLogOptions("http://localhost:5000/api/Logger/addLog");
+            var centralLogOptions = new CentralLogOptions("http://localhost:5000");
             services.AddLogging(configure => {
                 configure.ClearProviders();
                 configure.AddLog(centralLogOptions);
@@ -32,23 +29,15 @@ namespace MyApp {
     }
 
     class MyService {
-        private readonly CentralLog log;
-        public MyService(CentralLog log) {
-            this.log = log;
+        private ILogger<MyService> logger;
+        public MyService(ILogger<MyService> logger) {
+            this.logger = logger;
         }
 
-        public async Task FunA() {
-            await log.WriteAsync(LogLevel.Information, "call function A 1");
-            await log.WriteAsync(LogLevel.Information, "call function A 2");
-            await log.WriteAsync(LogLevel.Information, "call function A 3");
-            await log.WriteAsync(LogLevel.Error, "call function A failed");
-        }
-
-        public async Task FunB() {
-            await log.WriteAsync(LogLevel.Information, "call function B 1");
-            await log.WriteAsync(LogLevel.Information, "call function B 2");
-            await log.WriteAsync(LogLevel.Information, "call function B 3");
-            await log.WriteAsync(LogLevel.Error, "call function B failed");
+        public void FunA() {
+            logger.LogInformation("Log A");
+            logger.LogInformation("Log B");
+            logger.LogInformation("Log C");
         }
     }
 }

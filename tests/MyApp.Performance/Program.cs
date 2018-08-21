@@ -38,7 +38,7 @@ namespace MyApp.Performance {
         private Microsoft.Extensions.Logging.ILogger central;
         private Logger seri;
 
-        [Params(10, 100, 1000)]
+        [Params(10, 100)]
         public int Count { set; get; }
 
         [GlobalSetup]
@@ -71,23 +71,23 @@ namespace MyApp.Performance {
         }
 
         [Benchmark]
-        public void ConsoleLogger() {
+        public void Console() {
             for (var i = 0; i < Count; i++) {
-                console.LogError("Error A");
+                console.LogError("Console Logger A");
             }
         }
 
         [Benchmark]
-        public void CentralLogger() {
+        public void Seri() {
             for (var i = 0; i < Count; i++) {
-                central.LogError("Error A");
+                seri.Error("Seri Logger A");
             }
         }
 
         [Benchmark]
-        public void SeriLogger() {
+        public void Central() {
             for (var i = 0; i < Count; i++) {
-                seri.Error("Error A");
+                central.LogError("Central Logger A");
             }
         }
     }

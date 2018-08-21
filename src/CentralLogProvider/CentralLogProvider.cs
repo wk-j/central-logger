@@ -18,7 +18,7 @@ namespace CentralLogProvider {
         }
 
         public ILogger CreateLogger(string categoryName) {
-            return new CentralLogger(this, categoryName, options);
+            return new CentralLogger(categoryName, options);
         }
         public void Dispose() {
             loggers.Clear();
