@@ -1,7 +1,7 @@
 using System;
 
 namespace CentralLogProvider {
-    public class GetLog {
+    public class LogMessage {
         public string LogLevel { get; set; }
         public string Message { get; set; }
         public DateTime DateTime { set; get; } = DateTime.Now;

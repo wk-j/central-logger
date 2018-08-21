@@ -18,8 +18,6 @@ namespace CentralLogger.Controllers {
             db = _db;
         }
 
-
-        // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> ShowAll() {
             try {
@@ -28,8 +26,8 @@ namespace CentralLogger.Controllers {
             } catch (Exception ex) {
                 return StatusCode(500, ex);
             }
-
         }
+
         [HttpPost]
         public ActionResult<List<LogInfo>> Search(SearchLog search) {
             search.StartDate = search.StartDate.ToLocalTime();
@@ -43,8 +41,7 @@ namespace CentralLogger.Controllers {
                 data = data.Where(x => x.Application.Equals(search.Appnow));
             }
 
-            var result = data.OrderByDescending(x => x.DateTime).ToList();
-
+            var result = data.OrderByDescending(x => x.Id).ToList();
             return result;
         }
 
@@ -59,6 +56,7 @@ namespace CentralLogger.Controllers {
             var App = db.LogInfos.Select(m => m.Application).Distinct();
             return App.ToList();
         }
+
         [HttpPost]
         public ActionResult AddLog([FromBody]GetLogInfos x) {
             //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
@@ -81,12 +79,10 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
 
-        // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value) {
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
         public async void Delete(int id) {
             await db.Database.EnsureDeletedAsync();
