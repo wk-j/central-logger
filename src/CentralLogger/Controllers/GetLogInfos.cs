@@ -7,5 +7,6 @@ namespace CentralLogger.Controllers {
         public DateTime DateTime { set; get; }
         public string Application { set; get; }
         public string Ip { set; get; }
+        public string Catelog { set; get; }
     }
 }
