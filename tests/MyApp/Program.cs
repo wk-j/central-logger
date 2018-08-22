@@ -35,9 +35,11 @@ namespace MyApp {
         }
 
         public void FunA() {
-            logger.LogInformation("Log A");
-            logger.LogInformation("Log B");
-            logger.LogInformation("Log C");
+            for (var i = 0; i < 500; i++) {
+                logger.LogInformation("The Singapore Spirit lives in all of us. It carries us forward and unites us. Discover the ones who are shaping the future and learn how you can make a difference");
+                logger.LogInformation("News, email and search are just the beginning. Discover more every day. Find your yodel.");
+                logger.LogInformation("My way of playing cricket is defensive but whenever i connect the ball with sweet part of the bat then the ball cannot be stopped by any player sg is simply");
+            }
         }
     }
 }
