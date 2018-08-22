@@ -4,6 +4,8 @@ import { Logs } from "./Log"
 import DatePicker from "react-datepicker"
 import { Moment } from "moment"
 import { Log } from "../share/LoggerApi"
+import "/css/Body.css"
+import styled from "styled-components"
 
 type Props = {
     endDay: Moment
@@ -48,7 +50,7 @@ export class LogList extends React.Component<Props> {
                     </Header>
                     <Icon size="large" name="address book outline" />
                     IP : <Dropdown placeholder="All IP" closeOnChange selection options={this.props.allIp} onChange={this.setIp} value={this.props.selectIp} />
-
+                    &nbsp;
                     <Icon size="large" name="box" />
                     Application : <Dropdown className="dropdown" disabled={this.props.selectIp === ""} placeholder="All Application" closeOnChange selection options={this.props.allApp} onChange={this.setApp} value={this.props.selectApp} />
                 </Segment>
@@ -86,7 +88,7 @@ export class LogList extends React.Component<Props> {
                     </div>
                 </Segment>
                 <Segment>
-                    <div className="logbox">
+                    <div className="loglist">
                         {this.props.logNow.length === 0 && !this.props.loading ?
                             <Header as="h1" icon>
                                 <br />
@@ -96,12 +98,10 @@ export class LogList extends React.Component<Props> {
                             </Header>
                             :
                             <Table singleLine>
-
                                 <Table.Body>
                                     {this.props.logNow.map(x => <Logs logsNow={x} />)}
                                 </Table.Body>
                             </Table>
-
                         }
                     </div>
                 </Segment>

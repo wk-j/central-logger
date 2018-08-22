@@ -13,6 +13,7 @@ export type Log = {
     ip: string
     dateTime: Date
     application: string
+    category: string
 }
 
 export type ResultByDate = {
@@ -26,7 +27,6 @@ export class LoggerApi {
         return axios.get<string[]>(`${this.url}/api/Logger/getIP`)
     }
     public getApp(IP: string) {
-        console.log(IP)
         return axios.get<string[]>(`${this.url}/api/Logger/getApp/${IP}`)
     }
 

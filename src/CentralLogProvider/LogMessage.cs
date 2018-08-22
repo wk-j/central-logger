@@ -6,5 +6,6 @@ namespace CentralLogProvider {
         public string Message { get; set; }
         public DateTime DateTime { set; get; } = DateTime.Now;
         public string Application { get; set; }
+        public string Catelog { get; set; }
     }
 }

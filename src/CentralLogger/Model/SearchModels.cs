@@ -7,6 +7,7 @@ namespace CentralLogger.Model {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string IpNow { get; set; }
-        public string Appnow { get; set; }
+        public string AppNow { get; set; }
+        public string CatelogNow { get; set; }
     }
 }
