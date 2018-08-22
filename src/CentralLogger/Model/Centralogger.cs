@@ -14,10 +14,7 @@ namespace CentralLogger {
         public DateTime DateTime { set; get; } = DateTime.Now;
         public string Application { set; get; }
         public string Ip { set; get; }
-    }
-    public class AppIp {
-        public string Application { set; get; }
-        public string Ip { set; get; }
+        public string Category { set; get; }
     }
     public enum LogLevel {
         Trace, Debug, Information, Warning, Error, Critical

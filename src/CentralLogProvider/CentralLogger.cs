@@ -74,6 +74,7 @@ namespace CentralLogProvider {
                 Application = AppContext,
                 LogLevel = logLevel.ToString(),
                 Message = state.ToString(),
+                Catelog = categoryName
             });
         }
 
