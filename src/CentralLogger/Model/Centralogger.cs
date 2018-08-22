@@ -3,11 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace CentralLogger
-{
+namespace CentralLogger {
 
-    public class LogInfo
-    {
+    public class LogInfo {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
@@ -17,13 +15,15 @@ namespace CentralLogger
         public string Application { set; get; }
         public string Ip { set; get; }
     }
-    public enum LogLevel
-    {
+    public class AppIp {
+        public string Application { set; get; }
+        public string Ip { set; get; }
+    }
+    public enum LogLevel {
         Trace, Debug, Information, Warning, Error, Critical
     }
 
-    public class CentralLoggerContext : DbContext
-    {
+    public class CentralLoggerContext : DbContext {
         public DbSet<LogInfo> LogInfos { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
     }
