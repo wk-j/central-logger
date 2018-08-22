@@ -18,14 +18,16 @@ export type Log = {
 export type ResultByDate = {
     resultDate: Log[]
 }
+
 export class LoggerApi {
     constructor(private url: string) {
     }
     public getIp() {
         return axios.get<string[]>(`${this.url}/api/Logger/getIP`)
     }
-    public getApp() {
-        return axios.get<string[]>(`${this.url}/api/Logger/getApp`)
+    public getApp(IP: string) {
+        console.log(IP)
+        return axios.get<string[]>(`${this.url}/api/Logger/getApp/${IP}`)
     }
 
     public SearchLog(startDate: Date, endDate: Date, app: string, ip: string) {

@@ -20,7 +20,6 @@ type Props = {
     onAppChange: (options) => void
     selectApp: string
     selectIp: string
-
 }
 
 export class LogList extends React.Component<Props> {
@@ -47,11 +46,11 @@ export class LogList extends React.Component<Props> {
                         <Icon name="eye" />
                         <Header.Content>Central Logger</Header.Content>
                     </Header>
-                    <Icon size="large" name="box" />
-                    Application : <Dropdown className="dropdown" placeholder="All Application" closeOnChange selection options={this.props.allApp} onChange={this.setApp} value={this.props.selectApp} />
-                    &nbsp;
-                <Icon size="large" name="address book outline" />
+                    <Icon size="large" name="address book outline" />
                     IP : <Dropdown placeholder="All IP" closeOnChange selection options={this.props.allIp} onChange={this.setIp} value={this.props.selectIp} />
+
+                    <Icon size="large" name="box" />
+                    Application : <Dropdown className="dropdown" disabled={this.props.selectIp === ""} placeholder="All Application" closeOnChange selection options={this.props.allApp} onChange={this.setApp} value={this.props.selectApp} />
                 </Segment>
                 <Segment textAlign="right" inverted color="blue" >
                     <Icon size="large" name="calendar alternate outline" />

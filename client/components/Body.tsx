@@ -65,8 +65,11 @@ export class Body extends React.Component<any, State> {
 
     }
     private setIP = (value) => {
-        this.setState({ selectIp: value })
+        this.setState({ selectApp: null, selectIp: value, allApp: null })
+
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value)
+        console.log(this.state.selectApp + "-----" + this.state.selectIp)
+        this.initGetApp(value);
     }
 
     public setApp = (value) => {
@@ -74,12 +77,11 @@ export class Body extends React.Component<any, State> {
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), value, this.state.selectIp)
     }
     public componentDidMount() {
-        this.initGetApp()
+        // this.initGetApp(this.state.selectIp)
         this.initGetIp()
         let starts = this.state.startDay
         let end = this.state.endDay
         this.initSearchByAll(starts.toDate(), end.toDate(), this.state.selectApp, this.state.selectIp)
-        // this.state.logNow.map((log) => console.log("this" + log))
     }
     public initSearchByAll = (StartDate: Date, EndDate: Date, App: string, Ip: string) => {
         this.setState({ logNow: [], loading: true })
@@ -93,10 +95,11 @@ export class Body extends React.Component<any, State> {
             let options = response.data.map(x => ({ value: x, text: x }))
             options.unshift({ value: "", text: "All IP" });
             this.setState({ allIp: options })
+
         })
     }
-    public initGetApp = () => {
-        this.LoggerApi.getApp().then(response => {
+    public initGetApp = (ip: string) => {
+        this.LoggerApi.getApp(ip).then(response => {
             let options = response.data.map(x => ({ value: x, text: x }))
             options.unshift({ value: "", text: "All Application" });
             this.setState({ allApp: options })

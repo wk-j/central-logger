@@ -22,6 +22,8 @@ namespace CentralLogProvider {
         private readonly ConcurrentQueue<LogMessage> queue = new ConcurrentQueue<LogMessage>();
         private readonly Timer timer;
 
+        private string AppContext = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+
         public CentralLogger(string categoryName, CentralLogOptions options) {
             this.categoryName = categoryName;
             this.options = options;
@@ -63,13 +65,13 @@ namespace CentralLogProvider {
                 return;
             }
 
-            // var states = formatter(state, exception);
-            // var date = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss.fff zzz");
-            // var log = $"{date} [{logLevel.ToString()}] {categoryName}: {states}";
-
+            var states = formatter(state, exception);
+            var date = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss.fff zzz");
+            var log = $"{date} [{logLevel.ToString()}] {categoryName}: {states}";
+            Console.WriteLine(log);
             queue.Enqueue(new LogMessage {
                 DateTime = DateTime.Now,
-                Application = "ApplicationName",
+                Application = AppContext,
                 LogLevel = logLevel.ToString(),
                 Message = state.ToString(),
             });
