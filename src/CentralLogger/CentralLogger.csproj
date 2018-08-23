@@ -24,7 +24,6 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.3" />
         <PackageReference Include="Moment.js" Version="2.22.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.1.1" />
-        <PackageReference Include="react-datepicker.TypeScript.DefinitelyTyped" Version="0.0.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
     </ItemGroup>
 
