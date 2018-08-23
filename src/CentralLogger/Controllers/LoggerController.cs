@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using CentralLogger.Model;
 using System.Globalization;
+using Microsoft.AspNetCore.SignalR;
+using CentralLogger.Hubs;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -14,8 +16,10 @@ namespace CentralLogger.Controllers {
     public class LoggerController : ControllerBase {
 
         private readonly CentralLoggerContext db;
-        public LoggerController(CentralLoggerContext _db) {
+        private readonly IHubContext<LogHub> hubContext;
+        public LoggerController(CentralLoggerContext _db, IHubContext<LogHub> _hubContext) {
             db = _db;
+            hubContext = _hubContext;
         }
 
         [HttpGet]
@@ -61,7 +65,7 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpPost]
-        public ActionResult AddLog([FromBody]GetLogInfos x) {
+        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
             //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             var requestIp = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.ToString();
             if (requestIp.Equals("::1")) {
@@ -79,7 +83,16 @@ namespace CentralLogger.Controllers {
                 Ip = requestIp,
                 Category = x.Catelog
             });
+            var data = new LogInfo() {
+                LogLevel = x.LogLevel,
+                Message = x.Message,
+                DateTime = x.DateTime,
+                Application = x.Application,
+                Ip = requestIp,
+                Category = x.Catelog
+            };
             db.SaveChanges();
+            await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
 

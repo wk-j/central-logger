@@ -14,6 +14,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using CentralLogger.Hubs;
+
 
 
 namespace CentralLogger {
@@ -29,14 +31,12 @@ namespace CentralLogger {
 
             services.AddCors();
             services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(Configuration.GetValue("ConnectionString", "")));
-
+            services.AddSignalR();
+            services.AddSingleton<DbContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-
-
-
             });
 
         }
@@ -75,9 +75,9 @@ namespace CentralLogger {
 
             // app.UseHttpsRedirection();
             app.UseMvc();
-
-
-
+            app.UseSignalR(options => {
+                options.MapHub<LogHub>("/LogHub");
+            });
         }
     }
 }
