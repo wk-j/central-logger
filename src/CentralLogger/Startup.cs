@@ -15,10 +15,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using CentralLogger.Hubs;
-
-
-
-
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using CentralLogger.Services;
 
 namespace CentralLogger
 {
@@ -38,10 +37,8 @@ namespace CentralLogger
             services.AddCors();
             services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(Configuration.GetValue("ConnectionString", "")));
             services.AddSignalR();
-            services.AddSingleton<DbContext>();
+            services.AddScoped<UserService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            //services.AddSignalR();
 
             services.AddSwaggerGen(c =>
             {
@@ -50,10 +47,10 @@ namespace CentralLogger
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService)
         {
 
-            GenrateDatabase(db);
+            GenrateDatabase(db, userService);
             if (env.IsDevelopment())
             {
                 var asm = Assembly.GetEntryAssembly();
@@ -94,25 +91,21 @@ namespace CentralLogger
 
             // app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseSignalR(options => {
+            app.UseSignalR(options =>
+            {
                 options.MapHub<LogHub>("/LogHub");
             });
 
         }
 
-        private void GenrateDatabase(CentralLoggerContext db)
+
+        private void GenrateDatabase(CentralLoggerContext db, UserService userService)
         {
             var createData = db.Database.EnsureCreated();
             if (createData)
             {
-                db.Users.Add(new Users()
-                {
-                    User = "admin",
-                    Password = "admin"
-                });
-                db.SaveChanges();
+                userService.AddUser("admin", "admin");
             }
         }
-
     }
 }
