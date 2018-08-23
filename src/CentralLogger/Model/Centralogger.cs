@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace CentralLogger {
+namespace CentralLogger
+{
 
-    public class LogInfo {
+    public class LogInfo
+    {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
@@ -17,20 +19,30 @@ namespace CentralLogger {
         public string Category { set; get; }
     }
 
-    public class Users {
+    public class Users
+    {
         [Key]
         public int Id { set; get; }
         public string User { set; get; }
         public string Password { set; get; }
     }
 
-    public enum LogLevel {
+    public enum LogLevel
+    {
         Trace, Debug, Information, Warning, Error, Critical
     }
 
-    public class CentralLoggerContext : DbContext {
+    public class CentralLoggerContext : DbContext
+    {
         public DbSet<LogInfo> LogInfos { get; set; }
         public DbSet<Users> Users { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Users>()
+                .HasAlternateKey(x => x.User)
+                .HasName("AlternateKey_User");
+        }
     }
 }

@@ -10,38 +10,48 @@ using System.Globalization;
 using Microsoft.AspNetCore.SignalR;
 using CentralLogger.Hubs;
 
-namespace CentralLogger.Controllers {
+namespace CentralLogger.Controllers
+{
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoggerController : ControllerBase {
+    public class LoggerController : ControllerBase
+    {
 
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
-        public LoggerController(CentralLoggerContext _db, IHubContext<LogHub> _hubContext) {
-            db = _db;
-            hubContext = _hubContext;
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext)
+        {
+            this.db = db;
+            this.hubContext = hubContext;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> ShowAll() {
-            try {
+        public ActionResult<IEnumerable<string>> ShowAll()
+        {
+            try
+            {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
                 return Ok(Logger);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, ex);
             }
         }
 
         [HttpPost]
-        public ActionResult<List<LogInfo>> Search(SearchLog search) {
+        public ActionResult<List<LogInfo>> Search(SearchLog search)
+        {
             search.StartDate = search.StartDate.ToLocalTime();
             search.EndDate = search.EndDate.ToLocalTime();
             var data = db.LogInfos.Where(x => x.DateTime >= search.StartDate && x.DateTime <= search.EndDate);
 
-            if (!string.IsNullOrEmpty(search.IpNow)) {
+            if (!string.IsNullOrEmpty(search.IpNow))
+            {
                 data = data.Where(x => x.Ip.Equals(search.IpNow));
             }
-            if (!string.IsNullOrEmpty(search.AppNow)) {
+            if (!string.IsNullOrEmpty(search.AppNow))
+            {
                 data = data.Where(x => x.Application.Equals(search.AppNow));
             }
 
@@ -50,14 +60,17 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpGet]
-        public IEnumerable<string> GetIP() {
+        public IEnumerable<string> GetIP()
+        {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet("{ip}")]
-        public IEnumerable<string> GetApp(string ip) {
-            if (!string.IsNullOrEmpty(ip)) {
+        public IEnumerable<string> GetApp(string ip)
+        {
+            if (!string.IsNullOrEmpty(ip))
+            {
                 var App = db.LogInfos.Where(x => x.Ip.Equals(ip)).Select(m => m.Application).Distinct();
                 return App.ToList();
             }
@@ -65,17 +78,20 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
+        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x)
+        {
             //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             var requestIp = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (requestIp.Equals("::1")) {
+            if (requestIp.Equals("::1"))
+            {
                 requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
             }
             // var requestIp = System.Net.Dns.GetHostName();
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
-            db.LogInfos.Add(new LogInfo() {
+            db.LogInfos.Add(new LogInfo()
+            {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -83,7 +99,8 @@ namespace CentralLogger.Controllers {
                 Ip = requestIp,
                 Category = x.Catelog
             });
-            var data = new LogInfo() {
+            var data = new LogInfo()
+            {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -97,11 +114,13 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) {
+        public void Put(int id, [FromBody] string value)
+        {
         }
 
         [HttpDelete("{id}")]
-        public async void Delete(int id) {
+        public async void Delete(int id)
+        {
             await db.Database.EnsureDeletedAsync();
         }
     }
