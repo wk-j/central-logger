@@ -99,7 +99,7 @@ export class LogList extends React.Component<Props> {
                             :
                             <Table singleLine>
                                 <Table.Body>
-                                    {this.props.logNow.map(x => <Logs logsNow={x} />)}
+                                    {this.props.logNow.map((x, key) => <Logs logsNow={x} key={key} />)}
                                 </Table.Body>
                             </Table>
                         }
