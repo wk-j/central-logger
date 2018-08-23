@@ -8,6 +8,7 @@ import "/css/Body.css"
 import { getApiUrl } from "../share/Configuration"
 import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
+import { HubConnectionBuilder } from "@aspnet/signalr";
 
 const BodyDiv = styled.div`
   flex-direction: column;
@@ -16,6 +17,7 @@ const BodyDiv = styled.div`
   width:100%;
   height: 90%;
   padding: 1.5em;
+  position: relative;
 `
 
 type State = {
@@ -80,6 +82,7 @@ export class Body extends React.Component<any, State> {
         let starts = this.state.startDay
         let end = this.state.endDay
         this.initSearchByAll(starts.toDate(), end.toDate(), this.state.selectApp, this.state.selectIp)
+        this.handleSignalR();
     }
     public initSearchByAll = (startDate: Date, endDate: Date, app: string, ip: string) => {
         this.setState({ logNow: [], loading: true })
@@ -102,6 +105,25 @@ export class Body extends React.Component<any, State> {
             options.unshift({ value: "", text: "All Application" });
             this.setState({ allApp: options })
         })
+    }
+
+    public handleSignalR() {
+        const connection = new HubConnectionBuilder()
+            .withUrl("http://localhost:5000/LogHub")
+            .build();
+
+        connection.onclose(() => {
+            alert("SignalR เกิดปัญหาการเชื่อมต่อ");
+        });
+
+        connection.on("LogReceived", (log: Log) => {
+            let logNow = this.state.logNow;
+            logNow.unshift(log);
+            this.setState({ logNow, loading: false })
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
     }
 
     public render() {
