@@ -18,16 +18,22 @@ using CentralLogger.Hubs;
 
 
 
-namespace CentralLogger {
-    public class Startup {
-        public Startup(IConfiguration configuration) {
+
+
+namespace CentralLogger
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services) {
+        public void ConfigureServices(IServiceCollection services)
+        {
 
             services.AddCors();
             services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(Configuration.GetValue("ConnectionString", "")));
@@ -35,16 +41,21 @@ namespace CentralLogger {
             services.AddSingleton<DbContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSwaggerGen(c => {
+            //services.AddSignalR();
+
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db)
+        {
 
-            db.Database.EnsureCreated();
-            if (env.IsDevelopment()) {
+            GenrateDatabase(db);
+            if (env.IsDevelopment())
+            {
                 var asm = Assembly.GetEntryAssembly();
                 var asmName = asm.GetName().Name;
                 var defaultOptions = new DefaultFilesOptions();
@@ -54,13 +65,16 @@ namespace CentralLogger {
                   new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
                 app
                   .UseDefaultFiles(defaultOptions)
-                  .UseStaticFiles(new StaticFileOptions {
+                  .UseStaticFiles(new StaticFileOptions
+                  {
                       FileProvider =
                      new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
                   });
 
                 app.UseDeveloperExceptionPage();
-            } else {
+            }
+            else
+            {
                 app.UseHsts();
             }
 
@@ -68,16 +82,37 @@ namespace CentralLogger {
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            /* app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });*/
 
             // app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSignalR(options => {
                 options.MapHub<LogHub>("/LogHub");
             });
+
         }
+
+        private void GenrateDatabase(CentralLoggerContext db)
+        {
+            var createData = db.Database.EnsureCreated();
+            if (createData)
+            {
+                db.Users.Add(new Users()
+                {
+                    User = "admin",
+                    Password = "admin"
+                });
+                db.SaveChanges();
+            }
+        }
+
     }
 }
