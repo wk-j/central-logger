@@ -9,8 +9,7 @@ namespace CentralLogger.Services
     {
         private readonly byte[] salt;
         private readonly CentralLoggerContext db;
-        //private readonly HttpContext context;
-        //private HttpContext context;
+
         public UserService(CentralLoggerContext db)
         {
             this.db = db;

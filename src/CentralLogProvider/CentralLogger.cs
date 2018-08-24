@@ -89,7 +89,7 @@ namespace CentralLogProvider
                 Application = AppContext,
                 LogLevel = logLevel.ToString(),
                 Message = state.ToString(),
-                IP = IpContext,
+                Ip = IpContext,
                 Catelog = categoryName
             });
         }
