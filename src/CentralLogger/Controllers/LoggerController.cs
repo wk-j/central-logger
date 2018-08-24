@@ -80,13 +80,7 @@ namespace CentralLogger.Controllers
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody]GetLogInfos x)
         {
-            //var requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
-            var requestIp = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (requestIp.Equals("::1"))
-            {
-                requestIp = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
-            }
-            // var requestIp = System.Net.Dns.GetHostName();
+          
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
@@ -96,7 +90,7 @@ namespace CentralLogger.Controllers
                 Message = x.Message,
                 DateTime = x.DateTime,
                 Application = x.Application,
-                Ip = requestIp,
+                Ip = x.Ip,
                 Category = x.Catelog
             });
             var data = new LogInfo()
@@ -105,7 +99,7 @@ namespace CentralLogger.Controllers
                 Message = x.Message,
                 DateTime = x.DateTime,
                 Application = x.Application,
-                Ip = requestIp,
+                Ip = x.Ip,
                 Category = x.Catelog
             };
             db.SaveChanges();

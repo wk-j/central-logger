@@ -14,8 +14,6 @@ namespace CentralLogger.Services
         public UserService(CentralLoggerContext db)
         {
             this.db = db;
-            //this.context = httpContextAcessor.HttpContext;
-            //this.context = context;
             this.salt = System.Text.Encoding.UTF8.GetBytes("4DI0P3K6");
         }
 
