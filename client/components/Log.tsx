@@ -4,6 +4,7 @@ import { Table, Icon, SemanticCOLORS, Popup } from "semantic-ui-react"
 import moment from "moment"
 import "moment/locale/th"
 import "/css/Body.css"
+import { HubConnectionBuilder } from "@aspnet/signalr";
 
 type LogProps = {
     logsNow: Log
@@ -40,11 +41,11 @@ export class Logs extends React.Component<LogProps, State> {
                 break
         }
         return (
-            <Table.Row>
-                <Table.Cell width={1}>{moment(this.props.logsNow.dateTime).format("Do MMMM YYYY, h:mm:ss")}</Table.Cell>
+            <Table.Row >
+                <Table.Cell width={1} >{moment(this.props.logsNow.dateTime).format("L, h:mm:ss")}</Table.Cell>
                 <Table.Cell width={1}>{this.props.logsNow.category}</Table.Cell>
                 <Table.Cell width={1} textAlign="center"><Popup trigger={<Icon name="dot circle" color={color} />} content={LogLevel[this.props.logsNow.logLevel]} /></Table.Cell>
-                <Table.Cell width={10}>{this.props.logsNow.message}</Table.Cell>
+                <Table.Cell width={16}>{this.props.logsNow.message}</Table.Cell>
             </Table.Row>
         )
     }

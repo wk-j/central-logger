@@ -9,7 +9,7 @@ const FooterDiv = styled.div`
     color: white;
     bottom: 0;
     text-align: center;
-    position: relative;
+    position: fixed;
 `
 
 export class Footer extends React.Component<{ style?: CSSProperties }> {

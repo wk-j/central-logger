@@ -1,5 +1,5 @@
 import React from "react"
-import { Loader } from "semantic-ui-react"
+import { Loader, Table } from "semantic-ui-react"
 import styled from "styled-components"
 import moment, { Moment } from "moment"
 import "react-datepicker/dist/react-datepicker.css"
@@ -23,32 +23,42 @@ const BodyDiv = styled.div`
 type State = {
     endDay: Moment
     startDay: Moment
-    logNow: Log[]
     noLog: boolean
     allIp: any[]
     allApp: any[]
     selectIp: string
     selectApp: string
     loading: boolean
+    items: Log[]
+    isLoading: boolean
+    cursor: 0
+    error: string
 }
 
 export class Body extends React.Component<any, State> {
     private LoggerApi = new LoggerApi(getApiUrl());
+    private LogDate: Log[];
+    private LogNow: Log[]
+
     constructor(props) {
         super(props)
         this.state = {
             endDay: moment().endOf("day"),
             startDay: moment().startOf("day"),
-            logNow: [],
             noLog: true,
             allIp: [],
             allApp: [],
             selectIp: "",
             selectApp: "",
-            loading: true
+            loading: true,
+            items: null,
+            isLoading: true,
+            cursor: 0,
+            error: ""
         }
+        this.LogDate = []
+        this.LogNow = []
     }
-
     public handleStartDateChange = (date) => {
         if (date > this.state.endDay) {
             this.setState({
@@ -68,7 +78,6 @@ export class Body extends React.Component<any, State> {
     }
     private setIP = (value) => {
         this.setState({ selectApp: null, selectIp: value, allApp: null }, () => this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value))
-        console.log("App" + this.state.selectApp + "Ip" + this.state.selectIp)
         this.initGetApp(value);
     }
 
@@ -85,10 +94,14 @@ export class Body extends React.Component<any, State> {
         this.handleSignalR();
     }
     public initSearchByAll = (startDate: Date, endDate: Date, app: string, ip: string) => {
-        this.setState({ logNow: [], loading: true })
+        this.LogDate = []
+        this.LogNow = []
+        this.setState({ loading: true })
         this.LoggerApi.SearchLog(startDate, endDate, app, ip).then(response => {
-            let LogDate = response.data
-            this.setState({ logNow: LogDate, loading: false })
+            this.LogDate = response.data
+            let LogDates = this.LogDate.splice(0, 100)
+            this.LogNow = LogDates
+            this.setState({ loading: false })
         }).catch(() => this.setState({ loading: false }))
     }
     public initGetIp = () => {
@@ -117,9 +130,12 @@ export class Body extends React.Component<any, State> {
         });
 
         connection.on("LogReceived", (log: Log) => {
-            let logNow = this.state.logNow;
+
+            let logNow = this.LogDate;
             logNow.unshift(log);
-            this.setState({ logNow, loading: false })
+            let LogDates = logNow.splice(0, 100)
+            this.LogNow = LogDates
+            this.setState({ loading: false })
         });
 
         connection.start().catch(err => console.error(err.toString()));
@@ -128,13 +144,14 @@ export class Body extends React.Component<any, State> {
 
     public render() {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
-        let { startDay, endDay, logNow, loading, allApp, allIp, selectApp, selectIp } = this.state
+        let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp } = this.state
         return (
             <BodyDiv>
                 <Loader content="Loading" active={this.state.loading} />
-                <LogList startDay={startDay} endDay={endDay} logNow={logNow} loading={loading} all={allday}
+                <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
                     onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
-                    allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp} />
+                    allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
+                    allData={this.LogDate} />
             </BodyDiv >
         )
     }

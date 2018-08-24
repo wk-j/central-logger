@@ -14,7 +14,6 @@ body {
   width: 100%;
   height: 60vh;
   max-height: 55vh;
-  overflow: auto;
 }
 
 .dropdown {
@@ -43,7 +42,11 @@ body {
   padding-right: 0 !important;
 }
 
-.nologbox {
+.table {
+  display: table-row !important;
+  width: 100% !important;
+}
+
+.loglist>div {
   width: 100%;
-  height: 70%;
 }
