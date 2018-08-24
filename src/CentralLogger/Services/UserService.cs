@@ -9,13 +9,10 @@ namespace CentralLogger.Services
     {
         private readonly byte[] salt;
         private readonly CentralLoggerContext db;
-        //private readonly HttpContext context;
-        //private HttpContext context;
+
         public UserService(CentralLoggerContext db)
         {
             this.db = db;
-            //this.context = httpContextAcessor.HttpContext;
-            //this.context = context;
             this.salt = System.Text.Encoding.UTF8.GetBytes("4DI0P3K6");
         }
 
