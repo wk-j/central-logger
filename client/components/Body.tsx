@@ -9,6 +9,7 @@ import { getApiUrl } from "../share/Configuration"
 import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
 import { HubConnectionBuilder } from "@aspnet/signalr";
+import { debounce } from "throttle-debounce";
 
 const BodyDiv = styled.div`
   flex-direction: column;
@@ -130,17 +131,17 @@ export class Body extends React.Component<any, State> {
         });
 
         connection.on("LogReceived", (log: Log) => {
-
-            let logNow = this.LogDate;
-            logNow.unshift(log);
-            let LogDates = logNow.splice(0, 100)
-            this.LogNow = LogDates
-            this.setState({ loading: false })
+            this.LogDate.unshift(log)
+            this.updateLogNow();
         });
 
         connection.start().catch(err => console.error(err.toString()));
-
     }
+
+    private updateLogNow = debounce(250, () => {
+        this.LogNow = this.LogDate.splice(0, 100)
+        this.forceUpdate();
+    })
 
     public render() {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
