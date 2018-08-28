@@ -24,6 +24,12 @@ Task("Pack").Does(() => {
     });
 });
 
+Task("Publish").Does(() => {
+    DotNetCorePublish($"src/{name}", new DotNetCorePublishSettings {
+        OutputDirectory = "publish/dist"
+    });
+});
+
 Task("Publish-NuGet")
     .IsDependentOn("Pack")
     .Does(() => {

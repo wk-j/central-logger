@@ -18,94 +18,84 @@ using CentralLogger.Hubs;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CentralLogger.Services;
+using System.Threading;
 
-namespace CentralLogger
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
+namespace CentralLogger {
+    public class Startup {
+        public Startup(IConfiguration configuration, IHostingEnvironment env) {
+            var builder = new ConfigurationBuilder()
+              .SetBasePath(env.ContentRootPath)
+              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+              .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
+
+            var conn = Configuration.GetValue("ConnectionString", "");
+            Console.WriteLine($"ConnectionString = {conn}");
 
             services.AddCors();
-            services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(Configuration.GetValue("ConnectionString", "")));
+            services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(conn));
             services.AddSignalR();
             services.AddScoped<UserService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSwaggerGen(c =>
-            {
+            services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-
         }
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService)
-        {
 
-            GenrateDatabase(db, userService);
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService) {
+
+            if (env.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
+            } else {
+                app.UseHsts();
+
                 var asm = Assembly.GetEntryAssembly();
                 var asmName = asm.GetName().Name;
                 var defaultOptions = new DefaultFilesOptions();
                 defaultOptions.DefaultFileNames.Clear();
                 defaultOptions.DefaultFileNames.Add("index.html");
-                defaultOptions.FileProvider =
-                  new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
+                defaultOptions.FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
+
                 app
                   .UseDefaultFiles(defaultOptions)
-                  .UseStaticFiles(new StaticFileOptions
-                  {
-                      FileProvider =
-                     new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
+                  .UseStaticFiles(new StaticFileOptions {
+                      FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
                   });
-
-                app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
-
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
-            {
+            app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            /* app.UseSignalR(routes =>
-            {
-                routes.MapHub<ChatHub>("/chatHub");
-            });*/
-
-            // app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseSignalR(options =>
-            {
+            app.UseSignalR(options => {
                 options.MapHub<LogHub>("/LogHub");
             });
 
+            if (env.IsProduction()) {
+                Thread.Sleep(5000);
+                GenrateDatabase(db, userService);
+            } else {
+                GenrateDatabase(db, userService);
+            }
         }
 
-
-        private void GenrateDatabase(CentralLoggerContext db, UserService userService)
-        {
+        private void GenrateDatabase(CentralLoggerContext db, UserService userService) {
+            Console.WriteLine("Create DB");
             var createData = db.Database.EnsureCreated();
-            if (createData)
-            {
+            if (createData) {
                 userService.AddUser("admin", "admin");
             }
+            Console.WriteLine("Create success");
         }
     }
 }
