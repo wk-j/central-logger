@@ -5,5 +5,13 @@ services:
     environment:
       POSTGRES_PASSWORD: abcABC123
       POSTGRES_USER: postgres
+
+  logger:
+    image: central-logger:latest
+    build:
+      context: .
+      dockerfile: src/CentralLogger/Dockerfile
+    depends_on:
+      - "postgres"
     ports:
-      - "5432:5432"
+      - "8888:80"
