@@ -15,7 +15,8 @@
     "semantic-ui-css": "^2.3.3",
     "semantic-ui-react": "^0.82.2",
     "styled-components": "^3.4.2",
-    "tslib": "^1.9.3"
+    "tslib": "^1.9.3",
+    "prop-types": "^15.5.7"
   },
   "devDependencies": {
     "@aspnet/signalr": "^1.0.3",
