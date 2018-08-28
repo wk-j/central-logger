@@ -73,10 +73,9 @@ export class LogList extends React.Component<Props, State> {
     }
     public componentDidUpdate(prevProps, prevState) {
         if (prevProps.logNow !== this.props.logNow) {
-            this.setState({ items: [] })
-            let items = this.state.items
+            this.setState({ items: [], hasMore: true })
+            let items = this.props.logNow
             // items = [...items, ...this.props.logNow]
-            items = this.props.logNow
             this.setState({ items });
         }
     }
