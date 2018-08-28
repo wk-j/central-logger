@@ -50,19 +50,22 @@ namespace CentralLogger {
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService) {
 
-            if (env.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
-            } else {
-                app.UseHsts();
+            var defaultOptions = new DefaultFilesOptions();
+            defaultOptions.DefaultFileNames.Clear();
+            defaultOptions.DefaultFileNames.Add("index.html");
 
+            if (env.IsDevelopment()) {
+                app
+                  .UseDeveloperExceptionPage()
+                  .UseDefaultFiles(defaultOptions)
+                  .UseStaticFiles();
+            } else {
                 var asm = Assembly.GetEntryAssembly();
                 var asmName = asm.GetName().Name;
-                var defaultOptions = new DefaultFilesOptions();
-                defaultOptions.DefaultFileNames.Clear();
-                defaultOptions.DefaultFileNames.Add("index.html");
                 defaultOptions.FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
 
                 app
+                  .UseHsts()
                   .UseDefaultFiles(defaultOptions)
                   .UseStaticFiles(new StaticFileOptions {
                       FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
