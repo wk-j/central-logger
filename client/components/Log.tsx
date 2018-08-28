@@ -4,7 +4,7 @@ import { Table, Icon, SemanticCOLORS, Popup } from "semantic-ui-react"
 import moment from "moment"
 import "moment/locale/th"
 import "/css/Body.css"
-import { HubConnectionBuilder } from "@aspnet/signalr";
+
 
 type LogProps = {
     logsNow: Log

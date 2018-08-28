@@ -1,6 +1,7 @@
 import React from "react"
 import { Menu, Icon } from "semantic-ui-react";
 
+
 type State = {}
 
 export class Header extends React.Component<State> {
