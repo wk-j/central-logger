@@ -1,6 +1,7 @@
 import React, { CSSProperties } from "react"
 import styled from "styled-components"
 
+
 const FooterDiv = styled.div`
     padding: 0px;
     display: block;

@@ -10,8 +10,7 @@ import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
 import { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
-import PropTypes from "prop-types";
-import { ForceGraph, ForceGraphNode, ForceGraphLink } from "react-vis-force/dist/react-vis-force.min.js";
+
 
 const BodyDiv = styled.div`
   flex-direction: column;
@@ -124,6 +123,7 @@ export class Body extends React.Component<any, State> {
     }
 
     public handleSignalR() {
+
         const connection = new HubConnectionBuilder()
             .withUrl("http://localhost:5000/LogHub")
             .build();
