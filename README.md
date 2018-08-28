@@ -16,3 +16,9 @@
 
 - [Client](client)
 - [Server](src/CentralLogger)
+
+## Dependencies
+
+- npm
+- [cake](https://cakebuild.net)
+- [dotnet](https://www.microsoft.com/net/download)
