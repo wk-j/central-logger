@@ -22,6 +22,9 @@ type Props = {
     selectApp: string
     selectIp: string
     allData: Log[]
+    onMore: () => void
+    logLenght: number
+    new: boolean
 }
 type State = {
     items: Log[]
@@ -30,7 +33,7 @@ type State = {
 
 export class LogList extends React.Component<Props, State> {
     private limit: number;
-
+    private log: Log[]
     constructor(props) {
         super(props)
         this.state = {
@@ -40,22 +43,18 @@ export class LogList extends React.Component<Props, State> {
         this.limit = 0;
     }
     public fetchMoreData = () => {
-        if (this.state.items.length >= this.props.allData.length) {
+
+        if (this.props.logLenght <= this.state.items.length) {
+
             this.setState({ hasMore: false });
             return;
         }
         // a fake async api call like which sends
         // 20 more records in .5 secs
-        let limit;
-        let start;
-        if (limit <= this.props.allData.length && limit !== 0) {
-            limit = this.limit
-            start = this.limit + 100;
-            this.limit = start;
-        }
+        this.props.onMore()
         setTimeout(() => {
             this.setState({
-                items: this.state.items.concat(this.props.allData.splice(start, 100))
+                items: this.state.items.concat(this.props.allData)
             });
         }, 500);
     };
@@ -72,11 +71,18 @@ export class LogList extends React.Component<Props, State> {
         this.props.onAppChange(value)
     }
     public componentDidUpdate(prevProps, prevState) {
-        if (prevProps.logNow !== this.props.logNow) {
+        if (prevProps.allData !== this.props.allData) {
             this.setState({ items: [], hasMore: true })
-            let items = this.props.logNow
+            // let items = this.props.allData
             // items = [...items, ...this.props.logNow]
-            this.setState({ items });
+            // this.setState({ items });
+            if (!this.props.new) {
+                this.setState({
+                    items: this.state.items.concat(this.props.allData)
+                });
+            } else {
+                this.setState({ items: this.props.allData })
+            }
         }
     }
     public render() {
@@ -128,7 +134,7 @@ export class LogList extends React.Component<Props, State> {
                 </Segment>
                 <Segment textAlign="right">
                     <div className="loglist" style={{ width: "100%" }}>
-                        {this.props.logNow.length === 0 && !this.props.loading ?
+                        {this.props.allData.length === 0 && !this.props.loading ?
                             <Header as="h1" icon>
                                 <br />
                                 <Icon size="huge" name="frown outline" />
