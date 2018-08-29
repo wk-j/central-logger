@@ -115,11 +115,9 @@ export class Body extends React.Component<any, State> {
         this.LogNow = []
         this.setState({ loading: true })
         this.LoggerApi.SearchLog(startDate, endDate, app, ip, this.Limit).then(response => {
-            console.log(response.data)
             this.LogDate = response.data.logInfo
             this.setState({ loading: false, logDate: response.data.logInfo, logLenght: response.data.dataLength })
             this.Limit = this.Limit + 1
-            console.log(this.Limit)
         }).catch(() => this.setState({ loading: false }))
     }
     public initGetIp = () => {
@@ -156,7 +154,6 @@ export class Body extends React.Component<any, State> {
     }
 
     private updateLogNow = debounce(250, () => {
-        console.log("update")
         if (this.LogDate.length >= 150) {
             this.Limit = 1
             this.LogDate = []
