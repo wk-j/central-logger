@@ -37,15 +37,13 @@ export class LogList extends React.Component<Props, State> {
     constructor(props) {
         super(props)
         this.state = {
-            items: this.props.logNow,
+            items: this.props.allData,
             hasMore: true,
         }
         this.limit = 0;
     }
     public fetchMoreData = () => {
-
         if (this.props.logLenght <= this.state.items.length) {
-
             this.setState({ hasMore: false });
             return;
         }
@@ -134,7 +132,7 @@ export class LogList extends React.Component<Props, State> {
                 </Segment>
                 <Segment textAlign="right">
                     <div className="loglist" style={{ width: "100%" }}>
-                        {this.props.allData.length === 0 && !this.props.loading ?
+                        {this.props.logLenght === 0 && !this.props.loading ?
                             <Header as="h1" icon>
                                 <br />
                                 <Icon size="huge" name="frown outline" />

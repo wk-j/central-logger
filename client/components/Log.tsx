@@ -5,7 +5,6 @@ import moment from "moment"
 import "moment/locale/th"
 import "/css/Body.css"
 
-
 type LogProps = {
     logsNow: Log
 }

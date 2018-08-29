@@ -36,6 +36,7 @@ type State = {
     error: string
     logLenght: number
     newSearch: boolean
+    logDate: Log[]
 }
 
 export class Body extends React.Component<any, State> {
@@ -60,14 +61,15 @@ export class Body extends React.Component<any, State> {
             cursor: 0,
             error: "",
             logLenght: 0,
-            newSearch: false
+            newSearch: false,
+            logDate: []
         }
         this.LogDate = []
         this.LogNow = []
-        this.Limit = 0;
+        this.Limit = 1
     }
     public handleStartDateChange = (date) => {
-        this.Limit = 0
+        this.Limit = 1
         if (date > this.state.endDay) {
             this.setState({
                 startDay: date,
@@ -80,13 +82,13 @@ export class Body extends React.Component<any, State> {
     }
 
     public handleEndDateChange = (date) => {
-        this.Limit = 0
+        this.Limit = 1
         this.setState({ endDay: date, newSearch: true });
         this.initSearchByAll(this.state.startDay.toDate(), date.toDate(), this.state.selectApp, this.state.selectIp)
 
     }
     private setIP = (value) => {
-        this.Limit = 0
+        this.Limit = 1
         this.setState({ selectApp: null, selectIp: value, allApp: null, newSearch: true }, () => this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value))
         this.initGetApp(value);
     }
@@ -96,7 +98,7 @@ export class Body extends React.Component<any, State> {
     }
 
     public setApp = (value) => {
-        this.Limit = 0
+        this.Limit = 1
         this.setState({ selectApp: value, newSearch: true })
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), value, this.state.selectIp)
     }
@@ -112,22 +114,12 @@ export class Body extends React.Component<any, State> {
         this.LogDate = []
         this.LogNow = []
         this.setState({ loading: true })
-        this.LoggerApi.SearchLog(startDate, endDate, app, ip).then(response => {
-            let start
-            let log
-            if (this.Limit === 0) {
-                start = this.Limit
-                log = response.data
-                this.LogDate = log.splice(start, 50)
-                this.setState({ loading: false, logLenght: response.data.length })
-                this.Limit = this.Limit + 50
-            } else if (this.Limit <= response.data.length) {
-                start = this.Limit
-                log = response.data.splice(start, 50)
-                this.LogDate = log
-                this.setState({ loading: false, logLenght: response.data.length })
-                this.Limit = this.Limit + 50
-            }
+        this.LoggerApi.SearchLog(startDate, endDate, app, ip, this.Limit).then(response => {
+            console.log(response.data)
+            this.LogDate = response.data.logInfo
+            this.setState({ loading: false, logDate: response.data.logInfo, logLenght: response.data.dataLength })
+            this.Limit = this.Limit + 1
+            console.log(this.Limit)
         }).catch(() => this.setState({ loading: false }))
     }
     public initGetIp = () => {
@@ -135,7 +127,6 @@ export class Body extends React.Component<any, State> {
             let options = response.data.map(x => ({ value: x, text: x }))
             options.unshift({ value: "", text: "All IP" });
             this.setState({ allIp: options })
-
         })
     }
     public initGetApp = (ip: string) => {
@@ -165,8 +156,15 @@ export class Body extends React.Component<any, State> {
     }
 
     private updateLogNow = debounce(250, () => {
-        this.LogNow = this.LogDate.splice(0, 100)
-        this.forceUpdate();
+        console.log("update")
+        if (this.LogDate.length >= 150) {
+            this.Limit = 1
+            this.LogDate = []
+            this.setState({ logDate: [], newSearch: true })
+            this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
+        } else {
+            this.setState({ logDate: this.LogDate })
+        }
     })
 
     public render() {
@@ -178,7 +176,7 @@ export class Body extends React.Component<any, State> {
                 <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
                     onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
                     allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
-                    allData={this.LogDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
+                    allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
             </BodyDiv >
         )
     }
