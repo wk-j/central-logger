@@ -8,7 +8,7 @@ import "/css/Body.css"
 import { getApiUrl } from "../share/Configuration"
 import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
-import { HubConnectionBuilder } from "@aspnet/signalr";
+import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
 
 const BodyDiv = styled.div`
@@ -138,7 +138,8 @@ export class Body extends React.Component<any, State> {
     public handleSignalR() {
 
         const connection = new HubConnectionBuilder()
-            .withUrl("http://localhost:5000/LogHub")
+            //.withUrl("/LogHub")
+            .withUrl(`${getApiUrl()}/LogHub`)
             .build();
 
         connection.onclose(() => {
