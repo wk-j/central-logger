@@ -8,9 +8,8 @@ import "/css/Body.css"
 import { getApiUrl } from "../share/Configuration"
 import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
-import { HubConnectionBuilder } from "@aspnet/signalr";
+import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
-
 
 const BodyDiv = styled.div`
   flex-direction: column;
@@ -35,12 +34,16 @@ type State = {
     isLoading: boolean
     cursor: 0
     error: string
+    logLenght: number
+    newSearch: boolean
+    logDate: Log[]
 }
 
 export class Body extends React.Component<any, State> {
     private LoggerApi = new LoggerApi(getApiUrl());
-    private LogDate: Log[];
+    private LogDate: Log[]
     private LogNow: Log[]
+    private Limit: number
 
     constructor(props) {
         super(props)
@@ -56,12 +59,17 @@ export class Body extends React.Component<any, State> {
             items: null,
             isLoading: true,
             cursor: 0,
-            error: ""
+            error: "",
+            logLenght: 0,
+            newSearch: false,
+            logDate: []
         }
         this.LogDate = []
         this.LogNow = []
+        this.Limit = 1
     }
     public handleStartDateChange = (date) => {
+        this.Limit = 1
         if (date > this.state.endDay) {
             this.setState({
                 startDay: date,
@@ -74,17 +82,24 @@ export class Body extends React.Component<any, State> {
     }
 
     public handleEndDateChange = (date) => {
-        this.setState({ endDay: date });
+        this.Limit = 1
+        this.setState({ endDay: date, newSearch: true });
         this.initSearchByAll(this.state.startDay.toDate(), date.toDate(), this.state.selectApp, this.state.selectIp)
 
     }
     private setIP = (value) => {
-        this.setState({ selectApp: null, selectIp: value, allApp: null }, () => this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value))
+        this.Limit = 1
+        this.setState({ selectApp: null, selectIp: value, allApp: null, newSearch: true }, () => this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, value))
         this.initGetApp(value);
+    }
+    private OnMore = () => {
+        this.setState({ newSearch: false })
+        this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
     }
 
     public setApp = (value) => {
-        this.setState({ selectApp: value })
+        this.Limit = 1
+        this.setState({ selectApp: value, newSearch: true })
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), value, this.state.selectIp)
     }
     public componentDidMount() {
@@ -99,11 +114,10 @@ export class Body extends React.Component<any, State> {
         this.LogDate = []
         this.LogNow = []
         this.setState({ loading: true })
-        this.LoggerApi.SearchLog(startDate, endDate, app, ip).then(response => {
-            this.LogDate = response.data
-            let LogDates = this.LogDate.splice(0, 100)
-            this.LogNow = LogDates
-            this.setState({ loading: false })
+        this.LoggerApi.SearchLog(startDate, endDate, app, ip, this.Limit).then(response => {
+            this.LogDate = response.data.logInfo
+            this.setState({ loading: false, logDate: response.data.logInfo, logLenght: response.data.dataLength })
+            this.Limit = this.Limit + 1
         }).catch(() => this.setState({ loading: false }))
     }
     public initGetIp = () => {
@@ -111,7 +125,6 @@ export class Body extends React.Component<any, State> {
             let options = response.data.map(x => ({ value: x, text: x }))
             options.unshift({ value: "", text: "All IP" });
             this.setState({ allIp: options })
-
         })
     }
     public initGetApp = (ip: string) => {
@@ -125,7 +138,8 @@ export class Body extends React.Component<any, State> {
     public handleSignalR() {
 
         const connection = new HubConnectionBuilder()
-            .withUrl("http://localhost:5000/LogHub")
+            //.withUrl("/LogHub")
+            .withUrl(`${getApiUrl()}/LogHub`)
             .build();
 
         connection.onclose(() => {
@@ -141,20 +155,26 @@ export class Body extends React.Component<any, State> {
     }
 
     private updateLogNow = debounce(250, () => {
-        this.LogNow = this.LogDate.splice(0, 100)
-        this.forceUpdate();
+        if (this.LogDate.length >= 150) {
+            this.Limit = 1
+            this.LogDate = []
+            this.setState({ logDate: [], newSearch: true })
+            this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
+        } else {
+            this.setState({ logDate: this.LogDate })
+        }
     })
 
     public render() {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
-        let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp } = this.state
+        let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp, logLenght, newSearch } = this.state
         return (
             <BodyDiv>
                 <Loader content="Loading" active={this.state.loading} />
                 <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
                     onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
                     allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
-                    allData={this.LogDate} />
+                    allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
             </BodyDiv >
         )
     }

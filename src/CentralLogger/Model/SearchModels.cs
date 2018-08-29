@@ -1,5 +1,5 @@
 using System;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace CentralLogger.Model {
 
@@ -9,5 +9,7 @@ namespace CentralLogger.Model {
         public string IpNow { get; set; }
         public string AppNow { get; set; }
         public string CatelogNow { get; set; }
+        [Range(1, Int32.MaxValue)]
+        public int Section { get; set; }
     }
 }

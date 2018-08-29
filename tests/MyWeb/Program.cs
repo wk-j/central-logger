@@ -20,7 +20,7 @@ namespace MyWeb {
                 .UseUrls("http://*:6000")
                 .ConfigureLogging(builder => {
                     builder.ClearProviders();
-                    builder.AddLog(new CentralLogOptions("http://localhost:5000/api/Logger/addLog"));
+                    builder.AddCentralLog(new CentralLogOptions("http://localhost:5000/api/Logger/addLog"));
                 })
                 .UseStartup<Startup>();
     }
