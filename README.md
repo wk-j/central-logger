@@ -25,8 +25,8 @@
 
 ## Provider
 
-- NuGet [BCircle.CentralLogProvider](https://www.nuget.org/packages/BCircle.CentralLogProvider)
+- [NuGet](https://www.nuget.org/packages/BCircle.CentralLogProvider)
 
 ## Server
 
-- Docker [central-logger](https://hub.docker.com/r/wearetherock/central-logger)
+- [Docker](https://hub.docker.com/r/wearetherock/central-logger)
