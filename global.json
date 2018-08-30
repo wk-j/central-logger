@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 {
     "sdk": {
         "version": "2.1.301"
     }
 }
+=======
+{}
+>>>>>>> a089eb8... Removed SDK version
