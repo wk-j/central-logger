@@ -16,7 +16,7 @@ publish
 .classpath
 .project
 
-# wwwroot
+wwwroot
 target
 BenchmarkDotNet.Artifacts
 coverage.opencover.xml

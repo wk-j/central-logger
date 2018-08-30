@@ -9,5 +9,5 @@ az webapp create --name central-logger --resource-group central-logger --plan ce
 gcloud beta app deploy --project central-logger-214910  publish/dist/app.yaml
 y
 
---update-env-vars CENTRAL_LOGGER_CS=$CENTRAL_LOGGER_CS
+gcloud app browse --project=central-logger-214910
 ```
