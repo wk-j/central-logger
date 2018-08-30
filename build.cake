@@ -29,10 +29,23 @@ Task("Pack").Does(() => {
 });
 
 Task("Publish").Does(() => {
+    CleanDirectory("publish/dist");
     DotNetCorePublish($"src/{name}", new DotNetCorePublishSettings {
         OutputDirectory = "publish/dist"
     });
 });
+
+Task("Google")
+    .IsDependentOn("Publish")
+    .Does(() => {
+
+        var config = @"publish/dist/app.yaml";
+        var text = System.IO.File.ReadAllText(config);
+        var newText = text.Replace("${ConnectionString}", EnvironmentVariable("GOOGLE_CS"));
+        System.IO.File.WriteAllText(config,newText);
+
+        PS.StartProcess("gcloud beta app deploy --project central-logger-214910  publish/dist/app.yaml");
+    });
 
 Task("Publish-NuGet")
     .IsDependentOn("Pack")

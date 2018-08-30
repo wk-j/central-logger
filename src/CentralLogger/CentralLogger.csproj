@@ -12,10 +12,9 @@
         <!-- <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType> -->
     </PropertyGroup>
 
-
-
     <ItemGroup>
         <EmbeddedResource Include="wwwroot/*" />
+        <Content Include="app.yaml" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
     <ItemGroup>
