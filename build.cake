@@ -23,6 +23,9 @@ Task("Pack").Does(() => {
     DotNetCorePack($"src/{name}", new DotNetCorePackSettings {
         OutputDirectory = "publish"
     });
+    DotNetCorePack($"src/CentralLogProvider", new DotNetCorePackSettings {
+        OutputDirectory = "publish"
+    });
 });
 
 Task("Publish").Does(() => {
@@ -34,13 +37,16 @@ Task("Publish").Does(() => {
 Task("Publish-NuGet")
     .IsDependentOn("Pack")
     .Does(() => {
-        var nupkg = new DirectoryInfo("publish").GetFiles("*.nupkg").LastOrDefault();
-        var package = nupkg.FullName;
-        Console.WriteLine(nupkg.FullName);
-        NuGetPush(package, new NuGetPushSettings {
-            Source = "https://www.nuget.org/api/v2/package",
-            ApiKey = npi
-        });
+        var packages = new DirectoryInfo("publish").GetFiles("*.nupkg");
+        foreach (var nupkg in packages)
+        {
+            var package = nupkg.FullName;
+            Console.WriteLine(nupkg.FullName);
+            NuGetPush(package, new NuGetPushSettings {
+                Source = "https://www.nuget.org/api/v2/package",
+                ApiKey = npi
+            });
+        }
 });
 
 Task("Install")
