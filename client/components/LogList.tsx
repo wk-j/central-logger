@@ -99,9 +99,9 @@ export class LogList extends React.Component<Props, State> {
                 </Segment>
                 <Segment textAlign="right" inverted color="blue" >
                     <Icon size="large" name="calendar alternate outline" />
-                    <div className="ui input datepicker">
+                    Datetime :&nbsp;
+                    <div className="ui input datepicker" style={{ paddingRight: "110px" }}>
                         <DatePicker
-                            withPortal
                             dateFormat="DD/MM/YY HH:mm"
                             selected={this.props.startDay}
                             onChange={this.setStart}
@@ -115,7 +115,6 @@ export class LogList extends React.Component<Props, State> {
                         />
                         <Icon size="big" name="caret right" inverted />
                         <DatePicker
-                            withPortal
                             dateFormat="DD/MM/YY HH:mm"
                             selected={this.props.endDay}
                             onChange={this.setEnd}
