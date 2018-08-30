@@ -33,12 +33,17 @@ namespace CentralLogger {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
+            var connectionString = Configuration.GetValue("ConnectionString", "");
+            var envConnectionString = Environment.GetEnvironmentVariable("CENTRAL_LOGGER_CS");
 
-            var conn = Configuration.GetValue("ConnectionString", "");
-            Console.WriteLine($"ConnectionString = {conn}");
+            if (!string.IsNullOrEmpty(envConnectionString)) {
+                connectionString = envConnectionString;
+            }
+
+            Console.WriteLine($"ConnectionString = {connectionString}");
 
             services.AddCors();
-            services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(conn));
+            services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(connectionString));
             services.AddSignalR();
             services.AddScoped<UserService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
