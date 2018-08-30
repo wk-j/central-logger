@@ -4,12 +4,12 @@
         <OutputType>Library</OutputType>
         <TargetFramework>netstandard2.0</TargetFramework>
         <ProjectGuid>{fa5892ec-6a88-4895-ab6e-7e0b4ffb20c3} </ProjectGuid>
-        <PackageVersion>0.1.0</PackageVersion>
-    <PackageId>BCircle.CentralLogProvider</PackageId>
-    <PackageIconUrl>https://www.picz.in.th/images/2018/08/08/BqspZq.png</PackageIconUrl>
-    <PackageTags>b circle bcircle ControlLog</PackageTags>
-    <Title>BCircle.ControlLogProvider</Title>
-    <Description>The Amazing Log</Description>
+        <PackageVersion>0.2.0</PackageVersion>
+        <PackageId>BCircle.CentralLogProvider</PackageId>
+        <PackageIconUrl>https://www.picz.in.th/images/2018/08/08/BqspZq.png</PackageIconUrl>
+        <PackageTags>b circle bcircle ControlLog</PackageTags>
+        <Title>BCircle.ControlLogProvider</Title>
+        <Description>The Amazing Log</Description>
     </PropertyGroup>
 
     <ItemGroup>
