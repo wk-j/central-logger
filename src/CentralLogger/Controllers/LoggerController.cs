@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.SignalR;
 using CentralLogger.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-
+using CentralLogger.Services;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -99,29 +99,13 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpPost]
-        public ActionResult LoginRequest([FromBody]GetLoginRequest request) {
+        public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService) {
 
-            var checkUser = db.Users.Where(x => x.User.Equals(request.User));
-            if (checkUser != null) {
-
-                string password = request.Pass;
-                var salt = System.Text.Encoding.UTF8.GetBytes("4DI0P3K6");
-                string hashedKey = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-                var checkpass = db.Users.Where(x => x.User.Equals(request.User)).Select(m => m.User.Equals(request.User) && m.Password.Equals(hashedKey));
-                if (checkpass != null) {
-                    return Ok();
-                } else {
-                    return Unauthorized();
-                }
-            } else {
-                return Unauthorized();
+            var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);
+            if (IsAuthorized) {
+                return Ok();
             }
-
+            return Unauthorized();
         }
 
 
