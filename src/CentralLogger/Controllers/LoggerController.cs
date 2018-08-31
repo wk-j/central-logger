@@ -10,6 +10,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.SignalR;
 using CentralLogger.Hubs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using CentralLogger.Services;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -95,6 +97,17 @@ namespace CentralLogger.Controllers {
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
+
+        [HttpPost]
+        public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService) {
+
+            var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);
+            if (IsAuthorized) {
+                return Ok();
+            }
+            return Unauthorized();
+        }
+
 
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value) {
