@@ -20,6 +20,10 @@ export type search = {
     dataLength: number
 }
 
+type LoginResult = {
+    accessToken: string;
+}
+
 export type ResultByDate = {
     resultDate: Log[]
 }
@@ -41,6 +45,13 @@ export class LoggerApi {
             Appnow: app,
             IpNow: ip,
             Section: start
+        })
+    }
+
+    public Login(user: string, pass: string) {
+        return axios.post<LoginResult>(`${this.url}/api/Logger/LoginRequest`, {
+            User: user,
+            Pass: pass
         })
     }
 }

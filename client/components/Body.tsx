@@ -11,6 +11,10 @@ import { LogList } from "./LogList"
 import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
 
+type Props = {
+    onLogoutPlease: () => void
+}
+
 const BodyDiv = styled.div`
   flex-direction: column;
   justify-content: center;
@@ -118,13 +122,22 @@ export class Body extends React.Component<any, State> {
             this.LogDate = response.data.logInfo
             this.setState({ loading: false, logDate: response.data.logInfo, logLenght: response.data.dataLength })
             this.Limit = this.Limit + 1
-        }).catch(() => this.setState({ loading: false }))
+        }).catch(err => {
+            if (err.response.status === 401) {
+                this.props.onLogoutPlease()
+            }
+            this.setState({ loading: false })
+        })
     }
     public initGetIp = () => {
         this.LoggerApi.getIp().then(response => {
             let options = response.data.map(x => ({ value: x, text: x }))
             options.unshift({ value: "", text: "All IP" });
             this.setState({ allIp: options })
+        }).catch(err => {
+            if (err.response.status === 401) {
+                this.props.onLogoutPlease()
+            }
         })
     }
     public initGetApp = (ip: string) => {
@@ -132,13 +145,17 @@ export class Body extends React.Component<any, State> {
             let options = response.data.map(x => ({ value: x, text: x }))
             options.unshift({ value: "", text: "All Application" });
             this.setState({ allApp: options })
+        }).catch(err => {
+            if (err.response.status === 401) {
+                this.props.onLogoutPlease()
+            }
         })
     }
 
     public handleSignalR() {
 
         const connection = new HubConnectionBuilder()
-            //.withUrl("/LogHub")
+            // .withUrl("/LogHub")
             .withUrl(`${getApiUrl()}/LogHub`)
             .build();
 
