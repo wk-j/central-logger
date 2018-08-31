@@ -1,23 +1,21 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
-namespace CentralLogger.Services
-{
-    public class UserService
-    {
+namespace CentralLogger.Services {
+    public class UserService {
         private readonly byte[] salt;
         private readonly CentralLoggerContext db;
 
-        public UserService(CentralLoggerContext db)
-        {
+        public UserService(CentralLoggerContext db) {
             this.db = db;
             this.salt = System.Text.Encoding.UTF8.GetBytes("4DI0P3K6");
         }
 
-        public bool AddUser(string username, string password)
-        {
+        public bool AddUser(string username, string password) {
             string hashedKey = Convert.ToBase64String(KeyDerivation.Pbkdf2(
             password: password,
             salt: salt,
@@ -27,10 +25,8 @@ namespace CentralLogger.Services
 
             var hasUser = db.Users.Where(x => x.User.Equals(username)).Any();
 
-            if (!hasUser)
-            {
-                db.Users.Add(new Users()
-                {
+            if (!hasUser) {
+                db.Users.Add(new Users() {
                     User = username,
                     Password = hashedKey
                 });
@@ -40,9 +36,20 @@ namespace CentralLogger.Services
             return false;
         }
 
-        /*public string GetIpAddress()
-        {
-            return context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-        }*/
+        public async Task<bool> IsAuthorized(string username, string password) {
+            var user = await db.Users.Where(x => x.User.Equals(username)).FirstOrDefaultAsync();
+
+            if (user != null) {
+                string hashedKey = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA1,
+                    iterationCount: 10000,
+                    numBytesRequested: 256 / 8));
+
+                if (user.Password.Equals(hashedKey)) return true;
+            }
+            return false;
+        }
     }
 }
