@@ -84,17 +84,20 @@ export class LogList extends React.Component<Props, State> {
         }
     }
     public render() {
+        let style = {
+            marginLeft: "10px",
+            marginRight: "10px"
+        }
+
         return (
             <Segment.Group>
-                <Segment textAlign="left" inverted color="blue" >
-                    <Icon size="large" name="address book outline" />
-                    IP : <Dropdown placeholder="All IP" closeOnChange selection options={this.props.allIp} onChange={this.setIp} value={this.props.selectIp} />
-                    &nbsp;
-                    <Icon size="large" name="box" />
-                    Application : <Dropdown className="dropdown" disabled={this.props.selectIp === ""} placeholder="All Application" closeOnChange selection options={this.props.allApp} onChange={this.setApp} value={this.props.selectApp} />
-                    <Icon size="large" name="calendar alternate outline" style={{ paddingLeft: "10px" }} />
-                    &nbsp;Datetime :&nbsp;
-                    <div className="ui input datepicker" style={{ paddingRight: "110px" }}>
+                <Segment textAlign="center" inverted color="blue">
+                    <Icon style={style} size="large" name="address book outline" />
+                    <Dropdown placeholder="All IP" closeOnChange selection options={this.props.allIp} onChange={this.setIp} value={this.props.selectIp} />
+                    <Icon style={style} size="large" name="box" />
+                    <Dropdown className="dropdown" disabled={this.props.selectIp === ""} placeholder="All Application" closeOnChange selection options={this.props.allApp} onChange={this.setApp} value={this.props.selectApp} />
+                    <Icon style={style} size="large" name="calendar alternate outline" />
+                    <div className="ui input datepicker">
                         <DatePicker
                             dateFormat="DD/MM/YY HH:mm"
                             selected={this.props.startDay}
@@ -105,9 +108,8 @@ export class LogList extends React.Component<Props, State> {
                             showTimeSelect
                             timeFormat="HH:mm"
                             timeIntervals={15}
-                            timeCaption="time"
-                        />
-                        <Icon size="big" name="caret right" inverted />
+                            timeCaption="time" />
+                        <span style={style} />
                         <DatePicker
                             dateFormat="DD/MM/YY HH:mm"
                             selected={this.props.endDay}

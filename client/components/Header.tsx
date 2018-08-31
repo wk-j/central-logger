@@ -22,14 +22,14 @@ export class Header extends React.Component<Props, State> {
             this.props.loggedIn ?
                 <div>
                     <Menu size="large" icon="labeled" inverted color="blue" secondary >\
-                    <Menu.Item header name="Central Logger" />
+                    <Menu.Item header name="Central Logger ™" />
                         <Menu.Item position="right" name="logout" onClick={this.onLogout} />
                     </Menu>
                 </div>
                 :
                 <div>
                     <Menu size="large" icon="labeled" inverted color="blue" secondary >\
-                    <Menu.Item header name="Central Logger" />
+                    <Menu.Item header name="Central Logger ™" />
                     </Menu>
                 </div>
         )

@@ -36,6 +36,7 @@ Task("Publish").Does(() => {
 });
 
 Task("Google")
+    .IsDependentOn("Build-Web")
     .IsDependentOn("Publish")
     .Does(() => {
 

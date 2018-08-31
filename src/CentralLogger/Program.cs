@@ -16,9 +16,6 @@ namespace CentralLogger {
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel(options => {
-                    options.ListenAnyIP(5000);
-                })
                 .UseStartup<Startup>();
     }
 }
