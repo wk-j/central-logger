@@ -23,6 +23,7 @@ const BodyDiv = styled.div`
   height: 90%;
   padding: 1.5em;
   position: relative;
+  min-width: 950px;
 `
 
 type State = {
@@ -159,8 +160,9 @@ export class Body extends React.Component<any, State> {
             .withUrl(`${getApiUrl()}/LogHub`)
             .build();
 
-        connection.onclose(() => {
-            alert("SignalR เกิดปัญหาการเชื่อมต่อ");
+        connection.onclose((err) => {
+            // alert("SignalR เกิดปัญหาการเชื่อมต่อ");
+            console.error(err)
         });
 
         connection.on("LogReceived", (log: Log) => {
