@@ -86,20 +86,14 @@ export class LogList extends React.Component<Props, State> {
     public render() {
         return (
             <Segment.Group>
-                <Segment textAlign="right" inverted color="blue" >
-                    <Header as="h2" floated="left">
-                        <Icon name="eye" />
-                        <Header.Content>Central Logger</Header.Content>
-                    </Header>
+                <Segment textAlign="left" inverted color="blue" >
                     <Icon size="large" name="address book outline" />
                     IP : <Dropdown placeholder="All IP" closeOnChange selection options={this.props.allIp} onChange={this.setIp} value={this.props.selectIp} />
                     &nbsp;
                     <Icon size="large" name="box" />
                     Application : <Dropdown className="dropdown" disabled={this.props.selectIp === ""} placeholder="All Application" closeOnChange selection options={this.props.allApp} onChange={this.setApp} value={this.props.selectApp} />
-                </Segment>
-                <Segment textAlign="right" inverted color="blue" >
-                    <Icon size="large" name="calendar alternate outline" />
-                    Datetime :&nbsp;
+                    <Icon size="large" name="calendar alternate outline" style={{ paddingLeft: "10px" }} />
+                    &nbsp;Datetime :&nbsp;
                     <div className="ui input datepicker" style={{ paddingRight: "110px" }}>
                         <DatePicker
                             dateFormat="DD/MM/YY HH:mm"
@@ -129,7 +123,7 @@ export class LogList extends React.Component<Props, State> {
                         />
                     </div>
                 </Segment>
-                <Segment textAlign="right">
+                <Segment textAlign="right" style={{ minHeight: "calc( 100vh - 230px )" }}>
                     <div className="loglist" style={{ width: "100%" }}>
                         {this.props.logLenght === 0 && !this.props.loading ?
                             <Header as="h1" icon>

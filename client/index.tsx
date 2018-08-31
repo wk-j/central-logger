@@ -5,12 +5,7 @@ import "semantic-ui-css/semantic.min.css"
 import { Footer } from "./components/Footer"
 import { Header } from "./components/Header"
 import { Body } from "./components/Body"
-/*
-ContainerDiv = styled.div`
-    display: block;
-    flex-direction: column;
-`
-*/
+
 type State = {
 }
 export class App extends React.Component<{}, State> {
