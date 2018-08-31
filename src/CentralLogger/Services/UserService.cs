@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace CentralLogger.Services {
     public class UserService {
@@ -31,6 +33,22 @@ namespace CentralLogger.Services {
                 db.SaveChanges();
             }
 
+            return false;
+        }
+
+        public async Task<bool> IsAuthorized(string username, string password) {
+            var user = await db.Users.Where(x => x.User.Equals(username)).FirstOrDefaultAsync();
+
+            if (user != null) {
+                string hashedKey = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: password,
+                    salt: salt,
+                    prf: KeyDerivationPrf.HMACSHA1,
+                    iterationCount: 10000,
+                    numBytesRequested: 256 / 8));
+
+                if (user.Password.Equals(hashedKey)) return true;
+            }
             return false;
         }
     }
