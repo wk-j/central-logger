@@ -2,6 +2,8 @@ import React, { CSSProperties } from "react";
 import { Button, Form, Grid, Header, Message, Icon, Segment } from "semantic-ui-react"
 import { getApiUrl } from "../share/Configuration";
 import "../css/style.css"
+import { LoggerApi } from "../share/LoggerApi"
+import AppStorage from "../share/AppStorage"
 
 type State = {
     user: string
@@ -12,8 +14,13 @@ type State = {
     style: string
     render: boolean
 }
+type Props = {
+    // tslint:disable-next-line:variable-name
+    onLogin: (string) => void
+}
 
-export class Login extends React.Component<any, State> {
+export class Login extends React.Component<Props, State> {
+    private LoggerApi = new LoggerApi(getApiUrl());
     constructor(props) {
         super(props);
 
@@ -37,7 +44,15 @@ export class Login extends React.Component<any, State> {
         this.initLogin(this.state.user, this.state.password)
     }
     private initLogin = (user: string, pass: string) => {
-
+        this.LoggerApi.Login(user, pass).then(res => {
+            AppStorage.setAccessToken(res.data.accessToken)
+            this.setState({ status: true })
+            this.props.onLogin(true)
+        }).catch(err => {
+            if (err.response.status === 401) {
+                this.setState({ status: false })
+            }
+        })
     }
     public render() {
         if (this.state.render) {
@@ -52,11 +67,11 @@ export class Login extends React.Component<any, State> {
               body > div > div,
               body > div > div > div.login-form { }
             `}</style>
-                    <Grid textAlign="center" style={{ height: "80%" }} verticalAlign="middle">
+                    <Grid textAlign="center" style={{ height: "90vh" }} verticalAlign="middle">
                         <Grid.Column style={{ maxWidth: 450 }}>
-                            <Segment>
+                            <Segment inverted color="blue" secondary >
                                 <Header as="h2" icon>
-                                    <Icon name="settings" />
+                                    <Icon name="eye" />
                                     Central Logger
                                     <Header.Subheader>Login to access</Header.Subheader>
                                 </Header>
