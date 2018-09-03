@@ -72,7 +72,7 @@ export class Login extends React.Component<Props, State> {
                             <Segment inverted color="blue" secondary >
                                 <Header as="h2" icon>
                                     <Icon name="eye" />
-                                    Central Logger
+                                    Central Logger ™
                                     <Header.Subheader>Login to access</Header.Subheader>
                                 </Header>
                                 {this.state.status === false &&
