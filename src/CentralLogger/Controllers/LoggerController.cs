@@ -103,7 +103,14 @@ namespace CentralLogger.Controllers {
 
             var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);
             if (IsAuthorized) {
-                return Ok();
+                if (request.User != null) {
+                //  base64 UTF8 (request.User:request.pass)
+                var account = $"{request.User}:{request.Pass}";
+                var accountBytes = System.Text.Encoding.UTF8.GetBytes(account);
+
+                var result = new { accessToken = Convert.ToBase64String(accountBytes) };
+                return Ok(result);
+            }
             }
             return Unauthorized();
         }
