@@ -36,11 +36,10 @@ export class App extends React.Component<{}, State> {
     }
     public onLogoutPlease = () => {
         this.setState({ loggedIn: false })
-        AppStorage.Logout()
-    }
+        }
 
     public componentDidMount() {
-        this.setState({ loggedIn: AppStorage.getAccessToken() !== null })
+        this.setState({ loggedIn: AppStorage.getAccessToken() !== null }, () => console.log(this.state.loggedIn))
     }
 
     public render() {
