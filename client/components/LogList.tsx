@@ -1,5 +1,5 @@
 import React from "react"
-import { Segment, Table, Icon, Header, Dropdown, Loader } from "semantic-ui-react"
+import { Segment, Table, Icon, Header, Dropdown, Loader, Button } from "semantic-ui-react"
 import { Logs } from "./Log"
 import DatePicker from "react-datepicker"
 import { Moment } from "moment"

@@ -23,6 +23,11 @@ export type search = {
 type LoginResult = {
     accessToken: string;
 }
+export type CountLogs = {
+    dataInfos: number[],
+    dataErrors: number[],
+    dataDebugs: number[]
+}
 
 export type ResultByDate = {
     resultDate: Log[]
@@ -53,5 +58,8 @@ export class LoggerApi {
             User: user,
             Pass: pass
         })
+    }
+    public GetDataChart(date: Date) {
+        return axios.post<CountLogs>(`${this.url}/api/Logger/GetDataChart`, date)
     }
 }
