@@ -1,4 +1,4 @@
-#addin "wk.StartProcess&version=18.5.1"
+#addin "wk.StartProcess"
 #addin "wk.ProjectParser"
 
 using PS = StartProcess.Processor;
