@@ -25,6 +25,8 @@
     "@types/react-datepicker": "^1.1.7",
     "@types/react-dom": "^16.0.7",
     "axios": "^0.18.0",
+    "echarts": "^4.1.0",
+    "echarts-for-react": "^2.0.14",
     "parcel-bundler": "^1.9.7",
     "react": "^16.4.2",
     "react-datepicker": "^1.6.0",
