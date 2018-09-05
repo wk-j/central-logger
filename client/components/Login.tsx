@@ -49,7 +49,7 @@ export class Login extends React.Component<Props, State> {
             this.setState({ status: true, style: "out" })
             setTimeout(() => {
                 this.setState({ render: true })
-            }, 850)
+            }, 650)
                 }).catch(err => {
             if (err.response.status === 401) {
                 this.setState({ status: false })
