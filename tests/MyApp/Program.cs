@@ -19,7 +19,8 @@ namespace MyApp {
             Console.ReadLine();
         }
         private static void ConfigureServices(IServiceCollection services) {
-            var centralLogOptions = new CentralLogOptions("https://central-logger-214910.appspot.com");
+            // var centralLogOptions = new CentralLogOptions("https://central-logger-214910.appspot.com");
+            var centralLogOptions = new CentralLogOptions("https://central-logger.azurewebsites.net");
             services.AddLogging(configure => {
                 configure.ClearProviders();
                 configure.AddCentralLog(centralLogOptions);
