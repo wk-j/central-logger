@@ -19,7 +19,7 @@ namespace MyApp {
             Console.ReadLine();
         }
         private static void ConfigureServices(IServiceCollection services) {
-            var centralLogOptions = new CentralLogOptions("http://localhost:5000");
+            var centralLogOptions = new CentralLogOptions("https://central-logger-214910.appspot.com");
             services.AddLogging(configure => {
                 configure.ClearProviders();
                 configure.AddCentralLog(centralLogOptions);
