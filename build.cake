@@ -12,8 +12,8 @@ var info = Parser.Parse($"src/{name}/{name}.csproj");
 
 Task("Build-Web").Does(() => {
     CleanDirectory("src/CentralLogger/wwwroot");
-    PS.StartProcess("npm install", "client");
-    PS.StartProcess("npm run build", "client");
+    PS.StartProcess("npm install    --prefix client");
+    PS.StartProcess("npm run build  --prefix client");
 });
 
 Task("Pack").Does(() => {
