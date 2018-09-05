@@ -61,6 +61,7 @@ namespace CentralLogger {
 
             if (env.IsDevelopment()) {
                 app
+                .UseWebSockets()
                   .UseDeveloperExceptionPage()
                   .UseDefaultFiles(defaultOptions)
                   .UseStaticFiles();
