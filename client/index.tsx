@@ -7,6 +7,7 @@ import { Header } from "./components/Header"
 import { Body } from "./components/Body"
 import { Login } from "./components/Login"
 import AppStorage from "./share/AppStorage"
+import { HashRouter } from "react-router-dom"
 
 type State = {
     loggedIn: boolean
