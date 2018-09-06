@@ -60,6 +60,6 @@ export class LoggerApi {
         })
     }
     public GetDataChart(date: Date) {
-        return axios.post<CountLogs>(`${this.url}/api/Logger/GetDataChart`, date)
+        return axios.post<CountLogs>(`${this.url}/api/Summary/GetDataChart`, date)
     }
 }
