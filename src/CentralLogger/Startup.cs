@@ -62,21 +62,23 @@ namespace CentralLogger {
 
             if (env.IsDevelopment()) {
                 app
-                .UseWebSockets()
                   .UseDeveloperExceptionPage()
                   .UseDefaultFiles(defaultOptions)
                   .UseStaticFiles();
             } else {
                 var asm = Assembly.GetEntryAssembly();
                 var asmName = asm.GetName().Name;
-                defaultOptions.FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
+
+                // defaultOptions.FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot");
 
                 app
                   .UseHsts()
                   .UseDefaultFiles(defaultOptions)
-                  .UseStaticFiles(new StaticFileOptions {
-                      FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
-                  });
+                  .UseStaticFiles();
+
+                //.UseStaticFiles(new StaticFileOptions {
+                //    FileProvider = new EmbeddedFileProvider(asm, $"{asmName}.wwwroot")
+                //});
             }
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
