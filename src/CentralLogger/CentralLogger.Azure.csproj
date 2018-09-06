@@ -10,7 +10,7 @@
         <ProjectGuid>{fa5892ec-6a88-4895-ab6e-7e0b4ffb20c2}</ProjectGuid>
     </PropertyGroup>
 
-    <Target Name="Build-Web" AfterTargets="Build">
+    <Target Name="Build-Web" BeforeTargets="Build">
         <Exec Command="npm install   " WorkingDirectory="$(MSBuildProjectDirectory)\..\..\client"/>
         <Exec Command="npm run build " WorkingDirectory="$(MSBuildProjectDirectory)\..\..\client"/>
     </Target>
@@ -24,7 +24,6 @@
         <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="2.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0" />
-        <!-- <PackageReference Include="Moment.js" Version="2.22.2" /> -->
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
     </ItemGroup>
