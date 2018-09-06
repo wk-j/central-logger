@@ -11,6 +11,7 @@ import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
 import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
+import { Route, Switch, Link, BrowserRouter } from "react-router-dom";
 import { Chart } from "./Chart";
 
 type Props = {
@@ -119,18 +120,6 @@ export class Body extends React.Component<any, State> {
         this.setState({ newSearch: false })
         this.initSearchByAll(this.state.startDay.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
     }
-    private OnChart = () => {
-        this.setState({styleLog: "slideOutLeft", styleChart: "slideInRight"})
-        setTimeout(() => {
-            this.setState({onChart: !this.state.onChart})
-        }, 400)
-    }
-    private OutChart = () => {
-        this.setState({styleChart: "slideOutRight", styleLog: "slideInLeft"})
-        setTimeout(() => {
-            this.setState({onChart: !this.state.onChart})
-        }, 400)
-    }
 
     public setApp = (value) => {
         this.Limit = 1
@@ -139,11 +128,11 @@ export class Body extends React.Component<any, State> {
     }
     public setDay = (value) => {
         this.initGetChart(value.toDate())
-        this.setState({selectDay: value})
+        this.setState({ selectDay: value })
     }
     public initGetChart = (date: Date) => {
         this.LoggerApi.GetDataChart(date).then(response => {
-            this.setState({countInfo: response.data.dataInfos, countDebug: response.data.dataDebugs, countError: response.data.dataErrors})
+            this.setState({ countInfo: response.data.dataInfos, countDebug: response.data.dataDebugs, countError: response.data.dataErrors })
         })
     }
     public componentDidMount() {
@@ -227,26 +216,38 @@ export class Body extends React.Component<any, State> {
     public render() {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
         let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp, logLenght, newSearch, selectDay,
-             countDebug, countError, countInfo } = this.state
+            countDebug, countError, countInfo } = this.state
         return (
-            this.state.onChart ?
-            <BodyDiv className={this.state.styleLog}>
-                <Loader content="Loading" active={this.state.loading} />
-                <div className="buttons">
-                <Button circular color="blue" icon="area graph" size="massive" onClick={this.OnChart}/>
-                </div>
-                <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
-                    onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
-                    allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
-                    allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
-            </BodyDiv >
-            :
-            <BodyDiv className={this.state.styleChart}>
-            <div className="buttons">
-            <Button circular color="blue" icon="eye" size="massive" onClick={this.OutChart}/>
-            </div>
-            <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}/>
-            </BodyDiv>
+            <BrowserRouter>
+                <Switch>
+                    <Route exact path="/" render={() => {
+                        return (
+                            <BodyDiv>
+                                <Loader content="Loading" active={this.state.loading} />
+                                <div className="buttons">
+                                    <Link to="/summary" className="navbar-item"><Button circular color="blue" icon="area graph" size="massive" /></Link>
+                                </div>
+                                <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
+                                    onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
+                                    allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
+                                    allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
+                            </BodyDiv >
+
+                        )
+                    }} />
+                    <Route exact path="/summary" render={() => {
+                        return (
+                            <BodyDiv>
+                                <div className="buttons">
+                                    <Link to="/" className="navbar-item"><Button circular color="blue" icon="eye" size="massive" /></Link>
+                                </div>
+                                <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError} />
+                            </BodyDiv>
+                        )
+
+                     }} />
+                </Switch>
+            </BrowserRouter>
         )
     }
 }
