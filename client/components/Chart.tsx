@@ -28,10 +28,15 @@ export class Chart extends React.Component<Props, State> {
             startDate: moment()
           };
     }
+    public setDay = (data) => {
+        this.props.onDayChange(data)
+        this.setState({startDate: data})
+    }
     public render() {
         const option = {
             title: {
-                text: "Log Chart"
+                text: "Log Chart",
+                    subtext: "ประจำวันที่ " + this.state.startDate.format("LL").toString()
             },
             tooltip: {
                 trigger: "axis"
@@ -86,7 +91,7 @@ export class Chart extends React.Component<Props, State> {
                 <DatePicker
                             dateFormat="DD/MM/YY"
                             selected={this.props.Day}
-                            onChange={this.props.onDayChange}
+                            onChange={this.setDay}
                             isClearable={false}
                             placeholderText="Select Date"
                             className="inputdate" />
