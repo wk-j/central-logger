@@ -16,6 +16,9 @@ type Props = {
     info: number[]
     error: number[]
     debug: number[]
+    trace: number[]
+    warning: number[]
+    critical: number[]
 }
 type State = {
     startDate: Moment
@@ -44,7 +47,7 @@ export class Chart extends React.Component<Props, State> {
                 trigger: "axis"
             },
             legend: {
-                data: ["Error", "Info", "Debug"]
+                data: ["Error", "Info", "Debug", "Trace", "Warning", "Critical"]
             },
             grid: {
                 left: "3%",
@@ -84,12 +87,33 @@ export class Chart extends React.Component<Props, State> {
                     name: "Debug",
                     type: "line",
                     data: this.props.debug
+                },
+                {
+                    name: "Trace",
+                    type: "line",
+                    data: this.props.trace
+                },
+                {
+                    name: "Warning",
+                    type: "line",
+                    data: this.props.warning
+                },
+                {
+                    name: "Critical",
+                    type: "line",
+                    data: this.props.critical
                 }
             ]
         };
+        let style = {
+            marginLeft: "10px",
+            marginRight: "10px"
+        }
         return (
                 <Segment.Group>
                     <Segment textAlign="center" inverted color="blue">
+                    <Icon style={style} size="large" name="calendar alternate outline" />
+                    <div className="ui input datepicker">
                         <DatePicker
                             dateFormat="DD/MM/YY"
                             selected={this.props.Day}
@@ -97,6 +121,7 @@ export class Chart extends React.Component<Props, State> {
                             isClearable={false}
                             placeholderText="Select Date"
                             className="inputdate" />
+                        </div>
                     </Segment>
                     <Segment textAlign="right" style={{ minHeight: "calc( 100vh - 230px )" }}>
                         <div className="loglist" style={{ width: "100%" }}>
