@@ -11,7 +11,7 @@ import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
 import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
-import { Route, Switch, Link, BrowserRouter } from "react-router-dom";
+import { Route, Switch, Link, HashRouter, BrowserHistory } from "react-router-dom";
 import { Chart } from "./Chart";
 
 type Props = {
@@ -218,7 +218,7 @@ export class Body extends React.Component<any, State> {
         let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp, logLenght, newSearch, selectDay,
             countDebug, countError, countInfo } = this.state
         return (
-            <BrowserRouter>
+            <HashRouter history={BrowserHistory}>
                 <Switch>
                     <Route exact path="/" render={() => {
                         return (
@@ -247,7 +247,7 @@ export class Body extends React.Component<any, State> {
 
                      }} />
                 </Switch>
-            </BrowserRouter>
+            </HashRouter>
         )
     }
 }
