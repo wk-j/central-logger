@@ -59,6 +59,7 @@ namespace CentralLogger {
             defaultOptions.DefaultFileNames.Clear();
             defaultOptions.DefaultFileNames.Add("index.html");
 
+
             if (env.IsDevelopment()) {
                 app
                 .UseWebSockets()
@@ -84,6 +85,8 @@ namespace CentralLogger {
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+
 
             app.UseMvc();
             app.UseSignalR(options => {
