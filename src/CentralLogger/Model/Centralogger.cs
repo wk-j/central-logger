@@ -32,6 +32,9 @@ namespace CentralLogger
         public IEnumerable<int> dataInfos {set; get;}
         public IEnumerable<int> dataErrors {set; get;}
         public IEnumerable<int> dataDebugs {set; get;}
+        public IEnumerable<int> dataTraces {set; get;}
+        public IEnumerable<int> dataWarnings {set; get;}
+        public IEnumerable<int> dataCriticals {set; get;}
     }
 
     public enum LogLevel

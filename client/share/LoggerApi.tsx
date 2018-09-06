@@ -26,7 +26,10 @@ type LoginResult = {
 export type CountLogs = {
     dataInfos: number[],
     dataErrors: number[],
-    dataDebugs: number[]
+    dataDebugs: number[],
+    dataTraces: number[],
+    dataWarnings: number[],
+    dataCriticals: number[]
 }
 
 export type ResultByDate = {

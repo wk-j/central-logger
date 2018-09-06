@@ -31,6 +31,9 @@ namespace CentralLogger.Controllers
             List<int> countInfo = new List<int>();
             List<int> countError = new List<int>();
             List<int> countDebug = new List<int>();
+            List<int> countTrace = new List<int>();
+            List<int> countWarning = new List<int>();
+            List<int> countCritical = new List<int>();
 
             date = date.ToLocalTime();
             var year = date.Year;
@@ -49,16 +52,27 @@ namespace CentralLogger.Controllers
                 var amountInfo = data.Where(x => (x.DateTime >= startDate && x.DateTime <= endDate) && x.LogLevel == LogLevel.Information).Count();
                 var amountError = data.Where(x => (x.DateTime >= startDate && x.DateTime <= endDate) && x.LogLevel == LogLevel.Error).Count();
                 var amountDebug = data.Where(x => (x.DateTime >= startDate && x.DateTime <= endDate) && x.LogLevel == LogLevel.Debug).Count();
-                
+                var amountTrace = data.Where(x => (x.DateTime >= startDate && x.DateTime <= endDate) && x.LogLevel == LogLevel.Trace).Count();
+                var amountWarning = data.Where(x => (x.DateTime >= startDate && x.DateTime <= endDate) && x.LogLevel == LogLevel.Warning).Count();
+                var amountCritical = data.Where(x => (x.DateTime >= startDate && x.DateTime <= endDate) && x.LogLevel == LogLevel.Critical).Count();
+
                 countInfo.Add(amountInfo);
                 countError.Add(amountError);
                 countDebug.Add(amountDebug);
+                countTrace.Add(amountTrace);
+                countWarning.Add(amountWarning);
+                countCritical.Add(amountCritical);
+
             }
             return Ok(new CountLogs
             {
                 dataInfos = countInfo,
                 dataErrors = countError,
-                dataDebugs = countDebug
+                dataDebugs = countDebug,
+                dataTraces = countTrace,
+                dataWarnings = countWarning,
+                dataCriticals = countCritical,
+
             });
 
         }
