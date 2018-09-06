@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <Target Name="Build-Web" AfterTargets="Build">
-        <Exec Command="npm install   --prefix ../../client"/>
-        <Exec Command="npm run build --prefix ../../client"/>
+        <Exec Command="npm install   " WorkingDirectory="$(MSBuildProjectDirectory)\..\..\client"/>
+        <Exec Command="npm run build " WorkingDirectory="$(MSBuildProjectDirectory)\..\..\client"/>
     </Target>
 
     <ItemGroup>
