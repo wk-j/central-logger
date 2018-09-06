@@ -15,7 +15,7 @@ export class Header extends React.Component<Props, State> {
     }
     public onLogout = () => {
         this.props.onLogout(false)
-        AppStorage.setAccessToken(null)
+        AppStorage.Logout()
     }
     public render() {
         return (

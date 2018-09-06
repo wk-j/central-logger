@@ -1,5 +1,5 @@
 import React from "react"
-import { Segment, Table, Icon, Header, Dropdown, Loader } from "semantic-ui-react"
+import { Segment, Table, Icon, Header, Dropdown, Loader, Button } from "semantic-ui-react"
 import { Logs } from "./Log"
 import DatePicker from "react-datepicker"
 import { Moment } from "moment"
@@ -140,14 +140,13 @@ export class LogList extends React.Component<Props, State> {
                                 next={this.fetchMoreData}
                                 hasMore={this.state.hasMore}
                                 loader={<Loader active inline="centered" />}
-                                height={400}
+                                height="100%"
                                 endMessage={
                                     <p style={{ textAlign: "center" }}>
                                         <b>You have seen it all</b>
                                     </p>
                                 }
                             >
-                                <div className="table">
                                     <Table compact >
                                         <Table.Body>
                                             {
@@ -155,7 +154,6 @@ export class LogList extends React.Component<Props, State> {
                                             }
                                         </Table.Body>
                                     </Table>
-                                </div>
 
                             </InfiniteScroll>
                         }

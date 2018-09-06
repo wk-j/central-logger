@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -25,6 +26,12 @@ namespace CentralLogger
         public int Id { set; get; }
         public string User { set; get; }
         public string Password { set; get; }
+    }
+    public class CountLogs
+    {
+        public IEnumerable<int> dataInfos {set; get;}
+        public IEnumerable<int> dataErrors {set; get;}
+        public IEnumerable<int> dataDebugs {set; get;}
     }
 
     public enum LogLevel

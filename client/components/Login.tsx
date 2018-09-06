@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
 import { Button, Form, Grid, Header, Message, Icon, Segment } from "semantic-ui-react"
 import { getApiUrl } from "../share/Configuration";
-import "../css/style.css"
+import "../css/Animation.css"
 import { LoggerApi } from "../share/LoggerApi"
 import AppStorage from "../share/AppStorage"
 
@@ -46,9 +46,11 @@ export class Login extends React.Component<Props, State> {
     private initLogin = (user: string, pass: string) => {
         this.LoggerApi.Login(user, pass).then(res => {
             AppStorage.setAccessToken(res.data.accessToken)
-            this.setState({ status: true })
-            this.props.onLogin(true)
-        }).catch(err => {
+            this.setState({ status: true, style: "out" })
+            setTimeout(() => {
+                this.setState({ render: true })
+            }, 650)
+                }).catch(err => {
             if (err.response.status === 401) {
                 this.setState({ status: false })
             }
