@@ -11,11 +11,11 @@ packages
 tools
 publish
 
+wwwroot
 .paket
 .settings
 .classpath
 .project
-
 
 target
 BenchmarkDotNet.Artifacts

@@ -1,2 +1,2 @@
 [config]
-project = src/CentralLogger/CentralLogger.csproj
+project = src/CentralLogger/CentralLogger.Azure.csproj
