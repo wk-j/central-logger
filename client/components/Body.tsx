@@ -190,7 +190,7 @@ export class Body extends React.Component<any, State> {
             .build();
 
         connection.onclose((err) => {
-            // alert("SignalR เกิดปัญหาการเชื่อมต่อ");
+            //alert("SignalR เกิดปัญหาการเชื่อมต่อ");
             console.error(err)
         });
 
