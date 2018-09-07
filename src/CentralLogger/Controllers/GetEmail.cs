@@ -6,6 +6,8 @@ namespace CentralLogger.Controllers {
         public string Email_1 { get; set; }
         public string Email_2 { get; set; }
         public string Email_3 { get; set; }
+
         public Boolean Enable { get; set; }
+
     }
 }
