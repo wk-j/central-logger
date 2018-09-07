@@ -97,7 +97,7 @@ namespace CentralLogger.Controllers {
                 Ip = x.Ip,
                 Category = x.Catelog
             };
-            if (data.LogLevel == LogLevel.Information) {
+            if (data.LogLevel == LogLevel.Critical) {
                 // var Email = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => new { m.Email_1,  m.Email_2, m.Email_3 }).ToList();
                 var Email1 = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => m.Email_1).ToList();
                 var Email2 = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => m.Email_2).ToList();
