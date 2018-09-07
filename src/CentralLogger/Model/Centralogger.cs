@@ -17,14 +17,17 @@ namespace CentralLogger {
         public string Ip { set; get; }
         public string Category { set; get; }
     }
-    public class Emails {
+
+    public class Emails
+    {
         [Key]
         [JsonIgnore]
-        public string Application { get; set; }
-        public string Email_1 { get; set; }
-        public string Email_2 { get; set; }
-        public string Email_3 { get; set; }
-        public Boolean Enable { get; set; }
+        public int Id { set; get; }
+        public string Application { set; get; }
+        public string Email_1 { set; get; }
+        public string Email_2 { set; get; }
+        public string Email_3 { set; get; }
+        public Boolean Enable { set; get; }
     }
 
     public class Users {
@@ -33,13 +36,15 @@ namespace CentralLogger {
         public string User { set; get; }
         public string Password { set; get; }
     }
-    public class CountLogs {
-        public IEnumerable<int> dataInfos { set; get; }
-        public IEnumerable<int> dataErrors { set; get; }
-        public IEnumerable<int> dataDebugs { set; get; }
-        public IEnumerable<int> dataTraces { set; get; }
-        public IEnumerable<int> dataWarnings { set; get; }
-        public IEnumerable<int> dataCriticals { set; get; }
+
+    public class CountLogs
+    {
+        public IEnumerable<int> dataInfos {set; get;}
+        public IEnumerable<int> dataErrors {set; get;}
+        public IEnumerable<int> dataDebugs {set; get;}
+        public IEnumerable<int> dataTraces {set; get;}
+        public IEnumerable<int> dataWarnings {set; get;}
+        public IEnumerable<int> dataCriticals {set; get;}
     }
 
     public enum LogLevel {
@@ -48,6 +53,8 @@ namespace CentralLogger {
 
     public class CentralLoggerContext : DbContext {
         public DbSet<LogInfo> LogInfos { get; set; }
+        public DbSet<Emails> Emails { get; set; }
+
         public DbSet<Users> Users { get; set; }
         public DbSet<Emails> Emails { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
