@@ -4,11 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace CentralLogger
-{
+namespace CentralLogger {
 
-    public class LogInfo
-    {
+    public class LogInfo {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
@@ -19,37 +17,42 @@ namespace CentralLogger
         public string Ip { set; get; }
         public string Category { set; get; }
     }
+    public class Emails {
+        [Key]
+        [JsonIgnore]
+        public string Application { get; set; }
+        public string Email_1 { get; set; }
+        public string Email_2 { get; set; }
+        public string Email_3 { get; set; }
+        public bool Enable { get; set; }
+    }
 
-    public class Users
-    {
+    public class Users {
         [Key]
         public int Id { set; get; }
         public string User { set; get; }
         public string Password { set; get; }
     }
-    public class CountLogs
-    {
-        public IEnumerable<int> dataInfos {set; get;}
-        public IEnumerable<int> dataErrors {set; get;}
-        public IEnumerable<int> dataDebugs {set; get;}
-        public IEnumerable<int> dataTraces {set; get;}
-        public IEnumerable<int> dataWarnings {set; get;}
-        public IEnumerable<int> dataCriticals {set; get;}
+    public class CountLogs {
+        public IEnumerable<int> dataInfos { set; get; }
+        public IEnumerable<int> dataErrors { set; get; }
+        public IEnumerable<int> dataDebugs { set; get; }
+        public IEnumerable<int> dataTraces { set; get; }
+        public IEnumerable<int> dataWarnings { set; get; }
+        public IEnumerable<int> dataCriticals { set; get; }
     }
 
-    public enum LogLevel
-    {
+    public enum LogLevel {
         Trace, Debug, Information, Warning, Error, Critical
     }
 
-    public class CentralLoggerContext : DbContext
-    {
+    public class CentralLoggerContext : DbContext {
         public DbSet<LogInfo> LogInfos { get; set; }
         public DbSet<Users> Users { get; set; }
+        public DbSet<Emails> Emails { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.Entity<Users>()
                 .HasAlternateKey(x => x.User)
                 .HasName("AlternateKey_User");

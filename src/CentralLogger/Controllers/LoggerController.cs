@@ -98,6 +98,20 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpPost]
+        public ActionResult AddEmail([FromBody]GetEmail x) {
+            db.Emails.Add(new Emails() {
+                Application = x.Application,
+                Email_1 = x.Email_1,
+                Email_2 = x.Email_2,
+                Email_3 = x.Email_3,
+                Enable = true
+            });
+            db.SaveChanges();
+            return Ok();
+        }
+
+
+        [HttpPost]
         public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService) {
 
             var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);

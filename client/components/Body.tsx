@@ -11,7 +11,7 @@ import { LoggerApi, Log } from "../share/LoggerApi"
 import { LogList } from "./LogList"
 import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
-import { Route, Switch, Link, BrowserRouter } from "react-router-dom";
+import { Route, Switch, Link, HashRouter, BrowserHistory } from "react-router-dom";
 import { Chart } from "./Chart";
 
 type Props = {
@@ -53,6 +53,9 @@ type State = {
     countInfo: number[]
     countError: number[]
     countDebug: number[]
+    countTrace: number[]
+    countWarning: number[]
+    countCritical: number[]
 }
 
 export class Body extends React.Component<any, State> {
@@ -86,7 +89,10 @@ export class Body extends React.Component<any, State> {
             styleChart: "slideInLeft",
             countInfo: null,
             countDebug: null,
-            countError: null
+            countError: null,
+            countTrace: null,
+            countWarning: null,
+            countCritical: null
         }
         this.LogDate = []
         this.LogNow = []
@@ -132,7 +138,8 @@ export class Body extends React.Component<any, State> {
     }
     public initGetChart = (date: Date) => {
         this.LoggerApi.GetDataChart(date).then(response => {
-            this.setState({ countInfo: response.data.dataInfos, countDebug: response.data.dataDebugs, countError: response.data.dataErrors })
+            this.setState({ countInfo: response.data.dataInfos, countDebug: response.data.dataDebugs, countError: response.data.dataErrors
+                            , countTrace: response.data.dataTraces, countCritical: response.data.dataCriticals, countWarning: response.data.dataWarnings  })
         })
     }
     public componentDidMount() {
@@ -190,7 +197,7 @@ export class Body extends React.Component<any, State> {
             .build();
 
         connection.onclose((err) => {
-            //alert("SignalR เกิดปัญหาการเชื่อมต่อ");
+            // alert("SignalR เกิดปัญหาการเชื่อมต่อ");
             console.error(err)
         });
 
@@ -216,9 +223,9 @@ export class Body extends React.Component<any, State> {
     public render() {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
         let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp, logLenght, newSearch, selectDay,
-            countDebug, countError, countInfo } = this.state
+            countDebug, countError, countInfo, countCritical, countTrace, countWarning } = this.state
         return (
-            <BrowserRouter>
+            <HashRouter history={BrowserHistory}>
                 <Switch>
                     <Route exact path="/" render={() => {
                         return (
@@ -241,13 +248,14 @@ export class Body extends React.Component<any, State> {
                                 <div className="buttons">
                                     <Link to="/" className="navbar-item"><Button circular color="blue" icon="eye" size="massive" /></Link>
                                 </div>
-                                <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError} />
+                                <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
+                                        trace={countTrace} warning={countWarning} critical={countCritical} />
                             </BodyDiv>
                         )
 
                      }} />
                 </Switch>
-            </BrowserRouter>
+            </HashRouter>
         )
     }
 }
