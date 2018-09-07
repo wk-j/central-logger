@@ -18,8 +18,7 @@ namespace CentralLogger {
         public string Category { set; get; }
     }
 
-    public class Emails
-    {
+    public class Emails {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
@@ -37,14 +36,13 @@ namespace CentralLogger {
         public string Password { set; get; }
     }
 
-    public class CountLogs
-    {
-        public IEnumerable<int> dataInfos {set; get;}
-        public IEnumerable<int> dataErrors {set; get;}
-        public IEnumerable<int> dataDebugs {set; get;}
-        public IEnumerable<int> dataTraces {set; get;}
-        public IEnumerable<int> dataWarnings {set; get;}
-        public IEnumerable<int> dataCriticals {set; get;}
+    public class CountLogs {
+        public IEnumerable<int> dataInfos { set; get; }
+        public IEnumerable<int> dataErrors { set; get; }
+        public IEnumerable<int> dataDebugs { set; get; }
+        public IEnumerable<int> dataTraces { set; get; }
+        public IEnumerable<int> dataWarnings { set; get; }
+        public IEnumerable<int> dataCriticals { set; get; }
     }
 
     public enum LogLevel {
@@ -53,7 +51,6 @@ namespace CentralLogger {
 
     public class CentralLoggerContext : DbContext {
         public DbSet<LogInfo> LogInfos { get; set; }
-        public DbSet<Emails> Emails { get; set; }
 
         public DbSet<Users> Users { get; set; }
         public DbSet<Emails> Emails { get; set; }
