@@ -17,10 +17,10 @@ namespace CentralLogger.Services {
 
         public void AddEmail(string app) {
             var exist = db.Emails.Where(x => x.Application == app).FirstOrDefault();
-            if (exist != null) {
+            if (exist == null) {
                 var email = new Emails();
-                email.Email_2 = "somnuk.wk@bcircle.co.th";
-                email.Email_3 = "somnuk.wk@outlook.com";
+                email.Email_1 = "somnuk.wk@bcircle.co.th";
+                email.Email_2 = "somnuk.wk@outlook.com";
                 email.Enable = true;
                 email.Application = app;
                 db.Emails.Add(email);

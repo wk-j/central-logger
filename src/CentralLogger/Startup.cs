@@ -89,8 +89,8 @@ namespace CentralLogger {
             var createData = db.Database.EnsureCreated();
             if (createData) {
                 userService.AddUser("admin", "admin");
-                userService.AddEmail("dotnet-script.dll");
             }
+            userService.AddEmail("dotnet-script.dll");
             Console.WriteLine("Create success");
         }
     }
