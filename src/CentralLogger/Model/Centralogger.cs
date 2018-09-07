@@ -19,6 +19,17 @@ namespace CentralLogger
         public string Ip { set; get; }
         public string Category { set; get; }
     }
+    public class Emails
+    {
+        [Key]
+        [JsonIgnore]
+        public int Id { set; get; }
+        public string Application { set; get; }
+        public string Email_1 { set; get; }
+        public string Email_2 { set; get; }
+        public string Email_3 { set; get; }
+        public Boolean Enable { set; get; }
+    }
 
     public class Users
     {
@@ -45,6 +56,8 @@ namespace CentralLogger
     public class CentralLoggerContext : DbContext
     {
         public DbSet<LogInfo> LogInfos { get; set; }
+        public DbSet<Emails> Emails { get; set; }
+
         public DbSet<Users> Users { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
 
