@@ -13,6 +13,7 @@ import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
 import { Route, Switch, Link, HashRouter, BrowserHistory } from "react-router-dom";
 import { Chart } from "./Chart";
+import { Manage } from "./Manage";
 
 type Props = {
     onLogoutPlease: () => void
@@ -99,21 +100,26 @@ export class Body extends React.Component<any, State> {
         this.Limit = 1
     }
     public handleStartDateChange = (date) => {
+        this.LogDate = []
+        this.LogNow = []
         this.Limit = 1
         if (date > this.state.endDay) {
             this.setState({
+                logDate: [],
                 startDay: date,
                 endDay: moment(date).endOf("day")
             });
         } else {
-            this.setState({ startDay: date })
+            this.setState({ logDate: [], startDay: date })
         }
         this.initSearchByAll(date.toDate(), this.state.endDay.toDate(), this.state.selectApp, this.state.selectIp)
     }
 
     public handleEndDateChange = (date) => {
+        this.LogDate = []
+        this.LogNow = []
         this.Limit = 1
-        this.setState({ endDay: date, newSearch: true });
+        this.setState({ logDate: [], endDay: date, newSearch: true });
         this.initSearchByAll(this.state.startDay.toDate(), date.toDate(), this.state.selectApp, this.state.selectIp)
 
     }
@@ -232,7 +238,10 @@ export class Body extends React.Component<any, State> {
                             <BodyDiv>
                                 <Loader content="Loading" active={this.state.loading} />
                                 <div className="buttons">
-                                    <Link to="/summary" className="navbar-item"><Button circular color="blue" icon="area graph" size="massive" /></Link>
+                                    <Link to="/summary" className="navbar-item"><Button circular color="yellow" icon="area graph" size="massive" /></Link>
+                                </div>
+                                <div className="Lbuttons">
+                                    <Link to="/manage" className="navbar-item"><Button circular color="green" icon="cogs" size="massive" /></Link>
                                 </div>
                                 <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
                                     onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
@@ -245,11 +254,28 @@ export class Body extends React.Component<any, State> {
                     <Route exact path="/summary" render={() => {
                         return (
                             <BodyDiv>
-                                <div className="buttons">
+                                <div className="Lbuttons">
                                     <Link to="/" className="navbar-item"><Button circular color="blue" icon="eye" size="massive" /></Link>
+                                </div>
+                                <div className="buttons">
+                                    <Link to="/manage" className="navbar-item"><Button circular color="green" icon="cogs" size="massive" /></Link>
                                 </div>
                                 <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
                                         trace={countTrace} warning={countWarning} critical={countCritical} />
+                            </BodyDiv>
+                        )
+
+                     }} />
+                     <Route exact path="/manage" render={() => {
+                        return (
+                            <BodyDiv>
+                                <div className="Lbuttons">
+                                    <Link to="/" className="navbar-item"><Button circular color="blue" icon="eye" size="massive" /></Link>
+                                </div>
+                                <div className="buttons">
+                                    <Link to="/summary" className="navbar-item"><Button circular color="yellow" icon="area graph" size="massive" /></Link>
+                                </div>
+                                <Manage  allApp={allApp} selectApp={selectApp}/>
                             </BodyDiv>
                         )
 

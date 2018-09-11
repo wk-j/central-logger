@@ -34,6 +34,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-simple-infinite-scroll": "0.0.1",
+    "react-switch": "^3.0.4",
     "throttle-debounce": "^2.0.1",
     "typescript": "^3.0.1",
     "webpack": "^4.12.0",
