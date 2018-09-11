@@ -111,7 +111,10 @@ export class Chart extends React.Component<Props, State> {
         }
         return (
                 <Segment.Group>
-                    <Segment textAlign="center" inverted color="blue">
+                    <Segment textAlign="center" inverted color="yellow">
+                    <Header as="h2" floated="left">
+                    Log Chart
+                    </Header>
                     <Icon style={style} size="large" name="calendar alternate outline" />
                     <div className="ui input datepicker">
                         <DatePicker

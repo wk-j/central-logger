@@ -31,6 +31,13 @@ export type CountLogs = {
     dataWarnings: number[],
     dataCriticals: number[]
 }
+export type manage = {
+    ApplicationName: string,
+    Email1: string,
+    Email2: string,
+    Email3: string,
+    Enable: boolean
+}
 
 export type ResultByDate = {
     resultDate: Log[]

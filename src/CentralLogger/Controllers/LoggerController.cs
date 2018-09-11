@@ -15,19 +15,25 @@ using CentralLogger.Services;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
+using System.Timers;
+using CentralLogger;
+
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoggerController : ControllerBase {
-
+        private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
-        private readonly IConfiguration configuration;
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, IConfiguration configuration) {
+
+
+
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email) {
             this.db = db;
             this.hubContext = hubContext;
-            this.configuration = configuration;
+            this.email = email;
         }
 
         [HttpGet]
@@ -97,42 +103,23 @@ namespace CentralLogger.Controllers {
                 Ip = x.Ip,
                 Category = x.Catelog
             };
+            var emailList = db.Emails.Where(z => z.Enable && z.Application == data.Application).Select(m => new { m.Email_1, m.Email_2, m.Email_3 }).ToList();
+            var email1 = emailList.Select(y => y.Email_1);
+            var email2 = emailList.Select(y => y.Email_2);
+            var email3 = emailList.Select(y => y.Email_3);
+            var allEmail = email1.Concat(email2).Concat(email3).Distinct().ToArray();
+            foreach (var emails in allEmail) {
+                email.EnqueueMail(emails);
+            }
             if (data.LogLevel == LogLevel.Critical) {
-                // var Email = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => new { m.Email_1,  m.Email_2, m.Email_3 }).ToList();
-                var Email1 = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => m.Email_1).ToList();
-                var Email2 = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => m.Email_2).ToList();
-                var Email3 = db.Emails.Where(z => z.Enable == true && z.Application == data.Application ).Select(m => m.Email_3).ToList();
-                var allEmail = Email1.Union(Email2).Union(Email3).ToArray();
-                foreach(var email in allEmail)
-                {
-                    if(!string.IsNullOrEmpty(email)){
-                        await sendMail(data,email);
-                    }
-                }
+                email.Enqueue(data);
             }
             db.SaveChanges();
+
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
-        public async Task sendMail(LogInfo data, string Email) {
-            string subject = $"Critical Alert {data.Application} [ {data.Ip} ]";
-            string body = $"Found Critical:@Application : {data.Application}@Datetime : {data.DateTime}@Category : {data.Category}@IP : {data.Ip}@Message : {data.Message}";
-            body = body.Replace("@", Environment.NewLine);
-            string FromMail = configuration["Email:Account"];
-            string Password = configuration["Email:Password"];
-            string emailTo = Email;
-            MailMessage mail = new MailMessage();
-            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
-            SmtpServer.UseDefaultCredentials = false;
-            SmtpServer.EnableSsl = true;
-            SmtpServer.Port = 587; 
-            SmtpServer.Credentials = new System.Net.NetworkCredential(FromMail, Password);
-            mail.From = new MailAddress(FromMail);
-            mail.To.Add(emailTo);
-            mail.Subject = subject;
-            mail.Body = body;
-            await SmtpServer.SendMailAsync(mail);
-        }
+
 
         [HttpPost]
         public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService) {
