@@ -10,13 +10,6 @@ variables:
   buildConfiguration: 'Release'
 
 
-steps:
-
-- script: dotnet publish src/CentralLogger/CentralLogger.Azure.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
-  displayName: 'publish'
-
-- task: PublishBuildArtifacts@1
-
 - task: NodeTool@0
   inputs:
     version: '8.x'
@@ -24,3 +17,9 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     version: '2.1.300'
+
+steps:
+- script: dotnet publish src/CentralLogger/CentralLogger.Azure.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
+  displayName: 'publish'
+
+- task: PublishBuildArtifacts@1
