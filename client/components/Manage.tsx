@@ -1,10 +1,9 @@
 import React from "react"
 import { Segment, Table, Icon, Header, Dropdown, Loader, Button } from "semantic-ui-react"
-import { Logs } from "./Log"
+import { ManageItems } from "./ManageItems"
 import "react-datepicker/dist/react-datepicker.css";
 import { Log } from "../share/LoggerApi"
 import "/css/Body.css"
-import ReactEcharts from "echarts-for-react";
 import { LoggerApi, manage } from "../share/LoggerApi"
 import { getApiUrl } from "../share/Configuration"
 import Switch from "react-switch";
@@ -14,7 +13,7 @@ type Props = {
     selectApp: string
 }
 type State = {
-manage: manage[]
+    manage: manage[]
 }
 
 export class Manage extends React.Component<Props, State> {
@@ -34,22 +33,29 @@ export class Manage extends React.Component<Props, State> {
             <div>
                 <Segment.Group>
                     <Segment textAlign="center" inverted color="green">
-                    <Header as="h2" floated="left">
-                    Manage
+                        <Header as="h2" floated="left">
+                            Manage
                     </Header>
-                    <Icon style={style} size="large" name="box" />
-                    <Dropdown className="dropdown" placeholder="All Application" closeOnChange selection options={this.props.allApp} value={this.props.selectApp} />
+                        <Icon style={style} size="large" name="box" />
+                        <Dropdown className="dropdown" placeholder="All Application" closeOnChange selection options={this.props.allApp} value={this.props.selectApp} />
+                        <Button color="olive" circular icon="plus" floated="right" />
                     </Segment>
-                    <Segment textAlign="right" style={{ minHeight: "calc( 100vh - 230px )" }}>
+                    <Segment textAlign="center" style={{ minHeight: "calc( 100vh - 230px )" }}>
+                        {this.state.manage === null ?
+                            <Header as="h1" icon>
+                                <br />
+                                <Icon size="huge" name="frown outline" />
+                                <br />พบปัญหาในการค้นหา
+                    </Header>
+                            :
+                            <Table compact >
+                                <Table.Body>
+                                    {this.state.manage.map((x, key) => <ManageItems />)}
+                                </Table.Body>
+                            </Table>
+                        }
                     </Segment>
                 </Segment.Group>
-                <Table compact >
-                <Table.Body>
-                    {
-                        this.state.manage.map((x, key) => {})
-                    }
-                </Table.Body>
-            </Table>
             </div>
         )
     }

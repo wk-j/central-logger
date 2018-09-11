@@ -15,17 +15,25 @@ using CentralLogger.Services;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
+using System.Timers;
+using CentralLogger;
+
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoggerController : ControllerBase {
-        private readonly EmailController email;
+        private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext) {
+
+
+
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email) {
             this.db = db;
             this.hubContext = hubContext;
+            this.email = email;
         }
 
         [HttpGet]
@@ -95,12 +103,23 @@ namespace CentralLogger.Controllers {
                 Ip = x.Ip,
                 Category = x.Catelog
             };
-            await email.chkEmail(data);
+            var emailList = db.Emails.Where(z => z.Enable && z.Application == data.Application).Select(m => new { m.Email_1, m.Email_2, m.Email_3 }).ToList();
+            var email1 = emailList.Select(y => y.Email_1);
+            var email2 = emailList.Select(y => y.Email_2);
+            var email3 = emailList.Select(y => y.Email_3);
+            var allEmail = email1.Concat(email2).Concat(email3).Distinct().ToArray();
+            foreach (var emails in allEmail) {
+                email.EnqueueMail(emails);
+            }
+            if (data.LogLevel == LogLevel.Critical) {
+                email.Enqueue(data);
+            }
             db.SaveChanges();
+
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
-        
+
 
         [HttpPost]
         public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService) {
