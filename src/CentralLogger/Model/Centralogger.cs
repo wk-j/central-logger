@@ -57,7 +57,6 @@ namespace CentralLogger
     {
         public DbSet<LogInfo> LogInfos { get; set; }
         public DbSet<Emails> Emails { get; set; }
-
         public DbSet<Users> Users { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
 

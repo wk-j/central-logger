@@ -11,6 +11,8 @@ namespace CentralLogger.Services {
         private readonly CentralLoggerContext db;
 
         public UserService(CentralLoggerContext db) {
+
+            Console.WriteLine("Create UserService instance");
             this.db = db;
             this.salt = System.Text.Encoding.UTF8.GetBytes("4DI0P3K6");
         }
@@ -45,7 +47,6 @@ namespace CentralLogger.Services {
                 });
                 db.SaveChanges();
             }
-
             return false;
         }
 

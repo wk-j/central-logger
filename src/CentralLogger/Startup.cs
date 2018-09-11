@@ -46,6 +46,7 @@ namespace CentralLogger {
             services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(connectionString));
             services.AddSignalR();
             services.AddScoped<UserService>();
+            services.AddSingleton<EmailService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c => {

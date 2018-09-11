@@ -37,7 +37,6 @@ export type manage = {
     Email2: string,
     Email3: string,
     Enable: boolean
-
 }
 
 export type ResultByDate = {
