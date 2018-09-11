@@ -35,7 +35,6 @@ namespace CentralLogger.Controllers
             List<int> countWarning = new List<int>();
             List<int> countCritical = new List<int>();
 
-            date = date.ToLocalTime();
             var year = date.Year;
             var month = date.Month;
             var day = date.Day;
