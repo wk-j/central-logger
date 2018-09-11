@@ -20,3 +20,7 @@ steps:
 - task: NodeTool@0
   inputs:
     version: '8.x'
+
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.1.301'
