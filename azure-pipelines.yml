@@ -12,7 +12,7 @@ variables:
 
 steps:
 
-- script: dotnet publish src/CentralLogger/CentralLogger.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
+- script: dotnet publish src/CentralLogger/CentralLogger.Azure.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
   displayName: 'publish'
 
 - task: PublishBuildArtifacts@1
@@ -23,4 +23,4 @@ steps:
 
 - task: DotNetCoreInstaller@0
   inputs:
-    version: '2.1.301'
+    version: '2.1.300'
