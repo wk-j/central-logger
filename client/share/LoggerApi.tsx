@@ -42,7 +42,16 @@ export type manage = {
 export type ResultByDate = {
     resultDate: Log[]
 }
-
+export type GetEmail = {
+    application: string,
+    email_1: string,
+    email_2: string,
+    email_3: string,
+    enable: boolean
+}
+export type EmailList = {
+    MailList: GetEmail[]
+}
 export class LoggerApi {
     constructor(private url: string) {
     }
@@ -71,5 +80,25 @@ export class LoggerApi {
     }
     public GetDataChart(date: Date) {
         return axios.post<CountLogs>(`${this.url}/api/Summary/GetDataChart`, date)
+    }
+    // แสดงอีเมล์กับแอปทั้งหมด
+    public ShowMailApp() {
+        return axios.get<GetEmail[]>(`${this.url}/api/Logger/ShowMailApp`)
+    }
+    // ลบแอปอีเมล์
+    public DeleteApp(AppName: string) {
+        return axios.post(`${this.url}/api/Logger/DeleteApp`, AppName)
+    }
+    // อัพเดท อีเมล์
+    public UpdateEmail(data: GetEmail) {
+        return axios.post(`${this.url}/api/Logger/UpdateEmail`, data)
+    }
+    // เรียกแอปที่ยังไม่ได้ตังค่า
+    public SearchExceptApp() {
+        return axios.get<string[]>(`${this.url}/api/Logger/SearchExceptApp`)
+    }
+    // เพิ่มแอปอีเมล์
+    public AddEmails(data: GetEmail) {
+        return axios.post<GetEmail>(`${this.url}/api/Logger/AddEmails`, data)
     }
 }
