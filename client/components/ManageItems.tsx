@@ -24,9 +24,12 @@ export class ManageItems extends React.Component<Props, State> {
             appName: ""
         }
     }
-    private onDelete() {
-        console.log(this.props.list.application)
-        // this.props.onDelete(this.props.list.application)
+    public componentDidMount() {
+        this.setState({ appName: this.props.list.application })
+    }
+    private onDelete = () => {
+        // console.log(this.props.list.application)
+        this.props.onDelete(this.props.list.application)
     }
     public render() {
         let status: SemanticICONS = "circle"
@@ -46,7 +49,12 @@ export class ManageItems extends React.Component<Props, State> {
                     <Table.Cell >{this.props.list.email_2}</Table.Cell>
                     <Table.Cell >{this.props.list.email_3}</Table.Cell>
                     <Table.Cell textAlign="center"><Icon name={status} /></Table.Cell>
-                    <Table.Cell textAlign="center"><div><Button circular icon="pencil" color="green" /><Button circular icon="trash alternate" color="red" onClick={this.onDelete} /></div></Table.Cell>
+                    <Table.Cell textAlign="center">
+                        <div>
+                            <Button circular icon="pencil" color="green" />
+                            <Button circular icon="trash alternate" color="red" onClick={this.onDelete} />
+                        </div>
+                    </Table.Cell>
                 </Table.Row>
                 :
                 <div>No Data</div>

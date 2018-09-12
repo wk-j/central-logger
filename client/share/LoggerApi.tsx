@@ -87,7 +87,7 @@ export class LoggerApi {
     }
     // ลบแอปอีเมล์
     public DeleteApp(AppName: string) {
-        return axios.post(`${this.url}/api/Logger/DeleteApp`, AppName)
+        return axios.get(`${this.url}/api/Logger/DeleteApp?AppName=${AppName}`)
     }
     // อัพเดท อีเมล์
     public UpdateEmail(data: GetEmail) {
