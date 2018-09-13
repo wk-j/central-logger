@@ -26,12 +26,28 @@ type Props = {
     onEnableChange: (boolean) => void
     // tslint:disable-next-line:variable-name
     onDelete: (string) => void
+    // tslint:disable-next-line:variable-name
+    onAppEdit: (string) => void
+    // tslint:disable-next-line:variable-name
+    onEmail1Edit: (string) => void
+    // tslint:disable-next-line:variable-name
+    onEmail2Edit: (string) => void
+    // tslint:disable-next-line:variable-name
+    onEmail3Edit: (string) => void
+    // tslint:disable-next-line:variable-name
+    onEnableEdit: (boolean) => void
+    onEditSave: () => void
     onNewSave: () => void
     newApp: string
     newEmail1: string
     newEmail2: string
     newEmail3: string
     newEnable: boolean
+    editApp: string
+    editEmail1: string
+    editEmail2: string
+    editEmail3: string
+    editEnable: boolean
 }
 type State = {
     manage: GetEmail[]
@@ -76,27 +92,27 @@ export class Manage extends React.Component<Props, State> {
     private onSave = () => {
         if (this.props.newApp === null) {
             swal({
-                title: "Please select application to manage.",
+                title: "โปรดเลือก Application เพื่อตั้งค่า",
                 timer: 1000
             })
         } else if (this.props.newEmail1 === null && this.props.newEmail2 === null && this.props.newEmail3 === null) {
             swal({
-                title: "Please enter at least 1 email.",
+                title: "โปรดกรอกอย่างน้อย 1 อีเมล์",
                 timer: 1000
             })
         } else if (this.props.newEmail1 !== "" && !EmailValidator.validate(this.props.newEmail1)) {
             swal({
-                title: "Invalid email1 format.",
+                title: "รูปแบบ email1 ผิดพลาด.",
                 timer: 1000
             })
         } else if (this.props.newEmail2 !== null && this.props.newEmail2 !== "" && !EmailValidator.validate(this.props.newEmail2)) {
             swal({
-                title: "Invalid email2 format.",
+                title: "รูปแบบ email2 ผิดพลาด.",
                 timer: 1000
             })
         } else if (this.props.newEmail3 !== null && this.props.newEmail3 !== "" && !EmailValidator.validate(this.props.newEmail3)) {
             swal({
-                title: "Invalid email3 format.",
+                title: "รูปแบบ email3 ผิดพลาด.",
                 timer: 1000
             })
         } else {
@@ -161,7 +177,6 @@ export class Manage extends React.Component<Props, State> {
                             </Button>
                             </Modal.Actions>
                         </Modal>
-
                     </Segment>
                     <Segment textAlign="center" style={{ minHeight: "calc( 100vh - 230px )" }}>
                         {this.props.loading ?
@@ -180,7 +195,10 @@ export class Manage extends React.Component<Props, State> {
                                         </Table.Row>
                                     </Table.Header>
                                     <Table.Body>
-                                        {this.props.list.map((x, key) => <ManageItems onDelete={this.props.onDelete} list={x} key={key} />)}
+                                        {this.props.list.map((x, key) => <ManageItems onAppEdit={this.props.onAppEdit} onEmail1Edit={this.props.onEmail1Edit} onEmail2Edit={this.props.onEmail2Edit}
+                                            onEmail3Edit={this.props.onEmail3Edit} onEnableEdit={this.props.onEnableEdit} onDelete={this.props.onDelete} list={x} key={key}
+                                            onSave={this.props.onEditSave} editEmail1={this.props.editEmail1} editEmail2={this.props.editEmail2} editEmail3={this.props.editEmail3}
+                                            editEnable={this.props.editEnable} />)}
                                     </Table.Body>
                                 </Table>
                             </div>

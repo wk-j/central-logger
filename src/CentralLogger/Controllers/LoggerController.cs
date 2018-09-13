@@ -176,6 +176,7 @@ namespace CentralLogger.Controllers {
                     data.Email_1 = Mail.Email_1;
                     data.Email_2 = Mail.Email_2;
                     data.Email_3 = Mail.Email_3;
+                    data.Enable = Mail.Enable;
                 }
                 await db.SaveChangesAsync();
                 return Ok();

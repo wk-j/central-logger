@@ -1,5 +1,5 @@
 import React from "react"
-import { Loader, Table, Button } from "semantic-ui-react"
+import { Loader, Header, Button, Icon, List } from "semantic-ui-react"
 import styled from "styled-components"
 import moment, { Moment } from "moment"
 import "react-datepicker/dist/react-datepicker.css"
@@ -15,6 +15,7 @@ import { Route, Switch, Link, HashRouter, BrowserHistory } from "react-router-do
 import { Chart } from "./Chart";
 import { Manage } from "./Manage";
 import swal from "sweetalert2"
+import { stack as Menu } from "react-burger-menu"
 
 type Props = {
     onLogoutPlease: () => void
@@ -65,6 +66,12 @@ type State = {
     newEmail2: string
     newEmail3: string
     newEnable: boolean
+    openMenu: boolean
+    editApp: string
+    editEmail1: string
+    editEmail2: string
+    editEmail3: string
+    editEnable: boolean
 }
 
 export class Body extends React.Component<any, State> {
@@ -108,7 +115,13 @@ export class Body extends React.Component<any, State> {
             newEmail1: null,
             newEmail2: null,
             newEmail3: null,
-            newEnable: true
+            newEnable: true,
+            openMenu: false,
+            editApp: null,
+            editEmail1: null,
+            editEmail2: null,
+            editEmail3: null,
+            editEnable: true
         }
         this.LogDate = []
         this.LogNow = []
@@ -228,7 +241,7 @@ export class Body extends React.Component<any, State> {
     private initDeleteApp = (data: string) => {
         console.log(data)
         this.LoggerApi.DeleteApp(data).then(response => {
-            console.log(response.data)
+            this.initSearchExceptApp()
             this.initmailList()
         })
             .catch(err => {
@@ -240,8 +253,6 @@ export class Body extends React.Component<any, State> {
     }
     public initAddEmails = (data: GetEmail) => {
         this.LoggerApi.AddEmails(data).then(response => {
-            console.log(response.data)
-            this.forceUpdate()
             swal("Save!", "Save Complete!", "success");
             this.initmailList()
             this.setState({ newApp: null, newEmail1: null, newEmail2: null, newEmail3: null, newEnable: true })
@@ -251,7 +262,17 @@ export class Body extends React.Component<any, State> {
             }
         })
     }
-
+    public initUpdateEmail = (data: GetEmail) => {
+        this.LoggerApi.UpdateEmail(data).then(response => {
+            swal("แก้ไขเรียบร้อย!", "", "success");
+            this.initmailList()
+            this.setState({ editApp: null, editEmail1: null, editEmail2: null, editEmail3: null, editEnable: null })
+        }).catch(err => {
+            if (err.response.status === 401) {
+                this.props.onLogoutPlease()
+            }
+        })
+    }
     public handleSignalR() {
 
         const connection = new HubConnectionBuilder()
@@ -297,6 +318,24 @@ export class Body extends React.Component<any, State> {
     private onNewEnable = (value) => {
         this.setState({ newEnable: value })
     }
+    private onEditApp = (value) => {
+        this.setState({ editApp: value })
+    }
+    private onEditEmail1 = (value) => {
+        this.setState({ editEmail1: value })
+    }
+    private onEditEmail2 = (value) => {
+        this.setState({ editEmail2: value })
+    }
+    private onEditEmail3 = (value) => {
+        this.setState({ editEmail3: value })
+    }
+    private onEditEnable = (value) => {
+        this.setState({ editEnable: value })
+    }
+    private onOpenMunu = () => {
+        this.setState({ openMenu: false })
+    }
     private onNewSave = () => {
         let newManageList: GetEmail = {
             application: this.state.newApp,
@@ -307,20 +346,30 @@ export class Body extends React.Component<any, State> {
         }
         this.initAddEmails(newManageList);
     }
+    private onEditSave = () => {
+        let editManageList: GetEmail = {
+            application: this.state.editApp,
+            email_1: this.state.editEmail1,
+            email_2: this.state.editEmail2,
+            email_3: this.state.editEmail3,
+            enable: this.state.editEnable
+        }
+        this.initUpdateEmail(editManageList)
+    }
     private OnDelete = (AppName) => {
         swal({
-            title: "Are you sure?",
+            title: "คุณต้องการลบการตั้งค่านี้ใช่หรือไม่?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes !"
+            confirmButtonText: "Delete !"
         }).then((result) => {
             if (result.value) {
                 this.initDeleteApp(AppName)
                 swal(
-                    "Deleted!",
-                    "Your file has been deleted.",
+                    "ลบเรียบร้อย!",
+                    "",
                     "success"
                 )
             }
@@ -331,59 +380,133 @@ export class Body extends React.Component<any, State> {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
         let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp, logLenght, newSearch, selectDay,
             countDebug, countError, countInfo, countCritical, countTrace, countWarning, emailList, allMailApp
-            , newApp, newEmail1, newEmail2, newEmail3, newEnable } = this.state
+            , newApp, newEmail1, newEmail2, newEmail3, newEnable, editApp, editEmail1, editEmail2, editEmail3, editEnable } = this.state
         return (
             <HashRouter history={BrowserHistory}>
                 <Switch>
                     <Route exact path="/" render={() => {
                         return (
-                            <BodyDiv>
-                                <Loader content="Loading" active={this.state.loading} />
-                                <div className="buttons">
-                                    <Link to="/summary" className="navbar-item"><Button circular color="yellow" icon="area graph" size="massive" /></Link>
-                                </div>
-                                <div className="Lbuttons">
-                                    <Link to="/manage" className="navbar-item"><Button circular color="green" icon="cogs" size="massive" /></Link>
-                                </div>
-                                <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
-                                    onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
-                                    allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
-                                    allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
-                            </BodyDiv >
-
+                            <div>
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"scaleRotate"} outerContainerId={"scaleRotate"} >
+                                    <Header as="h2" icon>
+                                        <Icon name="eye" />
+                                        Central Logger™
+                                    <Header.Subheader>Menu</Header.Subheader>
+                                    </Header>
+                                    <Link to="/summary" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item>
+                                                <List.Icon name="area graph" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Log Chart</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                    <br />
+                                    <Link to="/manage" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item>
+                                                <List.Icon name="cogs" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a" onClick={this.onOpenMunu}>Manage</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                </Menu>
+                                <BodyDiv>
+                                    <Loader content="Loading" active={this.state.loading} />
+                                    <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
+                                        onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
+                                        allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
+                                        allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
+                                </BodyDiv >
+                            </div>
                         )
                     }} />
                     <Route exact path="/summary" render={() => {
                         return (
-                            <BodyDiv>
-                                <div className="buttons">
-                                    <Link to="/" className="navbar-item"><Button circular color="blue" icon="eye" size="massive" /></Link>
-                                </div>
-                                <div className="Lbuttons">
-                                    <Link to="/manage" className="navbar-item"><Button circular color="green" icon="cogs" size="massive" /></Link>
-                                </div>
-                                <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
-                                    trace={countTrace} warning={countWarning} critical={countCritical} />
-                            </BodyDiv>
+                            <div>
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"scaleRotate"} outerContainerId={"scaleRotate"} >
+                                    <Header as="h2" icon>
+                                        <Icon name="eye" />
+                                        Central Logger™
+                                    <Header.Subheader>Menu</Header.Subheader>
+                                    </Header>
+                                    <Link to="/" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="eye" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Log List</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                    <br />
+                                    <Link to="/manage" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="cogs" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Manage</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                </Menu>
+                                <BodyDiv>
+                                    <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
+                                        trace={countTrace} warning={countWarning} critical={countCritical} />
+                                </BodyDiv>
+                            </div>
                         )
 
                     }} />
                     <Route exact path="/manage" render={() => {
                         return (
-                            <BodyDiv>
-                                <div className="Lbuttons">
-                                    <Link to="/" className="navbar-item"><Button circular color="blue" icon="eye" size="massive" /></Link>
-                                </div>
-                                <div className="buttons">
-                                    <Link to="/summary" className="navbar-item"><Button circular color="yellow" icon="area graph" size="massive" /></Link>
-                                </div>
-                                <Manage allApp={allMailApp} list={emailList} loading={loading}
-                                    onAppChange={this.onNewApp} onEmail1Change={this.onNewEmail1} onEmail2Change={this.onNewEmail2}
-                                    onEmail3Change={this.onNewEmail3} onEnableChange={this.onNewEnable} onNewSave={this.onNewSave}
-                                    newApp={newApp} newEmail1={newEmail1} newEmail2={newEmail2} newEmail3={newEmail3} newEnable={newEnable}
-                                    onDelete={this.OnDelete}
-                                />
-                            </BodyDiv>
+                            <div>
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"scaleRotate"} outerContainerId={"scaleRotate"} >
+                                    <Header as="h2" icon>
+                                        <Icon name="eye" />
+                                        Central Logger™
+                                    <Header.Subheader>Menu</Header.Subheader>
+                                    </Header>
+                                    <Link to="/" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="eye" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Log List</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                    <br />
+                                    <Link to="/summary" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="area graph" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Log Chart</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                </Menu>
+                                <BodyDiv>
+                                    <Manage allApp={allMailApp} list={emailList} loading={loading}
+                                        onAppChange={this.onNewApp} onEmail1Change={this.onNewEmail1} onEmail2Change={this.onNewEmail2}
+                                        onEmail3Change={this.onNewEmail3} onEnableChange={this.onNewEnable} onNewSave={this.onNewSave}
+                                        newApp={newApp} newEmail1={newEmail1} newEmail2={newEmail2} newEmail3={newEmail3} newEnable={newEnable}
+                                        onDelete={this.OnDelete} onAppEdit={this.onEditApp} onEmail1Edit={this.onEditEmail1} onEmail2Edit={this.onEditEmail2}
+                                        onEmail3Edit={this.onEditEmail3} onEnableEdit={this.onEditEnable} onEditSave={this.onEditSave}
+                                        editEmail1={editEmail1} editEmail2={editEmail2} editEmail3={editEmail3} editEnable={editEnable}
+                                        editApp={editApp}
+                                    />
+                                </BodyDiv>
+                            </div>
                         )
                     }} />
                 </Switch>
