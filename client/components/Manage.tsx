@@ -7,7 +7,7 @@ import "/css/Body.css"
 import { LoggerApi, manage } from "../share/LoggerApi"
 import { getApiUrl } from "../share/Configuration"
 import Switch from "react-switch";
-import swal from "sweetalert";
+import swal from "sweetalert2"
 import * as EmailValidator from "email-validator";
 
 type Props = {
@@ -68,10 +68,29 @@ export class Manage extends React.Component<Props, State> {
         this.setState({ open: true })
     }
     public componentDidMount() {
-        console.log(this.props.list)
     }
     private onClose = () => {
-        this.setState({ open: false })
+        if (this.props.newApp !== null || this.props.newEmail1 !== null || this.props.newEmail2 !== null || this.props.newEmail3 !== null) {
+            swal({
+                title: "คุณต้องการบันทึกหรือไม่?",
+                text: "พบการเปลี่ยนแปลงของข้อมูล",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Save"
+            }).then((result) => {
+                if (result.value) {
+                    this.onSave()
+                } else {
+                    this.setState({ open: false })
+                    this.props.onEmail1Change(null)
+                    this.props.onEmail2Change(null)
+                    this.props.onEmail3Change(null)
+                    this.props.onEnableChange(true)
+                }
+            })
+        } else { this.setState({ open: false }) }
     }
     private handleChange = (value) => {
         this.setState({ checked: value })
