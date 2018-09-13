@@ -77,10 +77,18 @@ export class ManageItems extends React.Component<Props, State> {
                 } else {
                     this.setState({ showEdit: false })
                     this.props.onAppEdit(null)
+                    this.props.onEmail1Edit(null)
+                    this.props.onEmail2Edit(null)
+                    this.props.onEmail3Edit(null)
+                    this.props.onEnableEdit(null)
                 }
             })
         } else {
             this.setState({ showEdit: false })
+            this.props.onEmail1Edit(null)
+            this.props.onEmail2Edit(null)
+            this.props.onEmail3Edit(null)
+            this.props.onEnableEdit(null)
             this.props.onAppEdit(null)
         }
     }

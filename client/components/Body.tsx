@@ -7,15 +7,16 @@ import "semantic-ui-css/semantic.min.css";
 import "/css/Body.css"
 import "../css/Animation.css"
 import { getApiUrl } from "../share/Configuration"
-import { LoggerApi, Log, GetEmail, EmailList } from "../share/LoggerApi"
+import { LoggerApi, Log, GetEmail, EmailList, GetUsers } from "../share/LoggerApi"
 import { LogList } from "./LogList"
 import signalR, { HubConnectionBuilder } from "@aspnet/signalr";
 import { debounce } from "throttle-debounce";
 import { Route, Switch, Link, HashRouter, BrowserHistory } from "react-router-dom";
 import { Chart } from "./Chart";
 import { Manage } from "./Manage";
+import { UserList } from "./UserList"
 import swal from "sweetalert2"
-import { stack as Menu } from "react-burger-menu"
+import { scaleDown as Menu } from "react-burger-menu"
 
 type Props = {
     onLogoutPlease: () => void
@@ -72,6 +73,10 @@ type State = {
     editEmail2: string
     editEmail3: string
     editEnable: boolean
+    userList: string[]
+    newUser: string
+    newPassword1: string
+    newPassword2: string
 }
 
 export class Body extends React.Component<any, State> {
@@ -121,7 +126,11 @@ export class Body extends React.Component<any, State> {
             editEmail1: null,
             editEmail2: null,
             editEmail3: null,
-            editEnable: true
+            editEnable: true,
+            userList: [],
+            newUser: null,
+            newPassword1: "",
+            newPassword2: ""
         }
         this.LogDate = []
         this.LogNow = []
@@ -182,6 +191,12 @@ export class Body extends React.Component<any, State> {
             this.setState({ emailList: res.data, loading: false })
         })
     }
+    public initUserList = () => {
+        this.setState({ loading: true })
+        this.LoggerApi.ShowAllUser().then(res => {
+            this.setState({ userList: res.data, loading: false })
+        })
+    }
     public initGetChart = (date: Date) => {
         this.LoggerApi.GetDataChart(date).then(response => {
             this.setState({
@@ -198,6 +213,7 @@ export class Body extends React.Component<any, State> {
         this.initSearchByAll(starts.toDate(), end.toDate(), this.state.selectApp, this.state.selectIp)
         this.initGetChart(this.state.selectDay.toDate())
         this.initSearchExceptApp()
+        this.initUserList()
         this.initmailList()
         this.handleSignalR()
     }
@@ -239,7 +255,6 @@ export class Body extends React.Component<any, State> {
         })
     }
     private initDeleteApp = (data: string) => {
-        console.log(data)
         this.LoggerApi.DeleteApp(data).then(response => {
             this.initSearchExceptApp()
             this.initmailList()
@@ -273,6 +288,31 @@ export class Body extends React.Component<any, State> {
             }
         })
     }
+    public initAddUser = (data: GetUsers) => {
+        this.LoggerApi.AddUser(data).then(response => {
+            swal("บันทึกผู้ใช้เรียบร้อย!", "", "success");
+            this.initUserList()
+            this.setState({ newUser: null, newPassword1: "", newPassword2: "" })
+        }).catch(err => {
+            if (err.response.status === 401) {
+                this.props.onLogoutPlease()
+            }
+            if (err.response.status === 400) {
+                swal("ไม่สามารถบันทึกได้!", "มีผู้ใช้ชื่อนี้แล้ว", "error");
+            }
+        })
+    }
+    public initDeleteUser = (data: string) => {
+        this.LoggerApi.DeleteUser(data).then(response => {
+            this.initSearchExceptApp()
+            this.initUserList()
+        })
+            .catch(err => {
+                if (err.response.status === 401) {
+                    this.props.onLogoutPlease()
+                }
+            })
+    }
     public handleSignalR() {
 
         const connection = new HubConnectionBuilder()
@@ -303,6 +343,15 @@ export class Body extends React.Component<any, State> {
             this.setState({ logDate: this.LogDate })
         }
     })
+    private onNewUser = (value) => {
+        this.setState({ newUser: value })
+    }
+    private onNewPassword1 = (value) => {
+        this.setState({ newPassword1: value })
+    }
+    private onNewPassword2 = (value) => {
+        this.setState({ newPassword2: value })
+    }
     private onNewApp = (value) => {
         this.setState({ newApp: value })
     }
@@ -356,17 +405,43 @@ export class Body extends React.Component<any, State> {
         }
         this.initUpdateEmail(editManageList)
     }
+    private onSaveUser = () => {
+        let newUser: GetUsers = {
+            Users: this.state.newUser,
+            Password: this.state.newPassword1
+        }
+        this.initAddUser(newUser)
+    }
     private OnDelete = (AppName) => {
         swal({
-            title: "คุณต้องการลบการตั้งค่านี้ใช่หรือไม่?",
+            title: "ยืนยันการลบการตั้งค่านี้?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Delete !"
+            confirmButtonText: "ลบ"
         }).then((result) => {
             if (result.value) {
                 this.initDeleteApp(AppName)
+                swal(
+                    "ลบเรียบร้อย!",
+                    "",
+                    "success"
+                )
+            }
+        })
+    }
+    private OnDeleteUser = (user) => {
+        swal({
+            title: "ยืนยันการลบผู้ใช้นี้?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "ลบ"
+        }).then((result) => {
+            if (result.value) {
+                this.initDeleteUser(user.toString())
                 swal(
                     "ลบเรียบร้อย!",
                     "",
@@ -380,15 +455,16 @@ export class Body extends React.Component<any, State> {
         let allday = moment(this.state.startDay).format("lll").toString() + " ถึง " + moment(this.state.endDay).format("lll").toString()
         let { startDay, endDay, loading, allApp, allIp, selectApp, selectIp, logLenght, newSearch, selectDay,
             countDebug, countError, countInfo, countCritical, countTrace, countWarning, emailList, allMailApp
-            , newApp, newEmail1, newEmail2, newEmail3, newEnable, editApp, editEmail1, editEmail2, editEmail3, editEnable } = this.state
+            , newApp, newEmail1, newEmail2, newEmail3, newEnable, editApp, editEmail1, editEmail2, editEmail3, editEnable
+            , userList, newUser, newPassword1, newPassword2 } = this.state
         return (
             <HashRouter history={BrowserHistory}>
                 <Switch>
                     <Route exact path="/" render={() => {
                         return (
-                            <div>
-                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"scaleRotate"} outerContainerId={"scaleRotate"} >
-                                    <Header as="h2" icon>
+                            <div id="outer-container">
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"page-wrap"} outerContainerId={"outer-container"} >
+                                    <Header as="h2" icon inverted>
                                         <Icon name="eye" />
                                         Central Logger™
                                     <Header.Subheader>Menu</Header.Subheader>
@@ -414,22 +490,36 @@ export class Body extends React.Component<any, State> {
                                             </List.Item>
                                         </List>
                                     </Link>
+                                    <br />
+                                    <Link to="/user" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="users" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">User Setting</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
                                 </Menu>
                                 <BodyDiv>
                                     <Loader content="Loading" active={this.state.loading} />
-                                    <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
-                                        onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
-                                        allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
-                                        allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
+                                    <main id="page-wrap">
+
+                                        <LogList startDay={startDay} endDay={endDay} logNow={this.LogNow} loading={loading} all={allday}
+                                            onStartChange={this.handleStartDateChange} onEndChange={this.handleEndDateChange} allApp={allApp}
+                                            allIp={allIp} selectApp={selectApp} selectIp={selectIp} onIpChange={this.setIP} onAppChange={this.setApp}
+                                            allData={this.state.logDate} onMore={this.OnMore} logLenght={logLenght} new={newSearch} />
+                                    </main>
                                 </BodyDiv >
                             </div>
                         )
                     }} />
                     <Route exact path="/summary" render={() => {
                         return (
-                            <div>
-                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"scaleRotate"} outerContainerId={"scaleRotate"} >
-                                    <Header as="h2" icon>
+                            <div id="outer-container">
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"page-wrap"} outerContainerId={"outer-container"} >
+                                    <Header as="h2" icon inverted>
                                         <Icon name="eye" />
                                         Central Logger™
                                     <Header.Subheader>Menu</Header.Subheader>
@@ -455,20 +545,33 @@ export class Body extends React.Component<any, State> {
                                             </List.Item>
                                         </List>
                                     </Link>
+                                    <br />
+                                    <Link to="/user" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="users" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">User Setting</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
                                 </Menu>
-                                <BodyDiv>
-                                    <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
-                                        trace={countTrace} warning={countWarning} critical={countCritical} />
-                                </BodyDiv>
+                                <main id="page-wrap">
+                                    <BodyDiv>
+                                        <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
+                                            trace={countTrace} warning={countWarning} critical={countCritical} />
+                                    </BodyDiv>
+                                </main>
                             </div>
                         )
 
                     }} />
                     <Route exact path="/manage" render={() => {
                         return (
-                            <div>
-                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"scaleRotate"} outerContainerId={"scaleRotate"} >
-                                    <Header as="h2" icon>
+                            <div id="outer-container">
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"page-wrap"} outerContainerId={"outer-container"} >
+                                    <Header as="h2" icon inverted>
                                         <Icon name="eye" />
                                         Central Logger™
                                     <Header.Subheader>Menu</Header.Subheader>
@@ -494,20 +597,86 @@ export class Body extends React.Component<any, State> {
                                             </List.Item>
                                         </List>
                                     </Link>
+                                    <br />
+                                    <Link to="/user" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="users" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">User Setting</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
                                 </Menu>
-                                <BodyDiv>
-                                    <Manage allApp={allMailApp} list={emailList} loading={loading}
-                                        onAppChange={this.onNewApp} onEmail1Change={this.onNewEmail1} onEmail2Change={this.onNewEmail2}
-                                        onEmail3Change={this.onNewEmail3} onEnableChange={this.onNewEnable} onNewSave={this.onNewSave}
-                                        newApp={newApp} newEmail1={newEmail1} newEmail2={newEmail2} newEmail3={newEmail3} newEnable={newEnable}
-                                        onDelete={this.OnDelete} onAppEdit={this.onEditApp} onEmail1Edit={this.onEditEmail1} onEmail2Edit={this.onEditEmail2}
-                                        onEmail3Edit={this.onEditEmail3} onEnableEdit={this.onEditEnable} onEditSave={this.onEditSave}
-                                        editEmail1={editEmail1} editEmail2={editEmail2} editEmail3={editEmail3} editEnable={editEnable}
-                                        editApp={editApp}
-                                    />
-                                </BodyDiv>
+                                <main id="page-wrap">
+                                    <BodyDiv>
+                                        <Manage allApp={allMailApp} list={emailList} loading={loading}
+                                            onAppChange={this.onNewApp} onEmail1Change={this.onNewEmail1} onEmail2Change={this.onNewEmail2}
+                                            onEmail3Change={this.onNewEmail3} onEnableChange={this.onNewEnable} onNewSave={this.onNewSave}
+                                            newApp={newApp} newEmail1={newEmail1} newEmail2={newEmail2} newEmail3={newEmail3} newEnable={newEnable}
+                                            onDelete={this.OnDelete} onAppEdit={this.onEditApp} onEmail1Edit={this.onEditEmail1} onEmail2Edit={this.onEditEmail2}
+                                            onEmail3Edit={this.onEditEmail3} onEnableEdit={this.onEditEnable} onEditSave={this.onEditSave}
+                                            editEmail1={editEmail1} editEmail2={editEmail2} editEmail3={editEmail3} editEnable={editEnable}
+                                            editApp={editApp}
+                                        />
+                                    </BodyDiv>
+                                </main>
                             </div>
                         )
+                    }} />
+                    <Route exact path="/user" render={() => {
+                        return (
+                            <div id="outer-container">
+                                <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"page-wrap"} outerContainerId={"outer-container"} >
+                                    <Header as="h2" icon inverted>
+                                        <Icon name="eye" />
+                                        Central Logger™
+                                    <Header.Subheader>Menu</Header.Subheader>
+                                    </Header>
+                                    <Link to="/" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="eye" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Log List</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                    <br />
+                                    <Link to="/manage" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="cogs" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Manage</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                    <br />
+                                    <Link to="/summary" className="navbar-item">
+                                        <List divided relaxed selection>
+                                            <List.Item onClick={this.onOpenMunu}>
+                                                <List.Icon name="area graph" size="small" verticalAlign="middle" />
+                                                <List.Content>
+                                                    <List.Header as="a">Log Chart</List.Header>
+                                                </List.Content>
+                                            </List.Item>
+                                        </List>
+                                    </Link>
+                                </Menu>
+                                <main id="page-wrap">
+                                    <BodyDiv>
+                                        <UserList loading={loading} list={userList} onUserChange={this.onNewUser} onPassword1Change={this.onNewPassword1}
+                                            onPassword2Change={this.onNewPassword2} pass1={newPassword1} pass2={newPassword2} onSave={this.onSaveUser}
+                                            onDelete={this.OnDeleteUser} user={newUser} />
+                                    </BodyDiv>
+                                </main>
+                            </div>
+                        )
+
                     }} />
                 </Switch>
             </HashRouter>

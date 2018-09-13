@@ -20,12 +20,10 @@ using System.Timers;
 using CentralLogger;
 
 
-namespace CentralLogger.Controllers
-{
+namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoggerController : ControllerBase
-    {
+    public class LoggerController : ControllerBase {
         private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
@@ -34,8 +32,7 @@ namespace CentralLogger.Controllers
 
 
 
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService)
-        {
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService) {
             this.db = db;
             this.hubContext = hubContext;
             this.email = email;
@@ -43,22 +40,17 @@ namespace CentralLogger.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> ShowAll()
-        {
-            try
-            {
+        public ActionResult<IEnumerable<string>> ShowAll() {
+            try {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
                 return Ok(Logger);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return StatusCode(500, ex);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search)
-        {
+        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search) {
             int perSection = 50;
             search.StartDate = search.StartDate.ToLocalTime();
             search.EndDate = search.EndDate.ToLocalTime();
@@ -66,12 +58,10 @@ namespace CentralLogger.Controllers
 
             var skip = (search.Section - 1) * perSection;
 
-            if (!string.IsNullOrEmpty(search.IpNow))
-            {
+            if (!string.IsNullOrEmpty(search.IpNow)) {
                 data = data.Where(x => x.Ip.Equals(search.IpNow));
             }
-            if (!string.IsNullOrEmpty(search.AppNow))
-            {
+            if (!string.IsNullOrEmpty(search.AppNow)) {
                 data = data.Where(x => x.Application.Equals(search.AppNow));
             }
 
@@ -81,31 +71,26 @@ namespace CentralLogger.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> GetIP()
-        {
+        public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet("{ip}")]
-        public IEnumerable<string> GetApp(string ip)
-        {
-            if (!string.IsNullOrEmpty(ip))
-            {
+        public IEnumerable<string> GetApp(string ip) {
+            if (!string.IsNullOrEmpty(ip)) {
                 var App = db.LogInfos.Where(x => x.Ip.Equals(ip)).Select(m => m.Application).Distinct();
                 return App.ToList();
             }
             return Enumerable.Empty<string>();
         }
         [HttpPost]
-        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x)
-        {
+        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
 
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
-            db.LogInfos.Add(new LogInfo()
-            {
+            db.LogInfos.Add(new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -113,8 +98,7 @@ namespace CentralLogger.Controllers
                 Ip = x.Ip,
                 Category = x.Catelog
             });
-            var data = new LogInfo()
-            {
+            var data = new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -127,12 +111,10 @@ namespace CentralLogger.Controllers
             var email2 = emailList.Select(y => y.Email_2);
             var email3 = emailList.Select(y => y.Email_3);
             var allEmail = email1.Concat(email2).Concat(email3).Distinct().ToArray();
-            foreach (var emails in allEmail)
-            {
+            foreach (var emails in allEmail) {
                 email.EnqueueMail(emails);
             }
-            if (data.LogLevel == LogLevel.Critical)
-            {
+            if (data.LogLevel == LogLevel.Critical) {
                 email.Enqueue(data);
             }
             db.SaveChanges();
@@ -140,174 +122,8 @@ namespace CentralLogger.Controllers
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
-
-        [HttpPost]
-        public ActionResult AddEmails([FromBody]GetEmail x)
-        {
-            var applist = db.Emails.Where(m => m.Application == x.Application).Select(m => m.Application).FirstOrDefault();
-            if (applist != x.Application && x.Application != null)
-            {
-                db.Emails.Add(new Emails()
-                {
-                    Application = x.Application,
-                    Email_1 = x.Email_1,
-                    Email_2 = x.Email_2,
-                    Email_3 = x.Email_3,
-                    Enable = x.Enable
-                });
-                db.SaveChanges();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService)
-        {
-
-            var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);
-            if (IsAuthorized)
-            {
-                if (request.User != null)
-                {
-                    //  base64 UTF8 (request.User:request.pass)
-                    var account = $"{request.User}:{request.Pass}";
-                    var accountBytes = System.Text.Encoding.UTF8.GetBytes(account);
-
-                    var result = new { accessToken = Convert.ToBase64String(accountBytes) };
-                    return Ok(result);
-                }
-            }
-            return Unauthorized();
-        }
-
-
-        [HttpGet]
-        public async Task<IEnumerable<string>> SearchExceptApp()
-        {
-            /////ใช้ในการเลือกAppจากdata//////
-            var appLog = await db.LogInfos.Select(m => m.Application).ToListAsync();
-            var appMail = await db.Emails.Select(m => m.Application).ToListAsync();
-            var result = appLog.Except(appMail);
-            return result;
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> UpdateEmail([FromBody]GetEmail Mail)
-        {
-            var applist = db.Emails.Where(m => m.Application == Mail.Application).Select(m => m.Application).FirstOrDefault();
-            if (applist == Mail.Application)
-            {
-                var value = await db.Emails.Where(o => o.Application == Mail.Application).ToListAsync();
-                foreach (var data in value)
-                {
-                    data.Email_1 = Mail.Email_1;
-                    data.Email_2 = Mail.Email_2;
-                    data.Email_3 = Mail.Email_3;
-                    data.Enable = Mail.Enable;
-                }
-                await db.SaveChangesAsync();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpPost]
-        public ActionResult SetEnable(Boolean data)
-        {
-            db.Emails.Update(new Emails()
-            {
-                Enable = !data
-            });
-            db.SaveChanges();
-            return Ok();
-        }
-
-        [HttpGet]
-        public ActionResult DeleteApp(string AppName)
-        {
-            var del = db.Emails.Where(o => o.Application == AppName).FirstOrDefault();
-            if (del != null)
-            {
-                db.Emails.Remove(del);
-                db.SaveChanges();
-                return Ok();
-            }
-            else
-                return BadRequest();
-        }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<GetEmail>> ShowMailApp()
-        {
-            try
-            {
-                var Application = db.Emails.OrderBy(x => x.Id).ToList();
-                return Ok(Application);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
-        }
-
-        [HttpPost]
-        public ActionResult AddManager([FromBody]GetUsers data)
-        {
-            var userlist = db.Users.Where(x => x.User == data.Users).Select(x => x.User).FirstOrDefault();
-            if (userlist != data.Users && data.Users != null)
-            {
-                userService.AddUser(data.Users, data.Password);
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
-
-        [HttpGet]
-        public ActionResult DeleteManager(string User)
-        {
-            var del = db.Users.Where(data => data.User == User).FirstOrDefault();
-            if (del != null && User != "admin")
-            {
-                db.Users.Remove(del);
-                db.SaveChanges();
-                return Ok();
-            }
-            else
-                return BadRequest();
-        }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<GetUsers>> ShowMyUser()
-        {
-            try
-            {
-                var showUsers = db.Users.Select(data => data.User).ToArray();
-                return Ok(showUsers);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex);
-            }
-        }
-
-
-
         [HttpDelete("{id}")]
-        public async void NukeDatabase(int id)
-        {
+        public async void NukeDatabase(int id) {
             await db.Database.EnsureDeletedAsync();
         }
     }

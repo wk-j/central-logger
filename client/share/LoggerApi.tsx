@@ -52,6 +52,10 @@ export type GetEmail = {
 export type EmailList = {
     MailList: GetEmail[]
 }
+export type GetUsers = {
+    Users: string,
+    Password: string
+}
 export class LoggerApi {
     constructor(private url: string) {
     }
@@ -73,7 +77,7 @@ export class LoggerApi {
     }
 
     public Login(user: string, pass: string) {
-        return axios.post<LoginResult>(`${this.url}/api/Logger/LoginRequest`, {
+        return axios.post<LoginResult>(`${this.url}/api/User/LoginRequest`, {
             User: user,
             Pass: pass
         })
@@ -83,22 +87,31 @@ export class LoggerApi {
     }
     // แสดงอีเมล์กับแอปทั้งหมด
     public ShowMailApp() {
-        return axios.get<GetEmail[]>(`${this.url}/api/Logger/ShowMailApp`)
+        return axios.get<GetEmail[]>(`${this.url}/api/Email/ShowMailApp`)
     }
     // ลบแอปอีเมล์
     public DeleteApp(AppName: string) {
-        return axios.get(`${this.url}/api/Logger/DeleteApp?AppName=${AppName}`)
+        return axios.get(`${this.url}/api/Email/DeleteApp?AppName=${AppName}`)
     }
     // อัพเดท อีเมล์
     public UpdateEmail(data: GetEmail) {
-        return axios.post(`${this.url}/api/Logger/UpdateEmail`, data)
+        return axios.post(`${this.url}/api/Email/UpdateEmail`, data)
     }
     // เรียกแอปที่ยังไม่ได้ตังค่า
     public SearchExceptApp() {
-        return axios.get<string[]>(`${this.url}/api/Logger/SearchExceptApp`)
+        return axios.get<string[]>(`${this.url}/api/Email/SearchExceptApp`)
     }
     // เพิ่มแอปอีเมล์
     public AddEmails(data: GetEmail) {
-        return axios.post<GetEmail>(`${this.url}/api/Logger/AddEmails`, data)
+        return axios.post<GetEmail>(`${this.url}/api/Email/AddEmails`, data)
+    }
+    public ShowAllUser() {
+        return axios.get<string[]>(`${this.url}/api/User/ShowAllUser`)
+    }
+    public AddUser(data: GetUsers) {
+        return axios.post<GetUsers>(`${this.url}/api/User/AddUser`, data)
+    }
+    public DeleteUser(User: string) {
+        return axios.get(`${this.url}/api/User/DeleteUser?User=${User}`)
     }
 }
