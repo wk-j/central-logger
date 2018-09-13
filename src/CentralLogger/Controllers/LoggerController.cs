@@ -193,7 +193,7 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult DeleteApp(string AppName) {
             var del = db.Emails.Where(o => o.Application == AppName).FirstOrDefault();
             if (del != null) {

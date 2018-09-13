@@ -226,8 +226,10 @@ export class Body extends React.Component<any, State> {
         })
     }
     private initDeleteApp = (data: string) => {
+        console.log(data)
         this.LoggerApi.DeleteApp(data).then(response => {
-            console.log("Delete")
+            console.log(response.data)
+            this.initmailList()
         })
             .catch(err => {
                 if (err.response.status === 401) {
@@ -241,6 +243,7 @@ export class Body extends React.Component<any, State> {
             console.log(response.data)
             this.forceUpdate()
             swal("Save!", "Save Complete!", "success");
+            this.initmailList()
             this.setState({ newApp: null, newEmail1: null, newEmail2: null, newEmail3: null, newEnable: true })
         }).catch(err => {
             if (err.response.status === 401) {
