@@ -20,41 +20,37 @@ using System.Timers;
 using CentralLogger;
 
 
-namespace CentralLogger.Controllers
-{
+namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoggerController : ControllerBase
-    {
+    public class LoggerController : ControllerBase {
         private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
 
+        private readonly UserService userService;
 
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email)
-        {
+
+
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService) {
             this.db = db;
             this.hubContext = hubContext;
             this.email = email;
+            this.userService = userService;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> ShowAll()
-        {
-            try
-            {
+        public ActionResult<IEnumerable<string>> ShowAll() {
+            try {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
                 return Ok(Logger);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return StatusCode(500, ex);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search)
-        {
+        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search) {
             int perSection = 50;
             search.StartDate = search.StartDate.ToLocalTime();
             search.EndDate = search.EndDate.ToLocalTime();
@@ -62,12 +58,10 @@ namespace CentralLogger.Controllers
 
             var skip = (search.Section - 1) * perSection;
 
-            if (!string.IsNullOrEmpty(search.IpNow))
-            {
+            if (!string.IsNullOrEmpty(search.IpNow)) {
                 data = data.Where(x => x.Ip.Equals(search.IpNow));
             }
-            if (!string.IsNullOrEmpty(search.AppNow))
-            {
+            if (!string.IsNullOrEmpty(search.AppNow)) {
                 data = data.Where(x => x.Application.Equals(search.AppNow));
             }
 
@@ -77,31 +71,26 @@ namespace CentralLogger.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> GetIP()
-        {
+        public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet("{ip}")]
-        public IEnumerable<string> GetApp(string ip)
-        {
-            if (!string.IsNullOrEmpty(ip))
-            {
+        public IEnumerable<string> GetApp(string ip) {
+            if (!string.IsNullOrEmpty(ip)) {
                 var App = db.LogInfos.Where(x => x.Ip.Equals(ip)).Select(m => m.Application).Distinct();
                 return App.ToList();
             }
             return Enumerable.Empty<string>();
         }
         [HttpPost]
-        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x)
-        {
+        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
 
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
-            db.LogInfos.Add(new LogInfo()
-            {
+            db.LogInfos.Add(new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -109,8 +98,7 @@ namespace CentralLogger.Controllers
                 Ip = x.Ip,
                 Category = x.Catelog
             });
-            var data = new LogInfo()
-            {
+            var data = new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -123,12 +111,10 @@ namespace CentralLogger.Controllers
             var email2 = emailList.Select(y => y.Email_2);
             var email3 = emailList.Select(y => y.Email_3);
             var allEmail = email1.Concat(email2).Concat(email3).Distinct().ToArray();
-            foreach (var emails in allEmail)
-            {
+            foreach (var emails in allEmail) {
                 email.EnqueueMail(emails);
             }
-            if (data.LogLevel == LogLevel.Critical)
-            {
+            if (data.LogLevel == LogLevel.Critical) {
                 email.Enqueue(data);
             }
             db.SaveChanges();
@@ -136,33 +122,8 @@ namespace CentralLogger.Controllers
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
-
-
-        [HttpPost]
-        public async Task<ActionResult> LoginRequest([FromBody]GetLoginRequest request, [FromServices] UserService userService)
-        {
-
-            var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);
-            if (IsAuthorized)
-            {
-                if (request.User != null)
-                {
-                    //  base64 UTF8 (request.User:request.pass)
-                    var account = $"{request.User}:{request.Pass}";
-                    var accountBytes = System.Text.Encoding.UTF8.GetBytes(account);
-
-                    var result = new { accessToken = Convert.ToBase64String(accountBytes) };
-                    return Ok(result);
-                }
-            }
-            return Unauthorized();
-        }
-
-
-
         [HttpDelete("{id}")]
-        public async void NukeDatabase(int id)
-        {
+        public async void NukeDatabase(int id) {
             await db.Database.EnsureDeletedAsync();
         }
     }
