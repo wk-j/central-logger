@@ -159,6 +159,7 @@ export class LogList extends React.Component<Props, State> {
                                 }
                             >
                                 <Table compact>
+
                                     <Table.Body>
                                         {
                                             this.state.items.map((x, key) => <Logs logsNow={x} key={key} />)
