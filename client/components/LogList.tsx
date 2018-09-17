@@ -68,6 +68,11 @@ export class LogList extends React.Component<Props, State> {
     public setApp = (_, { value }) => {
         this.props.onAppChange(value)
     }
+    public count = () => {
+        if (this.props.logLenght <= 50) {
+            this.setState({ hasMore: false })
+        }
+    }
     public componentDidUpdate(prevProps, prevState) {
         if (prevProps.allData !== this.props.allData) {
             this.setState({ items: [], hasMore: true })
@@ -78,8 +83,10 @@ export class LogList extends React.Component<Props, State> {
                 this.setState({
                     items: this.state.items.concat(this.props.allData)
                 });
+                this.count()
             } else {
                 this.setState({ items: this.props.allData })
+                this.count()
             }
         }
     }
@@ -143,11 +150,12 @@ export class LogList extends React.Component<Props, State> {
                                 height="100%"
                                 endMessage={
                                     <p style={{ textAlign: "center" }}>
-                                        <b>You have seen it all</b>
+                                        <b>Log Ended</b>
                                     </p>
                                 }
                             >
-                                <Table compact >
+                                <Table compact>
+
                                     <Table.Body>
                                         {
                                             this.state.items.map((x, key) => <Logs logsNow={x} key={key} />)
