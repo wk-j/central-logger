@@ -1,9 +1,11 @@
 import React from "react"
 import { Log, LogLevel } from "../share/LoggerApi";
 import { Table, Icon, SemanticCOLORS, Popup } from "semantic-ui-react"
+import { Divider, Segment } from 'semantic-ui-react'
 import moment from "moment"
 import "moment/locale/th"
 import "/css/Body.css"
+import styled from "styled-components";
 
 type LogProps = {
     logsNow: Log
@@ -40,12 +42,15 @@ export class Logs extends React.Component<LogProps, State> {
                 break
         }
         return (
-            <Table.Row >
-                <Table.Cell style={{ width: "16vw" }}>{moment(this.props.logsNow.dateTime).format("L, h:mm:ss")}</Table.Cell>
-                <Table.Cell style={{ width: "13vw" }}>{this.props.logsNow.category}</Table.Cell>
-                <Table.Cell textAlign="center"><Popup trigger={<Icon name="dot circle" color={color} />} content={LogLevel[this.props.logsNow.logLevel]} /></Table.Cell>
+
+            <div>
+                <Table.Cell style={{ width: "16vw", textAlign: "right" }}>{moment(this.props.logsNow.dateTime).format("L, h:mm:ss")}</Table.Cell>
+                <Table.Cell style={{ width: "13vw", textAlign: "right" }}>{this.props.logsNow.category}</Table.Cell>
+                <Table.Cell textAlign="right"><Popup trigger={<Icon name="dot circle" color={color} />} content={LogLevel[this.props.logsNow.logLevel]} /></Table.Cell>
                 <Table.Cell >{this.props.logsNow.message}</Table.Cell>
-            </Table.Row>
+                <Divider />
+            </div>
+
         )
     }
 }
