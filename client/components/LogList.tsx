@@ -42,7 +42,11 @@ export class LogList extends React.Component<Props, State> {
         }
         this.limit = 0;
     }
+    public componentDidMount() {
+        this.count()
+    }
     public fetchMoreData = () => {
+        this.count()
         if (this.props.logLenght === this.state.items.length) {
             this.setState({ hasMore: false });
             return;
