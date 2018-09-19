@@ -29,9 +29,9 @@ Task("Pack").Does(() => {
 });
 
 Task("Publish").Does(() => {
-    CleanDirectory("publish/dist");
-    DotNetCorePublish($"src/{name}", new DotNetCorePublishSettings {
-        OutputDirectory = "publish/dist"
+    CleanDirectory("publish");
+    DotNetCorePublish($"src/{name}/{name}.csproj", new DotNetCorePublishSettings {
+        OutputDirectory = "publish"
     });
 });
 
@@ -62,14 +62,6 @@ Task("Publish-NuGet")
             });
         }
 });
-
-Task("Install")
-    .IsDependentOn("Pack")
-    .Does(() => {
-        var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        PS.StartProcess($"dotnet tool uninstall -g {info.PackageId}");
-        PS.StartProcess($"dotnet tool install   -g {info.PackageId}  --add-source {currentDir}/publish --version {info.Version}");
-    });
 
 var target = Argument("target", "Pack");
 RunTarget(target);
