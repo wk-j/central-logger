@@ -45,7 +45,7 @@ export class UserList extends React.Component<Props, State> {
         this.setState({ open: true })
     }
     private onClose = () => {
-        if (this.props.user !== null || this.props.user !== "" || this.props.pass1 !== "" || this.props.pass2 !== "") {
+        if (this.props.user !== "" || this.props.pass1 !== "" || this.props.pass2 !== "") {
             swal({
                 title: "คุณต้องการบันทึกหรือไม่?",
                 text: "พบการเปลี่ยนแปลงของข้อมูล",
