@@ -20,9 +20,12 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CentralLogger.Services;
 using System.Threading;
 
-namespace CentralLogger {
-    public class Startup {
-        public Startup(IHostingEnvironment env) {
+namespace CentralLogger
+{
+    public class Startup
+    {
+        public Startup(IHostingEnvironment env)
+        {
             var builder = new ConfigurationBuilder()
               .SetBasePath(env.ContentRootPath)
               .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
@@ -32,11 +35,13 @@ namespace CentralLogger {
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services) {
+        public void ConfigureServices(IServiceCollection services)
+        {
             var connectionString = Configuration.GetValue("ConnectionString", "");
             var envConnectionString = Environment.GetEnvironmentVariable("CENTRAL_LOGGER_CS");
 
-            if (!string.IsNullOrEmpty(envConnectionString)) {
+            if (!string.IsNullOrEmpty(envConnectionString))
+            {
                 connectionString = envConnectionString;
             }
 
@@ -49,27 +54,33 @@ namespace CentralLogger {
             services.AddSingleton<EmailService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService) {
+        public static void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService)
+        {
             var defaultOptions = new DefaultFilesOptions();
             defaultOptions.DefaultFileNames.Clear();
             defaultOptions.DefaultFileNames.Add("index.html");
 
-            if (env.IsDevelopment()) {
+            if (env.IsDevelopment())
+            {
                 app
                   .UseDeveloperExceptionPage()
                   .UseDefaultFiles(defaultOptions)
                   .UseStaticFiles()
                   .UseSwagger()
-                  .UseSwaggerUI(c => {
+                  .UseSwaggerUI(c =>
+                  {
                       c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                   });
 
-            } else {
+            }
+            else
+            {
                 app
                   .UseHsts()
                   .UseDefaultFiles(defaultOptions)
@@ -78,17 +89,20 @@ namespace CentralLogger {
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseMvc();
-            app.UseSignalR(options => {
+            app.UseSignalR(options =>
+            {
                 options.MapHub<LogHub>("/LogHub");
             });
 
             GenrateDatabase(db, userService);
         }
 
-        private static void GenrateDatabase(CentralLoggerContext db, UserService userService) {
+        private static void GenrateDatabase(CentralLoggerContext db, UserService userService)
+        {
             Console.WriteLine("Create DB");
             var createData = db.Database.EnsureCreated();
-            if (createData) {
+            if (createData)
+            {
                 userService.AddUser("admin", "admin");
             }
             userService.AddEmail("dotnet-script.dll");
