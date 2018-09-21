@@ -21,12 +21,29 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpPost]
-        public ActionResult AddLine([FromBody]GetLine x) {
-            db.Line.Add(new Line {
-                LineId = x.LineId
-            });
-            db.SaveChanges();
-            return Ok();
+        public ActionResult AddLine([FromBody]GetLine code) {
+
+            var lineList = db.Line.Where(c => c.LineId == code.LineId).Select(o => o.LineId).FirstOrDefault();
+            if (lineList != code.LineId) {
+                db.Line.Add(new Line {
+                    LineId = code.LineId
+                });
+                db.SaveChanges();
+                return Ok();
+            } else
+                return BadRequest();
+        }
+
+        [HttpPost]
+        public ActionResult DeleteLine([FromBody]GetLine code) {
+            var delLine = db.Line.FirstOrDefault(x => x.LineId == code.LineId);
+            if (delLine != null) {
+                db.Line.Remove(delLine);
+                db.SaveChanges();
+                return Ok();
+            } else
+                return BadRequest();
+
         }
 
     }
