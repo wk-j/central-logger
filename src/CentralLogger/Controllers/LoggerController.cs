@@ -37,10 +37,13 @@ namespace CentralLogger.Controllers {
 
         private readonly UserService userService;
         private IHttpClientFactory httpClientFactory;
+        private readonly IConfiguration configuration;
+        private readonly LineContent lineContent = new LineContent();
 
 
 
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory) {
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory, IConfiguration configuration) {
+            this.configuration = configuration;
             this.db = db;
             this.hubContext = hubContext;
             this.email = email;
@@ -60,7 +63,7 @@ namespace CentralLogger.Controllers {
 
         [HttpPost]
         public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search) {
-            int perSection = 50;
+            var perSection = 50;
             search.StartDate = search.StartDate.ToLocalTime();
             search.EndDate = search.EndDate.ToLocalTime();
             var data = db.LogInfos.Where(x => x.DateTime >= search.StartDate && x.DateTime <= search.EndDate);
@@ -99,7 +102,7 @@ namespace CentralLogger.Controllers {
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
-            db.LogInfos.Add(new LogInfo() {
+            db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -107,7 +110,7 @@ namespace CentralLogger.Controllers {
                 Ip = x.Ip,
                 Category = x.Catelog
             });
-            var data = new LogInfo() {
+            var data = new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -133,18 +136,19 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
         private async Task SendLine(LogInfo data) {
+            var LineToken = configuration["LineToken"];
             var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
 
-            var lineContent = new LineContent();
+
             lineContent.To = await db.Line.Select(m => m.LineId).Distinct().ToListAsync();
-            lineContent.Messages.Add(new LineMessage() {
+            lineContent.Messages.Add(new LineMessage {
                 Type = "text",
                 Text = messages
             });
 
             var content = new StringContent(JsonConvert.SerializeObject(lineContent, jsonSettings), Encoding.UTF8, "application/json");
             var client = httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "K9ICcGHyFn7efgXwPCb0HcmNqwjF3dPDLdRLKIHAgaQ8YhIn2grHPGjQHPy5vCjmkZVJFljkiZ2prCDQAZ/oECElImQ56g01NIaPiHMEfpE/y9fsLpZHLxLyrrSZOGCONjS5yOTqnh4hCdK4oDhYngdB04t89/1O/w1cDnyilFU=");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LineToken);
             Console.WriteLine(JsonConvert.SerializeObject(lineContent, jsonSettings));
             var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
             var responseString = await response.Content.ReadAsStringAsync();
@@ -152,8 +156,8 @@ namespace CentralLogger.Controllers {
 
         }
 
-        [HttpDelete("{id}")]
-        public async void NukeDatabase(int id) {
+        [HttpDelete]
+        public async void NukeDatabase() {
             await db.Database.EnsureDeletedAsync();
         }
     }
