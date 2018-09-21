@@ -37,7 +37,6 @@ namespace CentralLogger.Controllers {
         private readonly IConfiguration configuration;
         private readonly UserService userService;
         private IHttpClientFactory httpClientFactory;
-        private readonly IConfiguration configuration;
         private readonly LineContent lineContent = new LineContent();
 
 
@@ -136,7 +135,7 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
         private async Task SendLine(LogInfo data) {
-           
+
             var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
 
 
