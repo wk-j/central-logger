@@ -4,8 +4,8 @@
 using PS = StartProcess.Processor;
 using ProjectParser;
 
-var npi = "oy2encs2wonuc56hzacqd7bnutxvs7mufllb3azt3q3qxm";
-//var npi = EnvironmentVariable("npi");
+
+var npi = EnvironmentVariable("npi");
 var name = "CentralLogger";
 
 var currentDir = new DirectoryInfo(".").FullName;
