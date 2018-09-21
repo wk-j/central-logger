@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
-using CentralLogger.Model;
 using System.Globalization;
 using Microsoft.AspNetCore.SignalR;
 using CentralLogger.Hubs;
@@ -18,60 +17,58 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 using System.Timers;
 using CentralLogger;
+using System.Text;
+using System.IO;
+using System.Net.Http;
+using CentralLogger.Models;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
-
-namespace CentralLogger.Controllers
-{
+namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoggerController : ControllerBase
-    {
+    public class LoggerController : ControllerBase {
+
         private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
 
         private readonly UserService userService;
+        private IHttpClientFactory httpClientFactory;
 
 
 
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService)
-        {
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory) {
             this.db = db;
             this.hubContext = hubContext;
             this.email = email;
             this.userService = userService;
+            this.httpClientFactory = httpClientFactory;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> ShowAll()
-        {
-            try
-            {
+        public ActionResult<IEnumerable<string>> ShowAll() {
+            try {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
                 return Ok(Logger);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return StatusCode(500, ex);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search)
-        {
-            var perSection = 50;
+        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search) {
+            int perSection = 50;
             search.StartDate = search.StartDate.ToLocalTime();
             search.EndDate = search.EndDate.ToLocalTime();
             var data = db.LogInfos.Where(x => x.DateTime >= search.StartDate && x.DateTime <= search.EndDate);
 
             var skip = (search.Section - 1) * perSection;
 
-            if (!string.IsNullOrEmpty(search.IpNow))
-            {
+            if (!string.IsNullOrEmpty(search.IpNow)) {
                 data = data.Where(x => x.Ip.Equals(search.IpNow));
             }
-            if (!string.IsNullOrEmpty(search.AppNow))
-            {
+            if (!string.IsNullOrEmpty(search.AppNow)) {
                 data = data.Where(x => x.Application.Equals(search.AppNow));
             }
 
@@ -81,31 +78,26 @@ namespace CentralLogger.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> GetIP()
-        {
+        public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet("{ip}")]
-        public IEnumerable<string> GetApp(string ip)
-        {
-            if (!string.IsNullOrEmpty(ip))
-            {
+        public IEnumerable<string> GetApp(string ip) {
+            if (!string.IsNullOrEmpty(ip)) {
                 var App = db.LogInfos.Where(x => x.Ip.Equals(ip)).Select(m => m.Application).Distinct();
                 return App.ToList();
             }
             return Enumerable.Empty<string>();
         }
         [HttpPost]
-        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x)
-        {
+        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
 
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
-            db.LogInfos.Add(new LogInfo
-            {
+            db.LogInfos.Add(new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -113,8 +105,7 @@ namespace CentralLogger.Controllers
                 Ip = x.Ip,
                 Category = x.Catelog
             });
-            var data = new LogInfo
-            {
+            var data = new LogInfo() {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -127,22 +118,37 @@ namespace CentralLogger.Controllers
             var email2 = emailList.Select(y => y.Email_2);
             var email3 = emailList.Select(y => y.Email_3);
             var allEmail = email1.Concat(email2).Concat(email3).Distinct().ToArray();
-            foreach (var emails in allEmail)
-            {
+            foreach (var emails in allEmail) {
                 email.EnqueueMail(emails);
             }
-            if (data.LogLevel == LogLevel.Critical)
-            {
+            if (data.LogLevel == LogLevel.Critical) {
                 email.Enqueue(data);
+                await SendLine(data);
             }
             db.SaveChanges();
 
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
-        [HttpDelete]
-        public async void NukeDatabase()
-        {
+        private async Task SendLine(LogInfo data) {
+            var messages = $"Critical Alert {data.Application} [ {data.Ip} ]\n Found Critical:@Application : {data.Application}\nDatetime : {data.DateTime}\nCategory : {data.Category}\nIP : {data.Ip}\nMessage : {data.Message}";
+
+            var lineContent = new LineContent();
+            lineContent.To = await db.Line.Select(m => m.LineId).Distinct().ToListAsync();
+            lineContent.Message.Add(new LineMessage() {
+                Type = "text",
+                Text = messages
+            });
+
+            var content = new StringContent(JsonConvert.SerializeObject(lineContent), Encoding.UTF8, "application/json")
+            var client = httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "K9ICcGHyFn7efgXwPCb0HcmNqwjF3dPDLdRLKIHAgaQ8YhIn2grHPGjQHPy5vCjmkZVJFljkiZ2prCDQAZ/oECElImQ56g01NIaPiHMEfpE/y9fsLpZHLxLyrrSZOGCONjS5yOTqnh4hCdK4oDhYngdB04t89/1O/w1cDnyilFU=");
+            var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
+            // var responseString = await response.Content.ReadAsStringAsync();
+        }
+
+        [HttpDelete("{id}")]
+        public async void NukeDatabase(int id) {
             await db.Database.EnsureDeletedAsync();
         }
     }

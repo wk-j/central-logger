@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CentralLogger.Model {
+namespace CentralLogger.Models {
 
     public class SearchLog {
         public DateTime StartDate { get; set; }

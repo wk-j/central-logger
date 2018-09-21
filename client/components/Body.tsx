@@ -128,7 +128,7 @@ export class Body extends React.Component<any, State> {
             editEmail3: null,
             editEnable: true,
             userList: [],
-            newUser: null,
+            newUser: "",
             newPassword1: "",
             newPassword2: ""
         }
@@ -292,7 +292,7 @@ export class Body extends React.Component<any, State> {
         this.LoggerApi.AddUser(data).then(response => {
             swal("บันทึกผู้ใช้เรียบร้อย!", "", "success");
             this.initUserList()
-            this.setState({ newUser: null, newPassword1: "", newPassword2: "" })
+            this.setState({ newUser: "", newPassword1: "", newPassword2: "" })
         }).catch(err => {
             if (err.response.status === 401) {
                 this.props.onLogoutPlease()
