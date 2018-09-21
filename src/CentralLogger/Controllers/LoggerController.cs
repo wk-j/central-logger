@@ -34,14 +34,15 @@ namespace CentralLogger.Controllers {
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
         private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-
+        private readonly IConfiguration configuration;
         private readonly UserService userService;
         private IHttpClientFactory httpClientFactory;
 
 
 
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory) {
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory, IConfiguration configuration) {
             this.db = db;
+            this.configuration = configuration;
             this.hubContext = hubContext;
             this.email = email;
             this.userService = userService;
@@ -144,12 +145,9 @@ namespace CentralLogger.Controllers {
 
             var content = new StringContent(JsonConvert.SerializeObject(lineContent, jsonSettings), Encoding.UTF8, "application/json");
             var client = httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "K9ICcGHyFn7efgXwPCb0HcmNqwjF3dPDLdRLKIHAgaQ8YhIn2grHPGjQHPy5vCjmkZVJFljkiZ2prCDQAZ/oECElImQ56g01NIaPiHMEfpE/y9fsLpZHLxLyrrSZOGCONjS5yOTqnh4hCdK4oDhYngdB04t89/1O/w1cDnyilFU=");
-            Console.WriteLine(JsonConvert.SerializeObject(lineContent, jsonSettings));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration["LineToken"]);
             var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
             var responseString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responseString);
-
         }
 
         [HttpDelete("{id}")]
