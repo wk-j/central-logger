@@ -4,7 +4,8 @@
 using PS = StartProcess.Processor;
 using ProjectParser;
 
-var npi = EnvironmentVariable("npi");
+var npi = "oy2encs2wonuc56hzacqd7bnutxvs7mufllb3azt3q3qxm";
+//var npi = EnvironmentVariable("npi");
 var name = "CentralLogger";
 
 var currentDir = new DirectoryInfo(".").FullName;
@@ -20,7 +21,7 @@ Task("Pack").Does(() => {
     CleanDirectory($"src/{name}/wwwroot");
     CleanDirectory("publish");
     PS.StartProcess("npm run --prefix ./client build");
-    DotNetCorePack($"src/{name}", new DotNetCorePackSettings {
+    DotNetCorePack($"src/{name}/{name}.csproj", new DotNetCorePackSettings {
         OutputDirectory = "publish"
     });
     DotNetCorePack($"src/CentralLogProvider", new DotNetCorePackSettings {

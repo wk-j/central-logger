@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using CentralLogger.Model;
+using CentralLogger.Models;
 using CentralLogger.Controllers;
 
 namespace CentralLogger.Hubs {

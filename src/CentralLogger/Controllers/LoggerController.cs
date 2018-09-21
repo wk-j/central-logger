@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
-using CentralLogger.Model;
 using System.Globalization;
 using Microsoft.AspNetCore.SignalR;
 using CentralLogger.Hubs;
@@ -18,47 +17,51 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Concurrent;
 using System.Timers;
 using CentralLogger;
+using System.Text;
+using System.IO;
+using System.Net.Http;
+using CentralLogger.Models;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Serialization;
 
-
-namespace CentralLogger.Controllers
-{
+namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoggerController : ControllerBase
-    {
+    public class LoggerController : ControllerBase {
+
         private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
-
+        private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+        private readonly IConfiguration configuration;
         private readonly UserService userService;
+        private IHttpClientFactory httpClientFactory;
+        private readonly LineContent lineContent = new LineContent();
 
 
 
-        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService)
-        {
+        public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory, IConfiguration configuration) {
             this.db = db;
+            this.configuration = configuration;
             this.hubContext = hubContext;
             this.email = email;
             this.userService = userService;
+            this.httpClientFactory = httpClientFactory;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> ShowAll()
-        {
-            try
-            {
+        public ActionResult<IEnumerable<string>> ShowAll() {
+            try {
                 var Logger = db.LogInfos.OrderBy(x => x.Id).ToList();
                 return Ok(Logger);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return StatusCode(500, ex);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search)
-        {
+        public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search) {
             var perSection = 50;
             search.StartDate = search.StartDate.ToLocalTime();
             search.EndDate = search.EndDate.ToLocalTime();
@@ -66,12 +69,10 @@ namespace CentralLogger.Controllers
 
             var skip = (search.Section - 1) * perSection;
 
-            if (!string.IsNullOrEmpty(search.IpNow))
-            {
+            if (!string.IsNullOrEmpty(search.IpNow)) {
                 data = data.Where(x => x.Ip.Equals(search.IpNow));
             }
-            if (!string.IsNullOrEmpty(search.AppNow))
-            {
+            if (!string.IsNullOrEmpty(search.AppNow)) {
                 data = data.Where(x => x.Application.Equals(search.AppNow));
             }
 
@@ -81,31 +82,26 @@ namespace CentralLogger.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> GetIP()
-        {
+        public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
         [HttpGet("{ip}")]
-        public IEnumerable<string> GetApp(string ip)
-        {
-            if (!string.IsNullOrEmpty(ip))
-            {
+        public IEnumerable<string> GetApp(string ip) {
+            if (!string.IsNullOrEmpty(ip)) {
                 var App = db.LogInfos.Where(x => x.Ip.Equals(ip)).Select(m => m.Application).Distinct();
                 return App.ToList();
             }
             return Enumerable.Empty<string>();
         }
         [HttpPost]
-        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x)
-        {
+        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
 
             var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
             var time = DateTime.Now;
 
-            db.LogInfos.Add(new LogInfo
-            {
+            db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -113,8 +109,7 @@ namespace CentralLogger.Controllers
                 Ip = x.Ip,
                 Category = x.Catelog
             });
-            var data = new LogInfo
-            {
+            var data = new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
                 DateTime = x.DateTime,
@@ -127,22 +122,40 @@ namespace CentralLogger.Controllers
             var email2 = emailList.Select(y => y.Email_2);
             var email3 = emailList.Select(y => y.Email_3);
             var allEmail = email1.Concat(email2).Concat(email3).Distinct().ToArray();
-            foreach (var emails in allEmail)
-            {
+            foreach (var emails in allEmail) {
                 email.EnqueueMail(emails);
             }
-            if (data.LogLevel == LogLevel.Critical)
-            {
+            if (data.LogLevel == LogLevel.Critical) {
                 email.Enqueue(data);
+                await SendLine(data);
             }
             db.SaveChanges();
 
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
         }
+        private async Task SendLine(LogInfo data) {
+
+            var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
+
+
+            lineContent.To = await db.Line.Select(m => m.LineId).Distinct().ToListAsync();
+            lineContent.Messages.Add(new LineMessage {
+                Type = "text",
+                Text = messages
+            });
+
+            var content = new StringContent(JsonConvert.SerializeObject(lineContent, jsonSettings), Encoding.UTF8, "application/json");
+            var client = httpClientFactory.CreateClient();
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration["LineToken"]);
+
+            var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
+            var responseString = await response.Content.ReadAsStringAsync();
+        }
+
         [HttpDelete]
-        public async void NukeDatabase()
-        {
+        public async void NukeDatabase() {
             await db.Database.EnsureDeletedAsync();
         }
     }
