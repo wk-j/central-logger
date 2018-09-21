@@ -23,6 +23,7 @@ using System.Net.Http;
 using CentralLogger.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using Newtonsoft.Json.Serialization;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -32,6 +33,7 @@ namespace CentralLogger.Controllers {
         private readonly EmailService email;
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
+        private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
         private readonly UserService userService;
         private IHttpClientFactory httpClientFactory;
@@ -131,20 +133,23 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
         private async Task SendLine(LogInfo data) {
-            var messages = $"Critical Alert {data.Application} [ {data.Ip} ]\n Found Critical:@Application : {data.Application}\nDatetime : {data.DateTime}\nCategory : {data.Category}\nIP : {data.Ip}\nMessage : {data.Message}";
+            var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
 
             var lineContent = new LineContent();
             lineContent.To = await db.Line.Select(m => m.LineId).Distinct().ToListAsync();
-            lineContent.Message.Add(new LineMessage() {
+            lineContent.Messages.Add(new LineMessage() {
                 Type = "text",
                 Text = messages
             });
 
-            var content = new StringContent(JsonConvert.SerializeObject(lineContent), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonConvert.SerializeObject(lineContent, jsonSettings), Encoding.UTF8, "application/json");
             var client = httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "K9ICcGHyFn7efgXwPCb0HcmNqwjF3dPDLdRLKIHAgaQ8YhIn2grHPGjQHPy5vCjmkZVJFljkiZ2prCDQAZ/oECElImQ56g01NIaPiHMEfpE/y9fsLpZHLxLyrrSZOGCONjS5yOTqnh4hCdK4oDhYngdB04t89/1O/w1cDnyilFU=");
+            Console.WriteLine(JsonConvert.SerializeObject(lineContent, jsonSettings));
             var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
-            // var responseString = await response.Content.ReadAsStringAsync();
+            var responseString = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseString);
+
         }
 
         [HttpDelete("{id}")]
