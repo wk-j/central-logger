@@ -34,7 +34,7 @@ namespace CentralLogger.Controllers {
         private readonly CentralLoggerContext db;
         private readonly IHubContext<LogHub> hubContext;
         private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-
+        private readonly IConfiguration configuration;
         private readonly UserService userService;
         private IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
@@ -43,8 +43,8 @@ namespace CentralLogger.Controllers {
 
 
         public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService, IHttpClientFactory httpClientFactory, IConfiguration configuration) {
-            this.configuration = configuration;
             this.db = db;
+            this.configuration = configuration;
             this.hubContext = hubContext;
             this.email = email;
             this.userService = userService;
@@ -136,7 +136,7 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
         private async Task SendLine(LogInfo data) {
-            var LineToken = configuration["LineToken"];
+           
             var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
 
 
@@ -148,12 +148,11 @@ namespace CentralLogger.Controllers {
 
             var content = new StringContent(JsonConvert.SerializeObject(lineContent, jsonSettings), Encoding.UTF8, "application/json");
             var client = httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LineToken);
-            Console.WriteLine(JsonConvert.SerializeObject(lineContent, jsonSettings));
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration["LineToken"]);
+
             var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
             var responseString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(responseString);
-
         }
 
         [HttpDelete]
