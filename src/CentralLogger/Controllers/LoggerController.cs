@@ -140,7 +140,7 @@ namespace CentralLogger.Controllers {
                 Text = messages
             });
 
-            var content = new StringContent(JsonConvert.SerializeObject(lineContent), Encoding.UTF8, "application/json")
+            var content = new StringContent(JsonConvert.SerializeObject(lineContent), Encoding.UTF8, "application/json");
             var client = httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "K9ICcGHyFn7efgXwPCb0HcmNqwjF3dPDLdRLKIHAgaQ8YhIn2grHPGjQHPy5vCjmkZVJFljkiZ2prCDQAZ/oECElImQ56g01NIaPiHMEfpE/y9fsLpZHLxLyrrSZOGCONjS5yOTqnh4hCdK4oDhYngdB04t89/1O/w1cDnyilFU=");
             var response = await client.PostAsync("https://api.line.me/v2/bot/message/multicast", content);
