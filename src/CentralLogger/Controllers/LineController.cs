@@ -22,7 +22,7 @@ namespace CentralLogger.Controllers {
         [HttpPost]
         public ActionResult AddLine([FromBody]GetLine code) {
 
-            var lineList = db.Line.Where(c => c.LineId == code.LineId).Select(o => o.LineId).FirstOrDefault();
+            var lineList = db.Line.Where(c => c.LineId == code.LineId && c.ApplicationName == code.ApplicationName).Select(o => o.LineId).FirstOrDefault();
             if (lineList != code.LineId) {
                 db.Line.Add(new Line {
                     LineId = code.LineId,
