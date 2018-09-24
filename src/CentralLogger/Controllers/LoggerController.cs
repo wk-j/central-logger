@@ -87,6 +87,12 @@ namespace CentralLogger.Controllers {
             return Ip.ToList();
         }
 
+        [HttpGet]
+        public IEnumerable<string> GetAllApp() {
+            var App = db.LogInfos.Select(m => m.Application).Distinct();
+            return App.ToList();
+        }
+
         [HttpGet("{ip}")]
         public IEnumerable<string> GetApp(string ip) {
             if (!string.IsNullOrEmpty(ip)) {

@@ -25,7 +25,8 @@ namespace CentralLogger.Controllers {
             var lineList = db.Line.Where(c => c.LineId == code.LineId).Select(o => o.LineId).FirstOrDefault();
             if (lineList != code.LineId) {
                 db.Line.Add(new Line {
-                    LineId = code.LineId
+                    LineId = code.LineId,
+                    ApplicationName = code.ApplicationName
                 });
                 db.SaveChanges();
                 return Ok();
