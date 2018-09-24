@@ -40,6 +40,7 @@ namespace CentralLogger {
         [JsonIgnore]
         public int Id { set; get; }
         public string LineId { set; get; }
+        public string ApplicationName { set; get; }
     }
     public class CountLogs {
         public IEnumerable<int> dataInfos { set; get; }
