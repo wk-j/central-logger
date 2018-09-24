@@ -34,16 +34,16 @@ namespace CentralLogger.Controllers {
                 return BadRequest();
         }
 
-        [HttpPost]
-        public ActionResult DeleteLine([FromBody]GetLine code) {
-            var delLine = db.Line.FirstOrDefault(x => x.LineId == code.LineId);
-            if (delLine != null) {
-                db.Line.Remove(delLine);
+        [HttpDelete]
+        public async Task<ActionResult> DeleteLine([FromBody]GetLine code) {
+            var delLine = await db.Line.Where(x => x.LineId == code.LineId).ToListAsync();
+
+            if (delLine.Any()) {
+                db.Line.RemoveRange(delLine);
                 db.SaveChanges();
                 return Ok();
-            } else
-                return BadRequest();
-
+            }
+            return BadRequest();
         }
 
     }
