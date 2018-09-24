@@ -26,7 +26,7 @@ class MyService
 var collection = new ServiceCollection();
 collection.AddLogging(options =>
 {
-    options.AddCentralLog(new CentralLogOptions("centralloggerazure.azurewebsites.net"));
+    options.AddCentralLog(new CentralLogOptions("https://centralloggerazure.azurewebsites.net"));
 });
 collection.AddSingleton<MyService>();
 
