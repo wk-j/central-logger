@@ -13,6 +13,7 @@ type State = {
     onManage: boolean
     onChart: boolean
     onMain: boolean
+    onLine: boolean
 }
 
 export class Header extends React.Component<Props, State> {
@@ -23,6 +24,7 @@ export class Header extends React.Component<Props, State> {
             onManage: false,
             onChart: false,
             onMain: false,
+            onLine: false
         }
     }
     public onLogout = () => {
@@ -30,16 +32,19 @@ export class Header extends React.Component<Props, State> {
         AppStorage.Logout()
     }
     public onClickMain = () => {
-        this.setState({ onUser: false, onChart: false, onMain: true, onManage: false })
+        this.setState({ onUser: false, onChart: false, onMain: true, onManage: false, onLine: false })
     }
     public onClickChart = () => {
-        this.setState({ onUser: false, onChart: true, onMain: false, onManage: false })
+        this.setState({ onUser: false, onChart: true, onMain: false, onManage: false, onLine: false })
     }
     public onClickManage = () => {
-        this.setState({ onUser: false, onChart: false, onMain: false, onManage: true })
+        this.setState({ onUser: false, onChart: false, onMain: false, onManage: true, onLine: false })
     }
     public onClickUser = () => {
-        this.setState({ onUser: true, onChart: false, onMain: false, onManage: false })
+        this.setState({ onUser: true, onChart: false, onMain: false, onManage: false, onLine: false })
+    }
+    public onClickLine = () => {
+        this.setState({ onLine: true, onUser: false, onChart: false, onMain: false, onManage: false })
     }
     public render() {
         return (
@@ -50,6 +55,7 @@ export class Header extends React.Component<Props, State> {
                         <Link to="/summary"><Menu.Item active={this.state.onChart} name="Log Chart" onClick={this.onClickChart} /></Link>
                         <Link to="/user"><Menu.Item active={this.state.onManage} name="Manage" onClick={this.onClickManage} /></Link>
                         <Link to="/manage"><Menu.Item active={this.state.onUser} name="User Setting" onClick={this.onClickUser} /></Link>
+                        <Link to="/line"><Menu.Item active={this.state.onLine} name="Line Account" onClick={this.onClickLine} /></Link>
                         <Menu.Item position="right" name="Logout" onClick={this.onLogout} />
                     </Menu>
                 </div>

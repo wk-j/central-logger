@@ -19,7 +19,7 @@ export class Footer extends React.Component<{ style?: CSSProperties }> {
             <div id="outer-container">
                 <main id="page-wrap">
                     <FooterDiv>
-                        Central Logger 0.1.0
+                        Central Logger 0.2.0
                     </FooterDiv>
                 </main>
             </div>
