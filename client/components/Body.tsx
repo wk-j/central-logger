@@ -14,6 +14,7 @@ import { debounce } from "throttle-debounce";
 import { Route, Switch, Link } from "react-router-dom";
 import { Chart } from "./Chart";
 import { Manage } from "./Manage";
+import { Line } from "./Line";
 import { UserList } from "./UserList"
 import swal from "sweetalert2"
 import { scaleDown as Menu } from "react-burger-menu"
@@ -500,6 +501,17 @@ export class Body extends React.Component<any, State> {
                                         </List.Item>
                                     </List>
                                 </Link>
+                                <br />
+                                <Link to="/line" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="linechat" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Line Account</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
                             </Menu>
                             <main id="page-wrap">
 
@@ -557,11 +569,84 @@ export class Body extends React.Component<any, State> {
                                         </List.Item>
                                     </List>
                                 </Link>
+                                <br />
+                                <Link to="/line" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="linechat" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Line Account</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
                             </Menu>
                             <main id="page-wrap">
                                 <BodyDiv>
                                     <Chart Day={selectDay} onDayChange={this.setDay} info={countInfo} debug={countDebug} error={countError}
                                         trace={countTrace} warning={countWarning} critical={countCritical} />
+                                </BodyDiv>
+                            </main>
+                        </div>
+                    )
+
+                }} />
+                <Route exact path="/line" render={() => {
+                    return (
+                        <div id="outer-container">
+                            <Menu isOpen={this.state.openMenu} width={280} pageWrapId={"page-wrap"} outerContainerId={"outer-container"} >
+                                <Header as="h2" icon inverted>
+                                    <Icon name="eye" />
+                                    Central Logger™
+                                    <Header.Subheader>Menu</Header.Subheader>
+                                </Header>
+                                <Link to="/" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="eye" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Log List</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
+                                <br />
+                                <Link to="/summary" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item>
+                                            <List.Icon name="area graph" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Log Chart</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
+                                <br />
+                                <Link to="/manage" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="cogs" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Manage</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
+                                <br />
+                                <Link to="/user" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="users" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">User Setting</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
+                            </Menu>
+                            <main id="page-wrap">
+                                <BodyDiv>
+                                    <Line />
                                 </BodyDiv>
                             </main>
                         </div>
@@ -605,6 +690,17 @@ export class Body extends React.Component<any, State> {
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
                                                 <List.Header as="a">User Setting</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
+                                <br />
+                                <Link to="/line" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="linechat" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Line Account</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -663,6 +759,17 @@ export class Body extends React.Component<any, State> {
                                             <List.Icon name="area graph" size="small" verticalAlign="middle" />
                                             <List.Content>
                                                 <List.Header as="a">Log Chart</List.Header>
+                                            </List.Content>
+                                        </List.Item>
+                                    </List>
+                                </Link>
+                                <br />
+                                <Link to="/line" className="navbar-item">
+                                    <List divided relaxed selection>
+                                        <List.Item onClick={this.onOpenMunu}>
+                                            <List.Icon name="linechat" size="small" verticalAlign="middle" />
+                                            <List.Content>
+                                                <List.Header as="a">Line Account</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
