@@ -483,7 +483,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a" onClick={this.onOpenMunu}>Manage</List.Header>
+                                                <List.Header as="a" onClick={this.onOpenMunu}>Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -494,7 +494,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -551,7 +551,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">Manage</List.Header>
+                                                <List.Header as="a">Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -562,7 +562,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -625,7 +625,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">Manage</List.Header>
+                                                <List.Header as="a">Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -636,7 +636,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -687,7 +687,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -745,7 +745,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">Manage</List.Header>
+                                                <List.Header as="a">Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
