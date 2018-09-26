@@ -22,10 +22,11 @@ namespace CentralLogger.Controllers {
         [HttpPost]
         public ActionResult AddLine([FromBody]GetLine code) {
 
-            var lineList = db.Line.Where(c => c.LineId == code.LineId).Select(o => o.LineId).FirstOrDefault();
+            var lineList = db.Line.Where(c => c.LineId == code.LineId && c.ApplicationName == code.ApplicationName).Select(o => o.LineId).FirstOrDefault();
             if (lineList != code.LineId) {
                 db.Line.Add(new Line {
-                    LineId = code.LineId
+                    LineId = code.LineId,
+                    ApplicationName = code.ApplicationName
                 });
                 db.SaveChanges();
                 return Ok();
@@ -33,16 +34,16 @@ namespace CentralLogger.Controllers {
                 return BadRequest();
         }
 
-        [HttpPost]
-        public ActionResult DeleteLine([FromBody]GetLine code) {
-            var delLine = db.Line.FirstOrDefault(x => x.LineId == code.LineId);
-            if (delLine != null) {
-                db.Line.Remove(delLine);
+        [HttpDelete]
+        public async Task<ActionResult> DeleteLine([FromBody]GetLine code) {
+            var delLine = await db.Line.Where(x => x.LineId == code.LineId).ToListAsync();
+
+            if (delLine.Any()) {
+                db.Line.RemoveRange(delLine);
                 db.SaveChanges();
                 return Ok();
-            } else
-                return BadRequest();
-
+            }
+            return BadRequest();
         }
 
     }

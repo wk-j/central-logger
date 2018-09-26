@@ -87,6 +87,12 @@ namespace CentralLogger.Controllers {
             return Ip.ToList();
         }
 
+        [HttpGet]
+        public IEnumerable<string> GetAllApp() {
+            var App = db.LogInfos.Select(m => m.Application).Distinct();
+            return App.ToList();
+        }
+
         [HttpGet("{ip}")]
         public IEnumerable<string> GetApp(string ip) {
             if (!string.IsNullOrEmpty(ip)) {
@@ -139,7 +145,7 @@ namespace CentralLogger.Controllers {
             var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
 
 
-            lineContent.To = await db.Line.Select(m => m.LineId).Distinct().ToListAsync();
+            lineContent.To = await db.Line.Where(a => a.ApplicationName == data.Application).Select(m => m.LineId).Distinct().ToListAsync();
             lineContent.Messages.Add(new LineMessage {
                 Type = "text",
                 Text = messages
