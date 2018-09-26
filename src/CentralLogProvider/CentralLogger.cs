@@ -21,8 +21,8 @@ namespace CentralLogProvider {
         private readonly HttpClient client = new HttpClient();
         private readonly ConcurrentQueue<LogMessage> queue = new ConcurrentQueue<LogMessage>();
         private readonly Timer timer;
-        private string AppContext = Path.GetFileName(Assembly.GetEntryAssembly().Location);
-        private string IpContext = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
+        private readonly string AppContext = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+        private readonly string IpContext = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList.GetValue(0).ToString();
 
 
         public CentralLogger(string categoryName, CentralLogOptions options) {
