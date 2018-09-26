@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace CentralLogger {
+namespace CentralLogger
+{
 
-    public class LogInfo {
+    public class LogInfo
+    {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
@@ -17,7 +19,8 @@ namespace CentralLogger {
         public string Ip { set; get; }
         public string Category { set; get; }
     }
-    public class Emails {
+    public class Emails
+    {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
@@ -28,21 +31,24 @@ namespace CentralLogger {
         public Boolean Enable { set; get; }
     }
 
-    public class Users {
+    public class Users
+    {
         [Key]
         public int Id { set; get; }
         public string User { set; get; }
         public string Password { set; get; }
     }
 
-    public class Line {
+    public class Line
+    {
         [Key]
         [JsonIgnore]
         public int Id { set; get; }
         public string LineId { set; get; }
-        public string ApplicationName { set; get; }
+        public string Application { set; get; }
     }
-    public class CountLogs {
+    public class CountLogs
+    {
         public IEnumerable<int> dataInfos { set; get; }
         public IEnumerable<int> dataErrors { set; get; }
         public IEnumerable<int> dataDebugs { set; get; }
@@ -51,18 +57,21 @@ namespace CentralLogger {
         public IEnumerable<int> dataCriticals { set; get; }
     }
 
-    public enum LogLevel {
+    public enum LogLevel
+    {
         Trace, Debug, Information, Warning, Error, Critical
     }
 
-    public class CentralLoggerContext : DbContext {
+    public class CentralLoggerContext : DbContext
+    {
         public DbSet<LogInfo> LogInfos { get; set; }
         public DbSet<Emails> Emails { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<Line> Line { get; set; }
         public CentralLoggerContext(DbContextOptions<CentralLoggerContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<Users>()
                 .HasAlternateKey(x => x.User)
                 .HasName("AlternateKey_User");

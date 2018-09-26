@@ -152,7 +152,7 @@ export class Manage extends React.Component<Props, State> {
         return (
             <div>
                 <Segment.Group>
-                    <Segment textAlign="center" inverted color="green" size="large">
+                    <Segment textAlign="center" inverted color="teal" size="large">
                         <Header as="h2" floated="left">
                             Manage
                     </Header>
