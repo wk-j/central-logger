@@ -77,15 +77,16 @@ export class LogList extends React.Component<Props, State> {
             this.setState({ hasMore: false })
         }
     }
-    public componentDidUpdate(prevProps, prevState) {
-        if (prevProps.allData !== this.props.allData) {
+    public componentDidUpdate(prevProps) {
+
+        if (this.props.allData !== prevProps.allData) {
             this.setState({ items: [], hasMore: true })
             // let items = this.props.allData
             // items = [...items, ...this.props.logNow]
             // this.setState({ items });
             if (!this.props.new) {
                 this.setState({
-                    items: this.state.items.concat(this.props.allData)
+                    items: this.props.allData
                 });
                 this.count()
             } else {

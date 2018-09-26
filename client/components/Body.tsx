@@ -315,7 +315,7 @@ export class Body extends React.Component<any, State> {
             })
     }
     public handleSignalR() {
-
+        console.log("signalR on")
         const connection = new HubConnectionBuilder()
             // .withUrl("/LogHub")
             .withUrl(`${getApiUrl()}/LogHub`)
@@ -327,15 +327,16 @@ export class Body extends React.Component<any, State> {
         });
 
         connection.on("LogReceived", (log: Log) => {
+            console.log("log coming...")
             this.LogDate.unshift(log)
             this.updateLogNow();
         });
-
         connection.start().catch(err => console.error(err.toString()));
     }
 
     private updateLogNow = debounce(250, () => {
         if (this.LogDate.length >= 150) {
+            console.log("update1")
             this.Limit = 1
             this.LogDate = []
             this.setState({ logDate: [], newSearch: true })
