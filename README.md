@@ -15,7 +15,7 @@
 
 ```bash
 dotnet cake -target=Build-Web
-dotnet cake -target=Publish
+dotnet run --project src/CentralLogger/CentralLogger.csproj
 ```
 
 ## Provider
