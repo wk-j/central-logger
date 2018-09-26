@@ -315,7 +315,6 @@ export class Body extends React.Component<any, State> {
             })
     }
     public handleSignalR() {
-
         const connection = new HubConnectionBuilder()
             // .withUrl("/LogHub")
             .withUrl(`${getApiUrl()}/LogHub`)
@@ -330,7 +329,6 @@ export class Body extends React.Component<any, State> {
             this.LogDate.unshift(log)
             this.updateLogNow();
         });
-
         connection.start().catch(err => console.error(err.toString()));
     }
 
