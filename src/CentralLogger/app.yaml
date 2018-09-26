@@ -1,5 +1,0 @@
-runtime: aspnetcore
-env: flex
-
-env_variables:
-  CENTRAL_LOGGER_CS: ${ConnectionString}
