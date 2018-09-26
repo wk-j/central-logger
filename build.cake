@@ -4,7 +4,6 @@
 using PS = StartProcess.Processor;
 using ProjectParser;
 
-
 var npi = EnvironmentVariable("npi");
 var name = "CentralLogger";
 
@@ -18,12 +17,6 @@ Task("Build-Web").Does(() => {
 });
 
 Task("Pack").Does(() => {
-    CleanDirectory($"src/{name}/wwwroot");
-    CleanDirectory("publish");
-    PS.StartProcess("npm run --prefix ./client build");
-    DotNetCorePack($"src/{name}/{name}.csproj", new DotNetCorePackSettings {
-        OutputDirectory = "publish"
-    });
     DotNetCorePack($"src/CentralLogProvider", new DotNetCorePackSettings {
         OutputDirectory = "publish"
     });
@@ -35,19 +28,6 @@ Task("Publish").Does(() => {
         OutputDirectory = "publish"
     });
 });
-
-Task("Google")
-    .IsDependentOn("Build-Web")
-    .IsDependentOn("Publish")
-    .Does(() => {
-
-        var config = @"publish/dist/app.yaml";
-        var text = System.IO.File.ReadAllText(config);
-        var newText = text.Replace("${ConnectionString}", EnvironmentVariable("GOOGLE_CS"));
-        System.IO.File.WriteAllText(config,newText);
-
-        PS.StartProcess("gcloud beta app deploy --project central-logger-214910  publish/dist/app.yaml");
-    });
 
 Task("Publish-NuGet")
     .IsDependentOn("Pack")
