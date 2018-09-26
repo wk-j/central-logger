@@ -11,11 +11,12 @@
 - [Client](client)
 - [Server](src/CentralLogger)
 
-## Dependencies
+## Build
 
-- npm
-- [cake](https://cakebuild.net)
-- [dotnet](https://www.microsoft.com/net/download)
+```bash
+dotnet cake -target=Build-Web
+dotnet cake -target=Publish
+```
 
 ## Provider
 
