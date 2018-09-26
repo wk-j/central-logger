@@ -1,64 +1,0 @@
-Script started on Fri Sep 21 12:20:26 2018
-~/.config/fish/config.fish (line 2): Unsupported use of '='. In fish, please use 'set Database Loginfos'.
-set -gx CENTRAL_LOGGER_CS Server=centrallogdata.postgres.database.azure.com;Database=Loginfos;Port=5432;UserId=surasak@centrallogdata;Password=abcABC123;
-                                                                            ^
-from sourcing file ~/.config/fish/config.fish
-	called during startup
-
-~/.config/fish/config.fish (line 2): Unsupported use of '='. In fish, please use 'set Port 5432'.
-set -gx CENTRAL_LOGGER_CS Server=centrallogdata.postgres.database.azure.com;Database=Loginfos;Port=5432;UserId=surasak@centrallogdata;Password=abcABC123;
-                                                                                              ^
-from sourcing file ~/.config/fish/config.fish
-	called during startup
-
-~/.config/fish/config.fish (line 2): Unsupported use of '='. In fish, please use 'set UserId surasak@centrallogdata'.
-set -gx CENTRAL_LOGGER_CS Server=centrallogdata.postgres.database.azure.com;Database=Loginfos;Port=5432;UserId=surasak@centrallogdata;Password=abcABC123;
-                                                                                                        ^
-from sourcing file ~/.config/fish/config.fish
-	called during startup
-
-~/.config/fish/config.fish (line 2): Unsupported use of '='. In fish, please use 'set Password abcABC123'.
-set -gx CENTRAL_LOGGER_CS Server=centrallogdata.postgres.database.azure.com;Database=Loginfos;Port=5432;UserId=surasak@centrallogdata;Password=abcABC123;
-                                                                                                                                      ^
-from sourcing file ~/.config/fish/config.fish
-	called during startup
-
-]0;fish  /Users/bcircle/src/central-logger[30m(B[mWelcome to fish, the friendly interactive shell
-[?2004h]0;fish  /Users/bcircle/src/central-logger[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/central-logger[30m(B[m> [Ks[91ms[30m(B[m[38;2;85;85;85mcript [30m(B[m[91mcript [30m(B[m[1mscript(B[m /[36m[4m/[30m(B[m[38;2;85;85;85mApplications/[13D[30m(B[m[K
-[30m(B[m[?2004l]0;script  /Users/bcircle/src/central-logger[30m(B[mscript: /: Is a directory
-[?2004h]0;fish  /Users/bcircle/src/central-logger[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/central-logger[30m(B[m> [Kl[91ml[30m(B[m[38;2;85;85;85ms[30m(B[m[K
-[30m(B[m[?2004l]0;l  /Users/bcircle/src/central-logger[30m(B[mfish: Unknown command 'l'
-[?2004h]0;fish  /Users/bcircle/src/central-logger[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/central-logger[30m(B[m> [K
-azure-pipelines.yml  CMD.md          package-lock.json   scripts/  
-build.cake           Dockerfile      README.md           src/      
-build.sh             global.json     run-analyzer.sh     tests/    
-client/              omnisharp.json  run-performance.sh  typescript[A[A[A[A[18Dazure-pipelines.yml 
-[1m[100mazure-pipelines.yml(B[m[30m[30m(B[m  CMD.md          package-lock.json   scripts/  [A[C[C[20D[91mazure-pipelines.yml[30m(B[m [20D[91mCMD.md [30m(B[m[K
-azure-pipelines.yml  [1m[100mCMD.md(B[m[30m[30m(B[m          package-lock.json   scripts/  [A[11D [91mpackag[30m(B[me-lock.json 
-[21CCMD.md          [1m[100mpackage-lock.json(B[m[30m[30m(B[m   scripts/  [A[12D[91me-lock.json[30m(B[m [18D[91mscripts/[30m(B[m[K
-[37Cpackage-lock.json   [1m[100mscripts/(B[m[30m[30m(B[m  [A[10D[1mscripts/(B[m[1mbuild.cake 
-[57C(B[mscripts/  
-[1m[100mbuild.cake(B[m[30m[30m(B[m           Dockerfile      README.md           src/      [A[A[11D[91mbuild.cake[30m(B[m [11D[91mscripts/[30m(B[m[K
-[57C[1m[100mscripts/(B[m[30m[30m(B[m  
-build.cake           Dockerfile      README.md           src/      [A[A[10D[1mscripts/(B[m
-[K
-[K
-[K
-[K[A[A[A[A[57C
-[30m(B[m[?2004l]0;scripts/  /Users/bcircle/src/central-logger[30m(B[m[?2004h]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [Kl[91ml[30m(B[m[38;2;85;85;85ms[30m(B[m[91ms[30m(B[m[1mls(B[m
-[30m(B[m[?2004l]0;ls  /Users/bcircle/src/central-logger/scripts[30m(B[mSendCriticalLog.csx
-[?2004h]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [KSendCriticalLog.csx [20D[91mSendCriticalLog.csx[30m(B[m [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kd[38;2;85;85;85motnet restore[13D[30m(B[m[91md[38;2;85;85;85motnet restore[13D[30m(B[m[91mo[38;2;85;85;85mtnet restore[12D[30m(B[m[91mt[38;2;85;85;85mnet restore[11D[30m(B[m[91mn[38;2;85;85;85met restore[10D[30m(B[m[91me[38;2;85;85;85mt restore[9D[30m(B[m[91mt[38;2;85;85;85m restore[30m(B[m[1mdotnet(B[m[38;2;85;85;85m restore[30m(B[m[1m-(B[m[K[91mdotnet-[30m(B[m[38;2;85;85;85mscript SendCriticalLog.csx [27D[30m(B[m[91mscript SendCriticalLog.csx [30m(B[m[34D[1mdotnet-script(B[m [36mSendCriticalLog.csx[30m(B[m 
-[30m(B[m[?2004l]0;dotnet-script  /Users/bcircle/src/central-logger/scripts[30m(B[m[?1h=[?1h=[?1h=21-09-2018 12:20:53.976 +07:00 [Information] Submission#0.MyService: Hello, world
-21-09-2018 12:20:53.978 +07:00 [Critical] Submission#0.MyService: Can't connect to Database
-]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [Kd[91md[30m(B[m[38;2;85;85;85motnet-script SendCriticalLog.csx [33D[30m(B[m[91motnet-script SendCriticalLog.csx [30m(B[m[34D[1mdotnet-script(B[m [36mSendCriticalLog.csx[30m(B[m 
-[30m(B[m[?2004l]0;dotnet-script  /Users/bcircle/src/central-logger/scripts[30m(B[m[?1h=[?1h=[?1h=21-09-2018 12:22:03.464 +07:00 [Information] Submission#0.MyService: Hello, world
-21-09-2018 12:22:03.466 +07:00 [Critical] Submission#0.MyService: Can't connect to Database
-]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [K30m(B[m[1mls(B[m
-[30m(B[m[?2004l]0;ls  /Users/bcircle/src/central-logger/scripts[30m(B[mSendCriticalLog.csx
-[?2004h]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [KSendCriticalLog.csx [20D[91mSendCriticalLog.csx[30m(B[m [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kd[38;2;85;85;85motnet restore[13D[30m(B[m[91md[38;2;85;85;85motnet restore[13D[30m(B[m[91mo[38;2;85;85;85mtnet restore[12D[30m(B[m[91mt[38;2;85;85;85mnet restore[11D[30m(B[m[91mn[38;2;85;85;85met restore[10D[30m(B[m[91me[38;2;85;85;85mt restore[9D[30m(B[m[91mt[38;2;85;85;85m restore[30m(B[m[1mdotnet(B[m[38;2;85;85;85m restore[30m(B[m[1m-(B[m[K[91mdotnet-[30m(B[m[38;2;85;85;85mscript SendCriticalLog.csx [27D[30m(B[m[91mscript SendCriticalLog.csx [30m(B[m[34D[1mdotnet-script(B[m [36mSendCriticalLog.csx[30m(B[m 
-[30m(B[m[?2004l]0;dotnet-script  /Users/bcircle/src/central-logger/scripts[30m(B[m[?1h=[?1h=[?1h=21-09-2018 12:20:53.976 +07:00 [Information] Submission#0.MyService: Hello, world
-21-09-2018 12:20:53.978 +07:00 [Critical] Submission#0.MyService: Can't connect to Database
-]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [Kd[91md[30m(B[m[38;2;85;85;85motnet-script SendCriticalLog.csx [33D[30m(B[m[91motnet-script SendCriticalLog.csx [30m(B[m[34D[1mdotnet-script(B[m [36mSendCriticalLog.csx[30m(B[m 
-[30m(B[m[?2004l]0;dotnet-script  /Users/bcircle/src/central-logger/scripts[30m(B[m[?1h=[?1h=[?1h=21-09-2018 12:22:03.464 +07:00 [Information] Submission#0.MyService: Hello, world
-21-09-2018 12:22:03.466 +07:00 [Critical] Submission#0.MyService: Can't connect to Database
-]0;fish  /Users/bcircle/src/central-logger/scripts[30m(B[m[38;5;237m⏎(B[m                                                                               ⏎ [2Kbcircle@bcircles-MacBook-Pro [32m~/s/c/scripts[30m(B[m> [K
