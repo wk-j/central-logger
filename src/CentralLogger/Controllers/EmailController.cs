@@ -105,24 +105,19 @@ namespace CentralLogger.Controllers {
             var emaillist1 = db.Emails.Where(m => m.Email_1 == email).Select(m => m.Application).FirstOrDefault();
             var emaillist2 = db.Emails.Where(m => m.Email_2 == email).Select(m => m.Application).FirstOrDefault();
             var emaillist3 = db.Emails.Where(m => m.Email_3 == email).Select(m => m.Application).FirstOrDefault();
-            //if (emaillist1 != null || emaillist2 != null || emaillist3 != null) {
-            if (emaillist1 != null) {
-                var update = db.Emails.FirstOrDefault(o => o.Application == emaillist1);
-                update.Email_1 = "";
-                db.SaveChanges();
-                var text = "Your email has been unsubscribe. Thank you";
-                return text;
-            }
-            if (emaillist2 != null) {
-                var update = db.Emails.FirstOrDefault(o => o.Application == emaillist2);
-                update.Email_2 = "";
-                db.SaveChanges();
-                var text = "Your email has been unsubscribe. Thank you";
-                return text;
-            }
-            if (emaillist3 != null) {
-                var update = db.Emails.FirstOrDefault(o => o.Application == emaillist3);
-                update.Email_3 = "";
+            if (emaillist1 != null || emaillist2 != null || emaillist3 != null) {
+                if (emaillist1 != null) {
+                    var update = db.Emails.FirstOrDefault(o => o.Application == emaillist1);
+                    update.Email_1 = "";
+                }
+                if (emaillist2 != null) {
+                    var update = db.Emails.FirstOrDefault(o => o.Application == emaillist2);
+                    update.Email_2 = "";
+                }
+                if (emaillist3 != null) {
+                    var update = db.Emails.FirstOrDefault(o => o.Application == emaillist3);
+                    update.Email_3 = "";
+                }
                 db.SaveChanges();
                 var text = "Your email has been unsubscribe. Thank you";
                 return text;
