@@ -154,7 +154,7 @@ export class Manage extends React.Component<Props, State> {
                 <Segment.Group>
                     <Segment textAlign="center" inverted color="teal" size="large">
                         <Header as="h2" floated="left">
-                            Manage
+                            Email
                     </Header>
                         <Icon style={style} size="big" />
                         <Button onClick={this.onOpens} disabled={enables} color="olive" circular icon="plus" floated="right" />

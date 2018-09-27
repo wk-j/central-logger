@@ -104,9 +104,6 @@ namespace CentralLogger.Controllers {
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
 
-            var date = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff");
-            var time = DateTime.Now;
-
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
@@ -161,7 +158,7 @@ namespace CentralLogger.Controllers {
         }
 
         [HttpDelete]
-        public async void NukeDatabase() {
+        public async Task NukeDatabase() {
             await db.Database.EnsureDeletedAsync();
         }
     }
