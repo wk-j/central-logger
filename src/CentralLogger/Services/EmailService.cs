@@ -51,7 +51,8 @@ namespace CentralLogger.Services {
         }
 
         public async Task SendEmail(LogInfo data, string Email) {
-            string strUrl = $"{baseUrl}/#/Unsubscribe";
+            string strUrl = $"{baseUrl}/api/Email/DisableEmail?email={Email}";
+            strUrl = strUrl.Replace("@", "%40");
             var subject = $"Critical Alert {data.Application} [ {data.Ip} ]";
             var body = $"Found Critical:@Application : {data.Application}@Datetime : {data.DateTime}@Category : {data.Category}@IP : {data.Ip}@Message : {data.Message}\n\n\n\nถ้าต้องการยกเลิกการติดตามโปรดตั้งค่าปิดแจ้งเตือนด้านล่าง :@ {strUrl}";
             body = body.Replace("@", Environment.NewLine);

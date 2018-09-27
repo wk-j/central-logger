@@ -100,8 +100,8 @@ namespace CentralLogger.Controllers {
             }
         }
 
-        [HttpPost]
-        public ActionResult DisableEmail(string email) {
+        [HttpGet]
+        public string DisableEmail(string email) {
             var emaillist1 = db.Emails.Where(m => m.Email_1 == email).Select(m => m.Application).FirstOrDefault();
             var emaillist2 = db.Emails.Where(m => m.Email_2 == email).Select(m => m.Application).FirstOrDefault();
             var emaillist3 = db.Emails.Where(m => m.Email_3 == email).Select(m => m.Application).FirstOrDefault();
@@ -119,9 +119,11 @@ namespace CentralLogger.Controllers {
                     update.Email_3 = "";
                 }
                 db.SaveChanges();
-                return Ok();
+                string text = "Your email has been unsubscribe. Thank you";
+                return text;
             } catch {
-                return BadRequest();
+                string text = "Found something wrong. Please contact Admin. Thank you";
+                return text;
             }
         }
 
