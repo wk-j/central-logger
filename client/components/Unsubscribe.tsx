@@ -30,6 +30,7 @@ export class Unsubscribe extends React.Component<Props, State> {
                     </Segment>
                     <Segment textAlign="center" style={{ minHeight: "calc( 100vh - 230px )" }}>
 
+
                     </Segment>
                 </Segment.Group>
             </div>
