@@ -22,6 +22,7 @@ namespace CentralLogProvider {
         }
         public void Dispose() {
             loggers.Clear();
+
         }
     }
 }

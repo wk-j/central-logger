@@ -39,7 +39,7 @@
     "react-simple-infinite-scroll": "0.0.1",
     "react-switch": "^3.0.4",
     "sweetalert": "^2.1.0",
-    "sweetalert2": "^7.26.29",
+    "sweetalert2": "^7.28.2",
     "throttle-debounce": "^2.0.1",
     "typescript": "^3.0.3",
     "webpack": "^4.12.0",
