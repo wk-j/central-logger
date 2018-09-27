@@ -15,6 +15,7 @@ import { Route, Switch, Link } from "react-router-dom";
 import { Chart } from "./Chart";
 import { Manage } from "./Manage";
 import { Line } from "./Line";
+import { Unsubscribe } from "./Unsubscribe";
 import { UserList } from "./UserList"
 import swal from "sweetalert2"
 import { scaleDown as Menu } from "react-burger-menu"
@@ -315,7 +316,6 @@ export class Body extends React.Component<any, State> {
             })
     }
     public handleSignalR() {
-        console.log("signalR on")
         const connection = new HubConnectionBuilder()
             // .withUrl("/LogHub")
             .withUrl(`${getApiUrl()}/LogHub`)
@@ -327,7 +327,6 @@ export class Body extends React.Component<any, State> {
         });
 
         connection.on("LogReceived", (log: Log) => {
-            console.log("log coming...")
             this.LogDate.unshift(log)
             this.updateLogNow();
         });
@@ -336,7 +335,6 @@ export class Body extends React.Component<any, State> {
 
     private updateLogNow = debounce(250, () => {
         if (this.LogDate.length >= 150) {
-            console.log("update1")
             this.Limit = 1
             this.LogDate = []
             this.setState({ logDate: [], newSearch: true })
@@ -486,7 +484,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a" onClick={this.onOpenMunu}>Manage</List.Header>
+                                                <List.Header as="a" onClick={this.onOpenMunu}>Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -497,7 +495,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -554,7 +552,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">Manage</List.Header>
+                                                <List.Header as="a">Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -565,7 +563,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -628,7 +626,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">Manage</List.Header>
+                                                <List.Header as="a">Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -639,7 +637,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -690,7 +688,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="users" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">User Setting</List.Header>
+                                                <List.Header as="a">User</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>
@@ -748,7 +746,7 @@ export class Body extends React.Component<any, State> {
                                         <List.Item onClick={this.onOpenMunu}>
                                             <List.Icon name="cogs" size="small" verticalAlign="middle" />
                                             <List.Content>
-                                                <List.Header as="a">Manage</List.Header>
+                                                <List.Header as="a">Email</List.Header>
                                             </List.Content>
                                         </List.Item>
                                     </List>

@@ -53,8 +53,8 @@ export class Header extends React.Component<Props, State> {
                     <Menu secondary size="large" icon="labeled" inverted color="blue" >\
                         <Link to="/"><Menu.Item active={this.state.onMain} style={{ paddingLeft: "55px" }} header name="Central Logger ™" onClick={this.onClickMain} /></Link>
                         <Link to="/summary"><Menu.Item active={this.state.onChart} name="Log Chart" onClick={this.onClickChart} /></Link>
-                        <Link to="/user"><Menu.Item active={this.state.onManage} name="Manage" onClick={this.onClickManage} /></Link>
-                        <Link to="/manage"><Menu.Item active={this.state.onUser} name="User Setting" onClick={this.onClickUser} /></Link>
+                        <Link to="/user"><Menu.Item active={this.state.onManage} name="User" onClick={this.onClickManage} /></Link>
+                        <Link to="/manage"><Menu.Item active={this.state.onUser} name="Email" onClick={this.onClickUser} /></Link>
                         <Link to="/line"><Menu.Item active={this.state.onLine} name="Line Account" onClick={this.onClickLine} /></Link>
                         <Menu.Item position="right" name="Logout" onClick={this.onLogout} />
                     </Menu>

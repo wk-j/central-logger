@@ -100,59 +100,22 @@ namespace CentralLogger.Controllers {
             }
         }
 
-        /*[HttpPost]
-        public ActionResult DisableEmail(string Email) {
-            var emaillist1 = db.Emails.Where(m => m.Email_1 == Email).Select(m => m.Email_1).FirstOrDefault();
-            var emaillist2 = db.Emails.Where(m => m.Email_2 == Email).Select(m => m.Email_2).FirstOrDefault();
-            var emaillist3 = db.Emails.Where(m => m.Email_3 == Email).Select(m => m.Email_3).FirstOrDefault();
-            if (emaillist1 == Email) {
-                var del = db.Emails.FirstOrDefault(o => o.Email_1 == Email);
-                db.Emails.Update(new Emails {
-                    Enable = false
-                });
-                db.SaveChanges();
-                return Ok();
-
-            }
-            if (emaillist2 == Email) {
-                var del = db.Emails.FirstOrDefault(o => o.Email_2 == Email);
-                db.Emails.Update(new Emails {
-                    Enable = false
-                });
-                db.SaveChanges();
-                return Ok();
-
-            }
-            if (emaillist3 == Email) {
-                var del = db.Emails.FirstOrDefault(o => o.Email_3 == Email);
-                db.Emails.Update(new Emails {
-                    Enable = false
-                });
-                db.SaveChanges();
-                return Ok();
-
-            }
-            db.SaveChangesAsync();
-            return BadRequest();
-        }*/
-
         [HttpPost]
-        public ActionResult DisableEmail([FromBody]GetEmail x) {
-            var emaillist1 = db.Emails.Where(m => m.Email_1 == x.Email_1).Select(m => m.Email_1).FirstOrDefault();
-            var emaillist2 = db.Emails.Where(m => m.Email_2 == x.Email_2).Select(m => m.Email_2).FirstOrDefault();
-            var emaillist3 = db.Emails.Where(m => m.Email_3 == x.Email_3).Select(m => m.Email_3).FirstOrDefault();
-            var applist = db.Emails.Where(m => m.Application == x.Application).Select(m => m.Application).FirstOrDefault();
+        public ActionResult DisableEmail(string email) {
+            var emaillist1 = db.Emails.Where(m => m.Email_1 == email).Select(m => m.Application).FirstOrDefault();
+            var emaillist2 = db.Emails.Where(m => m.Email_2 == email).Select(m => m.Application).FirstOrDefault();
+            var emaillist3 = db.Emails.Where(m => m.Email_3 == email).Select(m => m.Application).FirstOrDefault();
             try {
-                if (emaillist1 == x.Email_1 && applist == x.Application) {
-                    var update = db.Emails.FirstOrDefault(o => o.Application == x.Application);
+                if (emaillist1 != null) {
+                    var update = db.Emails.FirstOrDefault(o => o.Application == emaillist1);
                     update.Email_1 = "";
                 }
-                if (emaillist2 == x.Email_2 && applist == x.Application) {
-                    var update = db.Emails.FirstOrDefault(o => o.Application == x.Application);
+                if (emaillist2 != null) {
+                    var update = db.Emails.FirstOrDefault(o => o.Application == emaillist2);
                     update.Email_2 = "";
                 }
-                if (emaillist3 == x.Email_3 && applist == x.Application) {
-                    var update = db.Emails.FirstOrDefault(o => o.Application == x.Application);
+                if (emaillist3 != null) {
+                    var update = db.Emails.FirstOrDefault(o => o.Application == emaillist3);
                     update.Email_3 = "";
                 }
                 db.SaveChanges();

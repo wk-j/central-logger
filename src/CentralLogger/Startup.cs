@@ -45,6 +45,7 @@ namespace CentralLogger {
             services.AddCors();
             services.AddDbContext<CentralLoggerContext>(options => options.UseNpgsql(connectionString));
             services.AddSignalR();
+            services.AddHttpContextAccessor();
             services.AddScoped<UserService>();
             services.AddSingleton<EmailService>();
             services.AddHttpClient();

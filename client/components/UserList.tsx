@@ -100,7 +100,7 @@ export class UserList extends React.Component<Props, State> {
                 <Segment.Group>
                     <Segment textAlign="center" inverted color="olive" size="large">
                         <Header as="h2" floated="left">
-                            User Setting
+                            User
                     </Header>
                         <Icon style={style} size="big" />
                         <Button onClick={this.onOpens} color="green" circular icon="plus" floated="right" />

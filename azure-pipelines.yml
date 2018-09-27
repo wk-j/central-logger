@@ -9,18 +9,16 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-
 steps:
-
 - script: dotnet publish src/CentralLogger/CentralLogger.Azure.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
-  displayName: 'publish'
+  displayName: 'Publish'
+- script: dotnet pack src/CentralLogProvider/CentralLogProvider.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Create NuGet package'
 
 - task: PublishBuildArtifacts@1
-
 - task: NodeTool@0
   inputs:
     version: '8.x'
-
 - task: DotNetCoreInstaller@0
   inputs:
     version: '2.1.300'

@@ -16,13 +16,14 @@ class MyService {
     }
     public void SendInfo() {
         logger.LogInformation("Hello, world");
-        logger.LogCritical("Can't connect to Database");
+        logger.LogCritical("MSBuild targets for Web and WebApplications that come with Visual Studio. Useful for build servers that do not have Visual Studio installed.");
     }
 }
 
 var collection = new ServiceCollection();
 collection.AddLogging(options => {
     options.AddCentralLog(new CentralLogOptions("http://localhost:5000"));
+
 });
 collection.AddSingleton<MyService>();
 
