@@ -8,11 +8,18 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  web:      'src/CentralLogger/CentralLogger.Azure.csproj'
+  provider: 'src/CentralLogProvider/CentralLogProvider.csproj'
+  test:     'tests/CentralLogger.Tests/CentralLogger.Tests.csproj'
 
 steps:
-- script: dotnet publish src/CentralLogger/CentralLogger.Azure.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
-  displayName: 'Publish'
-- script: dotnet pack src/CentralLogProvider/CentralLogProvider.csproj --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
+- script: dotnet test $(test)
+  displayName: "Run Unit Test"
+
+- script: dotnet publish $(web) --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Publish Web Assets'
+
+- script: dotnet pack $(provider) --configuration $(buildConfiguration)  --output $(Build.ArtifactStagingDirectory)
   displayName: 'Create NuGet package'
 
 - task: PublishBuildArtifacts@1
