@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Timers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace CentralLogger.Services {
@@ -14,11 +15,14 @@ namespace CentralLogger.Services {
 
         private readonly Timer timer;
         private readonly IConfiguration configuration;
-        public EmailService(IConfiguration configuration) {
+        // private readonly HttpContext context;
+        private readonly string baseUrl;
+        public EmailService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) {
 
             Console.WriteLine("Create MailService instance");
 
             this.configuration = configuration;
+            this.baseUrl = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}";
             timer = new Timer(100);
             timer.Start();
             timer.AutoReset = false;
@@ -47,8 +51,9 @@ namespace CentralLogger.Services {
         }
 
         public async Task SendEmail(LogInfo data, string Email) {
+            string strUrl = $"{baseUrl}/#/Unsubscribe";
             var subject = $"Critical Alert {data.Application} [ {data.Ip} ]";
-            var body = $"Found Critical:@Application : {data.Application}@Datetime : {data.DateTime}@Category : {data.Category}@IP : {data.Ip}@Message : {data.Message}\n\n\n\nถ้าต้องการยกเลิกการติดตามโปรดคลิกลิงค์ด้านล่าง :@";
+            var body = $"Found Critical:@Application : {data.Application}@Datetime : {data.DateTime}@Category : {data.Category}@IP : {data.Ip}@Message : {data.Message}\n\n\n\nถ้าต้องการยกเลิกการติดตามโปรดตั้งค่าปิดแจ้งเตือนด้านล่าง :@ {strUrl}";
             body = body.Replace("@", Environment.NewLine);
             var FromMail = configuration["Email:Account"];
             var Password = configuration["Email:Password"];
