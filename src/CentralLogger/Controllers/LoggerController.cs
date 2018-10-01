@@ -104,7 +104,6 @@ namespace CentralLogger.Controllers {
             return Enumerable.Empty<string>();
         }
 
-        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
 
