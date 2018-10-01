@@ -97,11 +97,7 @@ namespace CentralLogger.Controllers {
             return Enumerable.Empty<string>();
         }
         [HttpPost]
-<<<<<<< HEAD
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
-=======
-        public async Task<ActionResult> AddLog([FromBody]GetLogInfos x) {
->>>>>>> 9d52ca7e1c4e66b1cea06c42c8364b3e6cee63fc
 
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,

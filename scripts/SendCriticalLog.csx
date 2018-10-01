@@ -22,11 +22,7 @@ class MyService {
 
 var collection = new ServiceCollection();
 collection.AddLogging(options => {
-<<<<<<< HEAD
-    options.AddCentralLog(new CentralLogOptions("https://centralloggerazure.azurewebsites.net"));
-=======
     options.AddCentralLog(new CentralLogOptions("http://localhost:5000"));
->>>>>>> 9d52ca7e1c4e66b1cea06c42c8364b3e6cee63fc
 
 });
 collection.AddSingleton<MyService>();
