@@ -11,6 +11,7 @@ using CentralLogger.Hubs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CentralLogger.Services;
+using CentralLogger.Attributes;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -21,6 +22,7 @@ namespace CentralLogger.Controllers {
             this.db = db;
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<IActionResult> GetDataChart([FromBody] DateTime date) {
 
