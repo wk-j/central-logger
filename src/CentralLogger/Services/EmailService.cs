@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 namespace CentralLogger.Services {
     public class EmailService {
 
+<<<<<<< HEAD
         readonly ConcurrentQueue<LogInfo> queue = new ConcurrentQueue<LogInfo>();
         readonly ConcurrentQueue<string> queueMail = new ConcurrentQueue<string>();
         readonly Timer timer;
@@ -17,6 +18,15 @@ namespace CentralLogger.Services {
         // private readonly HttpContext context;
         readonly string baseUrl;
         
+=======
+        private readonly ConcurrentQueue<LogInfo> queue = new ConcurrentQueue<LogInfo>();
+        private readonly ConcurrentQueue<string> queueMail = new ConcurrentQueue<string>();
+
+        private readonly Timer timer;
+        private readonly IConfiguration configuration;
+        // private readonly HttpContext context;
+        private readonly string baseUrl;
+>>>>>>> 9d52ca7e1c4e66b1cea06c42c8364b3e6cee63fc
         public EmailService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) {
 
             Console.WriteLine("Create MailService instance");
@@ -51,6 +61,10 @@ namespace CentralLogger.Services {
         }
 
         public async Task SendEmail(LogInfo data, string Email) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9d52ca7e1c4e66b1cea06c42c8364b3e6cee63fc
             string strUrl = $"{baseUrl}/api/Email/DisableEmail?email={Email}";
             strUrl = strUrl.Replace("@", "%40");
             var subject = $"Critical Alert {data.Application} [ {data.Ip} ]";
