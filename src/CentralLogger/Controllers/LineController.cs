@@ -9,26 +9,27 @@ using System.Globalization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using CentralLogger.Models;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class LineController : ControllerBase {
-        private readonly CentralLoggerContext db;
+        readonly CentralLoggerContext db;
         public LineController(CentralLoggerContext db) {
             this.db = db;
         }
 
         [HttpPost]
-        public ActionResult AddLine([FromBody]GetLine code) {
+        public async Task<ActionResult> AddLine([FromBody] GetLine code) {
 
-            var lineList = db.Line.Where(c => c.LineId == code.LineId && c.ApplicationName == code.ApplicationName).Select(o => o.LineId).FirstOrDefault();
+            var lineList = await db.Line.Where(c => c.LineId == code.LineId && c.ApplicationName == code.ApplicationName).Select(o => o.LineId).FirstOrDefaultAsync();
             if (lineList != code.LineId) {
                 db.Line.Add(new Line {
                     LineId = code.LineId,
                     ApplicationName = code.ApplicationName
                 });
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return Ok();
             } else
                 return BadRequest();
@@ -40,7 +41,7 @@ namespace CentralLogger.Controllers {
 
             if (delLine.Any()) {
                 db.Line.RemoveRange(delLine);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return Ok();
             }
             return BadRequest();

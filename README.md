@@ -27,5 +27,5 @@ dotnet run --project src/CentralLogger/CentralLogger.csproj
 - [Docker](https://hub.docker.com/r/wearetherock/central-logger)
 
 ```bash
-docker run -p 8080:80 -e "CENTRAL_LOGGER_CS=<ConnectionString>"  wearetherock/central-logger
+docker run -p 8080:80 -e "CENTRAL_LOGGER_CS=<ConnectionString>"  wearetherock/central-logger:latest
 ```
