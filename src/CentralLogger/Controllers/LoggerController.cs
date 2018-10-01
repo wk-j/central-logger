@@ -98,11 +98,11 @@ namespace CentralLogger.Controllers {
         }
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
-
+            DateTime date = x.DateTime.ToLocalTime();
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = x.DateTime,
+                DateTime = date,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -110,7 +110,7 @@ namespace CentralLogger.Controllers {
             var data = new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = x.DateTime,
+                DateTime = date,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
