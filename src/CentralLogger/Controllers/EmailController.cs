@@ -13,14 +13,15 @@ using Microsoft.EntityFrameworkCore;
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [BasicAuthorize(typeof(BasicAuthorizeFilter))]
     public class EmailController : ControllerBase {
         readonly CentralLoggerContext db;
 
         public EmailController(CentralLoggerContext db) {
             this.db = db;
         }
-        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult> AddEmailsAsyncAsync([FromBody] GetEmail x) {
             var applist = await db.Emails.Where(m => m.Application == x.Application).Select(m => m.Application).FirstOrDefaultAsync();
@@ -68,8 +69,7 @@ namespace CentralLogger.Controllers {
                 return BadRequest();
             }
         }
-
-
+        
         [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult> SetEnable(Boolean data) {
@@ -130,8 +130,6 @@ namespace CentralLogger.Controllers {
                 return text;
             }
         }
-
-
     }
 
 }
