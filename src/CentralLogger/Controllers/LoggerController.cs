@@ -39,6 +39,7 @@ namespace CentralLogger.Controllers {
         readonly IHttpClientFactory httpClientFactory;
         readonly LineContent lineContent = new LineContent();
 
+
         public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, IHttpClientFactory httpClientFactory, IConfiguration configuration) {
             this.db = db;
             this.configuration = configuration;
@@ -106,11 +107,11 @@ namespace CentralLogger.Controllers {
 
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
-
+            DateTime date = x.DateTime.ToLocalTime();
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = x.DateTime,
+                DateTime = date,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -118,7 +119,7 @@ namespace CentralLogger.Controllers {
             var data = new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = x.DateTime,
+                DateTime = date,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -143,8 +144,6 @@ namespace CentralLogger.Controllers {
         private async Task SendLine(LogInfo data) {
 
             var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
-
-
 
             lineContent.To = await db.Line.Where(a => a.ApplicationName == data.Application).Select(m => m.LineId).Distinct().ToListAsync();
             lineContent.Messages.Add(new LineMessage {

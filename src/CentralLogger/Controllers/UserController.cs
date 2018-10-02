@@ -9,16 +9,20 @@ using CentralLogger.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace CentralLogger.Controllers {
+namespace CentralLogger.Controllers
+{
     [Route("api/[controller]/[action]")]
     [ApiController]
+
     public class UserController : ControllerBase {
         readonly EmailService email;
         readonly CentralLoggerContext db;
         readonly IHubContext<LogHub> hubContext;
         readonly UserService userService;
 
-        public UserController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService) {
+
+        public UserController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService)
+        {
             this.db = db;
             this.hubContext = hubContext;
             this.email = email;
@@ -44,33 +48,43 @@ namespace CentralLogger.Controllers {
         [HttpPost]
         public ActionResult AddUser([FromBody] GetUsers data) {
             var userlist = db.Users.Where(x => x.User == data.Users).Select(x => x.User).FirstOrDefault();
-            if (userlist != data.Users && data.Users != null) {
+            if (userlist != data.Users && data.Users != null)
+            {
                 userService.AddUser(data.Users, data.Password);
                 return Ok();
-            } else {
+            }
+            else
+            {
                 return BadRequest();
             }
         }
 
         [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
-        public ActionResult DeleteUser(string User) {
+        public ActionResult DeleteUser(string User)
+        {
             var del = db.Users.FirstOrDefault(data => data.User == User);
-            if (del != null && User != "admin") {
+            if (del != null && User != "admin")
+            {
                 db.Users.Remove(del);
                 db.SaveChanges();
                 return Ok();
-            } else
+            }
+            else
                 return BadRequest();
         }
 
         [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
-        public ActionResult<IEnumerable<string>> ShowAllUser() {
-            try {
+        public ActionResult<IEnumerable<string>> ShowAllUser()
+        {
+            try
+            {
                 var showUsers = db.Users.Where(x => x.Id > 1).Select(data => data.User).ToArray();
                 return Ok(showUsers);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, ex);
             }
         }

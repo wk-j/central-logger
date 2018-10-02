@@ -21,6 +21,7 @@ namespace CentralLogger.Controllers {
             this.db = db;
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult> AddEmailsAsyncAsync([FromBody] GetEmail x) {
             var applist = await db.Emails.Where(m => m.Application == x.Application).Select(m => m.Application).FirstOrDefaultAsync();
@@ -40,6 +41,7 @@ namespace CentralLogger.Controllers {
 
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public async Task<IEnumerable<string>> SearchExceptApp() {
             /////ใช้ในการเลือกAppจากdata//////
@@ -49,6 +51,7 @@ namespace CentralLogger.Controllers {
             return result;
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult> UpdateEmail([FromBody] GetEmail Mail) {
             var applist = await db.Emails.Where(m => m.Application == Mail.Application).Select(m => m.Application).FirstOrDefaultAsync();
@@ -66,7 +69,8 @@ namespace CentralLogger.Controllers {
                 return BadRequest();
             }
         }
-
+        
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult> SetEnable(Boolean data) {
             db.Emails.Update(new Emails {
@@ -76,6 +80,7 @@ namespace CentralLogger.Controllers {
             return Ok();
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public async Task<ActionResult> DeleteApp(string AppName) {
             var del = db.Emails.FirstOrDefault(o => o.Application == AppName);
@@ -87,6 +92,7 @@ namespace CentralLogger.Controllers {
                 return BadRequest();
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetEmail>>> ShowMailApp() {
             try {
@@ -97,6 +103,7 @@ namespace CentralLogger.Controllers {
             }
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public async Task<string> DisableEmail(string email) {
             var emaillist1 = await db.Emails.Where(m => m.Email_1 == email).Select(m => m.Application).FirstOrDefaultAsync();
