@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CentralLogger.Attributes;
 using CentralLogger.Hubs;
 using CentralLogger.Models;
 using CentralLogger.Services;
@@ -12,12 +13,13 @@ namespace CentralLogger.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserController : ControllerBase
-    {
+
+    public class UserController : ControllerBase {
         readonly EmailService email;
         readonly CentralLoggerContext db;
         readonly IHubContext<LogHub> hubContext;
         readonly UserService userService;
+
 
         public UserController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, UserService userService)
         {
@@ -26,12 +28,12 @@ namespace CentralLogger.Controllers
             this.email = email;
             this.userService = userService;
         }
+
+
         [HttpPost]
-        public async Task<ActionResult> LoginRequest([FromBody] GetLoginRequest request)
-        {
+        public async Task<ActionResult> LoginRequest([FromBody] GetLoginRequest request) {
             var IsAuthorized = await userService.IsAuthorized(request.User, request.Pass);
-            if (IsAuthorized)
-            {
+            if (IsAuthorized) {
                 //  base64 UTF8 (request.User:request.pass)
                 var account = $"{request.User}:{request.Pass}";
                 var accountBytes = System.Text.Encoding.UTF8.GetBytes(account);
@@ -42,9 +44,9 @@ namespace CentralLogger.Controllers
             return Unauthorized();
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
-        public ActionResult AddUser([FromBody] GetUsers data)
-        {
+        public ActionResult AddUser([FromBody] GetUsers data) {
             var userlist = db.Users.Where(x => x.User == data.Users).Select(x => x.User).FirstOrDefault();
             if (userlist != data.Users && data.Users != null)
             {
@@ -57,6 +59,7 @@ namespace CentralLogger.Controllers
             }
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public ActionResult DeleteUser(string User)
         {
@@ -71,6 +74,7 @@ namespace CentralLogger.Controllers
                 return BadRequest();
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public ActionResult<IEnumerable<string>> ShowAllUser()
         {

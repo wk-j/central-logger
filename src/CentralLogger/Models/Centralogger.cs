@@ -30,6 +30,7 @@ namespace CentralLogger {
 
     public class Users {
         [Key]
+        [JsonIgnore]
         public int Id { set; get; }
         public string User { set; get; }
         public string Password { set; get; }

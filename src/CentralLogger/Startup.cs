@@ -47,7 +47,7 @@ namespace CentralLogger {
             services.AddSignalR();
             services.AddHttpContextAccessor();
             services.AddScoped<UserService>();
-            services.AddSingleton<EmailService>();
+            services.AddScoped<EmailService>();
             services.AddHttpClient();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

@@ -24,6 +24,7 @@ using CentralLogger.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Serialization;
+using CentralLogger.Attributes;
 
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
@@ -36,6 +37,8 @@ namespace CentralLogger.Controllers {
         static JsonSerializerSettings jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
         readonly IConfiguration configuration;
         readonly IHttpClientFactory httpClientFactory;
+        readonly LineContent lineContent = new LineContent();
+
 
         public LoggerController(CentralLoggerContext db, IHubContext<LogHub> hubContext, EmailService email, IHttpClientFactory httpClientFactory, IConfiguration configuration) {
             this.db = db;
@@ -45,6 +48,7 @@ namespace CentralLogger.Controllers {
             this.httpClientFactory = httpClientFactory;
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public ActionResult<IEnumerable<string>> ShowAll() {
             try {
@@ -55,6 +59,7 @@ namespace CentralLogger.Controllers {
             }
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpPost]
         public async Task<ActionResult<List<LogInfo>>> Search(SearchLog search) {
             var perSection = 50;
@@ -76,18 +81,21 @@ namespace CentralLogger.Controllers {
             return Ok(new { LogInfo = result, DataLength = dataLength });
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public IEnumerable<string> GetIP() {
             var Ip = db.LogInfos.Select(m => m.Ip).Distinct();
             return Ip.ToList();
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet]
         public IEnumerable<string> GetAllApp() {
             var App = db.LogInfos.Select(m => m.Application).Distinct();
             return App.ToList();
         }
 
+        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
         [HttpGet("{ip}")]
         public IEnumerable<string> GetApp(string ip) {
             if (!string.IsNullOrEmpty(ip)) {
@@ -96,13 +104,14 @@ namespace CentralLogger.Controllers {
             }
             return Enumerable.Empty<string>();
         }
+
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
-
+            DateTime date = x.DateTime.ToLocalTime();
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = x.DateTime,
+                DateTime = date,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -110,7 +119,7 @@ namespace CentralLogger.Controllers {
             var data = new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = x.DateTime,
+                DateTime = date,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -136,8 +145,6 @@ namespace CentralLogger.Controllers {
 
             var messages = $"CRITICAL ALERT {data.Application}  [ {data.Ip} ]\n► พบ Critical ที่:\n■ Application : {data.Application}\n■ Datetime : {data.DateTime}\n■ Category : {data.Category}\n■ IP : {data.Ip}\n■ Message : {data.Message}";
 
-
-            var lineContent = new LineContent();
             lineContent.To = await db.Line.Where(a => a.ApplicationName == data.Application).Select(m => m.LineId).Distinct().ToListAsync();
             lineContent.Messages.Add(new LineMessage {
                 Type = "text",
