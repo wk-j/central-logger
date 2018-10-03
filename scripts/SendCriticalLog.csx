@@ -9,20 +9,24 @@ using CentralLogProvider;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-class MyService {
+class MyService
+{
     ILogger<MyService> logger;
-    public MyService(ILogger<MyService> logger) {
+    public MyService(ILogger<MyService> logger)
+    {
         this.logger = logger;
     }
-    public void SendInfo() {
+    public void SendInfo()
+    {
         logger.LogInformation("Hello, world");
         logger.LogCritical("MSBuild targets for Web and WebApplications that come with Visual Studio. Useful for build servers that do not have Visual Studio installed.");
     }
 }
 
 var collection = new ServiceCollection();
-collection.AddLogging(options => {
-    options.AddCentralLog(new CentralLogOptions("http://localhost:5000"));
+collection.AddLogging(options =>
+{
+    options.AddCentralLog(new CentralLogOptions("https://centralloggerazure.azurewebsites.net"));
 
 });
 collection.AddSingleton<MyService>();
