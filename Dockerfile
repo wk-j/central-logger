@@ -1,4 +1,3 @@
-#test
 FROM node as node
 WORKDIR /app
 COPY src src
