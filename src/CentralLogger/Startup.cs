@@ -19,6 +19,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using CentralLogger.Services;
 using System.Threading;
+using CentralLogger.Controllers;
 
 namespace CentralLogger {
     public class Startup {
@@ -56,7 +57,7 @@ namespace CentralLogger {
             });
         }
 
-        public static void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CentralLoggerContext db, UserService userService) {
             var defaultOptions = new DefaultFilesOptions();
             defaultOptions.DefaultFileNames.Clear();
             defaultOptions.DefaultFileNames.Add("index.html");
@@ -87,7 +88,7 @@ namespace CentralLogger {
             GenrateDatabase(db, userService);
         }
 
-        private static void GenrateDatabase(CentralLoggerContext db, UserService userService) {
+        private void GenrateDatabase(CentralLoggerContext db, UserService userService) {
             Console.WriteLine("Create DB");
             var createData = db.Database.EnsureCreated();
             if (createData) {
