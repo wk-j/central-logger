@@ -136,7 +136,7 @@ namespace CentralLogger.Controllers {
                 email.Enqueue(data);
                 await SendLine(data);
             }
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
