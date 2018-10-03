@@ -107,7 +107,7 @@ namespace CentralLogger.Controllers {
 
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
-            DateTime date = x.DateTime.ToLocalTime();
+            DateTime date = x.DateTime;
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
