@@ -79,7 +79,7 @@ export class Chart extends React.Component<Props, State> {
                     data: this.props.error
                 },
                 {
-                    name: "info",
+                    name: "Info",
                     type: "line",
                     data: this.props.info
                 },
