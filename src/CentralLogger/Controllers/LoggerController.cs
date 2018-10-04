@@ -88,7 +88,7 @@ namespace CentralLogger.Controllers {
             return Ip.ToList();
         }
 
-        [BasicAuthorize(typeof(BasicAuthorizeFilter))]
+
         [HttpGet]
         public IEnumerable<string> GetAllApp() {
             var App = db.LogInfos.Select(m => m.Application).Distinct();
@@ -107,11 +107,11 @@ namespace CentralLogger.Controllers {
 
         [HttpPost]
         public async Task<ActionResult> AddLog([FromBody] GetLogInfos x) {
-            DateTime date = x.DateTime.ToLocalTime();
+            x.DateTime = x.DateTime.ToLocalTime();
             db.LogInfos.Add(new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = date,
+                DateTime = x.DateTime,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -119,7 +119,7 @@ namespace CentralLogger.Controllers {
             var data = new LogInfo {
                 LogLevel = x.LogLevel,
                 Message = x.Message,
-                DateTime = date,
+                DateTime = x.DateTime,
                 Application = x.Application,
                 Ip = x.Ip,
                 Category = x.Catelog
@@ -136,7 +136,7 @@ namespace CentralLogger.Controllers {
                 email.Enqueue(data);
                 await SendLine(data);
             }
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             await hubContext.Clients.All.SendAsync("LogReceived", data);
             return Ok();
