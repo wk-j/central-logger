@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CentralLogger.Attributes {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class BasicAuthorizeAttribute : TypeFilterAttribute {
+    public sealed class BasicAuthorizeAttribute : TypeFilterAttribute {
         public BasicAuthorizeAttribute(Type type) : base(type) {
         }
     }

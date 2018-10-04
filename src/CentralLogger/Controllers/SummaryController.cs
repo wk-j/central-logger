@@ -60,13 +60,12 @@ namespace CentralLogger.Controllers {
 
             }
             return Ok(new CountLogs {
-                dataInfos = countInfo,
-                dataErrors = countError,
-                dataDebugs = countDebug,
-                dataTraces = countTrace,
-                dataWarnings = countWarning,
-                dataCriticals = countCritical,
-
+                DataInfos = countInfo,
+                DataErrors = countError,
+                DataDebugs = countDebug,
+                DataTraces = countTrace,
+                DataWarnings = countWarning,
+                DataCriticals = countCritical,
             });
 
         }
