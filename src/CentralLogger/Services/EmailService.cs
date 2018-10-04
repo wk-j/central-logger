@@ -50,7 +50,7 @@ namespace CentralLogger.Services {
         }
 
         public async Task SendEmail(LogInfo data, string Email) {
-            string strUrl = $"{baseUrl}/api/Email/DisableEmail?email={Email}";
+            var strUrl = $"{baseUrl}/api/Email/DisableEmail?email={Email}";
 
             strUrl = strUrl.Replace("@", "%40");
             var subject = $"Critical Alert {data.Application} [ {data.Ip} ]";

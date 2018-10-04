@@ -102,7 +102,6 @@ namespace CentralLogger.Controllers {
             }
         }
 
-
         [HttpGet]
         public async Task<string> DisableEmail(string email) {
             var emaillist1 = await db.Emails.Where(m => m.Email_1 == email).Select(m => m.Application).FirstOrDefaultAsync();
