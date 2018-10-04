@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CentralLogger.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [BasicAuthorize(typeof(BasicAuthorizeFilter))]
     public class EmailController : ControllerBase {
         readonly CentralLoggerContext db;
 
